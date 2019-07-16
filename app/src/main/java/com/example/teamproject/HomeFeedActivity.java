@@ -34,6 +34,7 @@ public class HomeFeedActivity extends FragmentActivity {
         mPager = (ViewPager) findViewById(R.id.vpHome);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(pagerAdapter);
+        mPager.setCurrentItem(1);
     }
 
     @Override
@@ -60,11 +61,11 @@ public class HomeFeedActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new ListFragment();
+                return new UserProfileFragment();
             } else if (position == 1) {
-                return new MapFragment();
+                return new ListFragment();
             }
-            return new UserProfileFragment();
+            return new MapFragment();
         }
 
         @Override
