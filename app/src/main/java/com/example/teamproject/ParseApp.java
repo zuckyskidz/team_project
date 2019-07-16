@@ -12,9 +12,9 @@ public class ParseApp extends Application {
 
 //        ParseObject.registerSubclass(Post.class);
         final Parse.Configuration configuration = new Parse.Configuration.Builder(this)
-                .applicationId("instagram")
-                .clientKey("instagram")
-                .server("http://jennhe-fbu-instagram.herokuapp.com/parse")
+                .applicationId("localAdId")
+                .clientKey("localAdMasterKey")
+                .server("http://localad.herokuapp.com/parse")
                 .build();
 
         Parse.initialize(configuration);
