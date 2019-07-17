@@ -26,14 +26,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        ParseUser currentUser = ParseUser.getCurrentUser();
+//      User already signed in
         if (ParseUser.getCurrentUser() != null) {
-            final Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            final Intent intent = new Intent(LoginActivity.this, HomeFeedActivity.class);
             startActivity(intent);
             finish();
         } else {
-//            setContentView(R.layout.activity_login);
-
             etEmail = findViewById(R.id.etEmail);
             etPassword = findViewById(R.id.etPassword);
             btnLogin = findViewById(R.id.btnLogin);
@@ -68,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(e == null){
                     Log.d("LoginActivity", "Login successful!");
 
-                    final Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    final Intent intent = new Intent(LoginActivity.this, HomeFeedActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
