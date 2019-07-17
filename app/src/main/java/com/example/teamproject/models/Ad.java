@@ -11,12 +11,14 @@ import com.parse.ParseUser;
 
 @ParseClassName("Ad")
 public class Ad extends ParseObject {
-    public static final String KEY_DESCRIPTION = "Description";
+    public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_TITLE = "title";
     public static final String KEY_IMAGE = "image";
     public static final String KEY_USER = "user";
     private static final String KEY_CREATIONTIME = "createdAt";
     private static final String KEY_LOCATION = "location";
     private static final String KEY_TAGS = "tags";
+    private static final String KEY_RSVP = "rsvp";
 
 
     public String getDescription(){
@@ -24,6 +26,13 @@ public class Ad extends ParseObject {
     }
     public void setDescription(String description){
         put(KEY_DESCRIPTION, description);
+    }
+
+    public String getTitle(){
+        return getString(KEY_TITLE);
+    }
+    public void setTitle(String title){
+        put(KEY_TITLE, title);
     }
 
     public ParseFile getImage(){
@@ -57,6 +66,11 @@ public class Ad extends ParseObject {
     public ParseObject getTags(){
         return getParseObject(KEY_TAGS);
     }
+
+    public ParseObject getRSVP(){
+        return getParseObject(KEY_RSVP);
+    }
+
 
     public static class Query extends ParseQuery<Ad>{
         public Query() { super(Ad.class); }
