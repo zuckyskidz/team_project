@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         });
         queryPosts();
     }
-    
+
     private void login(String user, String pass) {
         Log.d(TAG, "login here");
 
