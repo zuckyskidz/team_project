@@ -29,6 +29,8 @@ public class DetailActivity extends AppCompatActivity {
     private static final String TAG = "DetailActivity";
 
     Ad ad;
+    List rsvpList;
+
     ImageView imageIV;
     TextView titleTV;
     TextView descriptionTV;
@@ -54,21 +56,32 @@ public class DetailActivity extends AppCompatActivity {
         rsvpBT = findViewById(R.id.btRSVP);
         attendingCount = findViewById(R.id.tvAttendingCount);
 
+
+        rsvpList = ad.getRSVP();
+        final int userCount  = rsvpList.size();
+        if(rsvpList != null){
+            Log.d(TAG, Integer.toString(rsvpList.size()));
+            attendingCount.setText( userCount+" people already attending!");
+        }
+
         rsvpBT.setOnClickListener(new View.OnClickListener() {
-            //TODO- store this data when the user reopens app
+            //TODO -toggle button to correct position when the user reopens app
             @Override
             public void onClick(View v) {
                 if (flag_RSVP) {
                     flag_RSVP = false; //Button ON
                     rsvpBT.setText("RSVP");
+                    attendingCount.setText( userCount+" people already attending!");
                     //removes user from RSVP List
                     ad.removeAll("rsvp", Collections.singleton(ParseUser.getCurrentUser()));
                     ad.saveInBackground();
                     Toast.makeText(DetailActivity.this, "Un-RSVP successful!", Toast.LENGTH_SHORT).show();
+                    //attendingCount.setText( userCount +" people already attending!");
 
                 } else {
                     flag_RSVP = true; //Button OFF
                     rsvpBT.setText("Un-RSVP");
+                    attendingCount.setText("See you there!");
                     //add user to RSVP List
                     ad.addUnique("rsvp", ParseUser.getCurrentUser());
                     ad.saveInBackground();
@@ -77,12 +90,6 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        //displays number of users currently RSVP-ed
-        List rsvpList  = ad.getRSVP();
-        if(rsvpList != null){
-            Log.d(TAG, Integer.toString(rsvpList.size()));
-            attendingCount.setText( rsvpList.size()+" people already attending!");
-        }
 
         titleTV.setText(ad.getTitle());
         descriptionTV.setText(ad.getDescription());
@@ -93,7 +100,6 @@ public class DetailActivity extends AppCompatActivity {
                 .load(imageURL)
                 //.load(ad.getImage())
                 .into(imageIV);
-
 
         //need to use fetchIfNeeded, or else causes error
         try {
@@ -111,4 +117,5 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
+
 }
