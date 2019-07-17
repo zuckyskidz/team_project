@@ -13,13 +13,16 @@ import com.bumptech.glide.Glide;
 import com.example.teamproject.models.Ad;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -32,6 +35,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView userNameTV;
     TextView emailTV;
     Button rsvpBT;
+    TextView attendingCount;
     private boolean flag_RSVP = false;
 
     @Override
@@ -48,6 +52,8 @@ public class DetailActivity extends AppCompatActivity {
         userNameTV = findViewById(R.id.tvUserName);
         emailTV = findViewById(R.id.tvUserEmail);
         rsvpBT = findViewById(R.id.btRSVP);
+        attendingCount = findViewById(R.id.tvAttendingCount);
+
         rsvpBT.setOnClickListener(new View.OnClickListener() {
             //TODO- store this data when the user reopens app
             @Override
@@ -71,6 +77,13 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+        //displays number of users currently RSVP-ed
+        List rsvpList  = ad.getRSVP();
+        if(rsvpList != null){
+            Log.d(TAG, Integer.toString(rsvpList.size()));
+            attendingCount.setText( rsvpList.size()+" people already attending!");
+        }
+
         titleTV.setText(ad.getTitle());
         descriptionTV.setText(ad.getDescription());
 
@@ -90,9 +103,9 @@ public class DetailActivity extends AppCompatActivity {
         };
         try {
             emailTV.setText(ad.getUser().fetchIfNeeded().getString("email"));
-            Log.i(TAG, "success");
+            //Log.i(TAG, "success");
         } catch (ParseException e) {
-            Log.i(TAG, "error");
+            //Log.i(TAG, "error");
             e.printStackTrace();
         };
 

@@ -1,12 +1,16 @@
 package com.example.teamproject.models;
 
 
+import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @ParseClassName("Ad")
@@ -67,8 +71,8 @@ public class Ad extends ParseObject {
         return getParseObject(KEY_TAGS);
     }
 
-    public ParseObject getRSVP(){
-        return getParseObject(KEY_RSVP);
+    public List<Object> getRSVP(){
+        return getList(KEY_RSVP);
     }
 
 

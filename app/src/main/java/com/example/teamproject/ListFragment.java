@@ -54,7 +54,7 @@ public class ListFragment extends Fragment {
 
         final Ad[] ad = new Ad[1];
         ParseQuery<Ad> query = ParseQuery.getQuery("Ad");
-        query.getInBackground("SJiW8rUJmh", new GetCallback<Ad>() {
+        query.getInBackground("cs2C33IF9R", new GetCallback<Ad>() {
             public void done(Ad object, ParseException e) {
                 if (e == null) {
                     ad[0] = object;
