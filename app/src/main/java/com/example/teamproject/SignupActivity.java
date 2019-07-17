@@ -39,15 +39,16 @@ public class SignupActivity extends AppCompatActivity {
         btnSignup.setOnClickListener(new View.OnClickListener(){
              @Override
              public void onClick(View v) {
-                 final String username = etEmail.getText().toString();
+                 final String email = etEmail.getText().toString();
                  final String password = etPassword.getText().toString();
 
-                 signup(username, password);
+                 signup(email, password);
              }
          });
     }
 
     private void signup(final String email, final String password){
+        Log.d("SignupActivity", "entered method");
         // Create the ParseUser
         ParseUser user = new ParseUser();
         // Set core properties
