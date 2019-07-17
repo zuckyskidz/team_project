@@ -16,7 +16,6 @@
         android:usesCleartextTraffic="true">
 
         <activity android:name=".HomeFeedActivity"></activity>
-        android:theme="@style/AppTheme">
         <activity android:name=".HomeActivity"></activity>
         <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity">
