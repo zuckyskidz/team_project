@@ -30,5 +30,3 @@
     </application>
 
 </manifest>
-
-    <!--tools:replace="android:appComponentFactory"-->
