@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.teamproject.models.Ad;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -30,6 +31,8 @@ public class DetailActivity extends AppCompatActivity {
 
     Ad ad;
     List rsvpList;
+    int userCount;
+    boolean flag_RSVP;
 
     ImageView imageIV;
     TextView titleTV;
@@ -38,15 +41,15 @@ public class DetailActivity extends AppCompatActivity {
     TextView emailTV;
     Button rsvpBT;
     TextView attendingCount;
-    private boolean flag_RSVP = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        // unwrap the movie passed in via intent, using its simple name as a key
         ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
+        rsvpList = ad.getRSVP();
+        userCount  = ad.getRSVPCount();
 
         imageIV = findViewById(R.id.ivImage);
         titleTV = findViewById(R.id.tvTitle);
@@ -56,36 +59,24 @@ public class DetailActivity extends AppCompatActivity {
         rsvpBT = findViewById(R.id.btRSVP);
         attendingCount = findViewById(R.id.tvAttendingCount);
 
-
-        rsvpList = ad.getRSVP();
-        final int userCount  = rsvpList.size();
-        if(rsvpList != null){
-            Log.d(TAG, Integer.toString(rsvpList.size()));
-            attendingCount.setText( userCount+" people already attending!");
+        //initialize button text to reflect user attendance status
+        attendingCount.setText( userCount+" people attending.");
+        if(isUserRegistered()){
+            rsvpBT.setText("Un-RSVP");
+            flag_RSVP = true;
+        }
+        else{
+            rsvpBT.setText("RSVP");
+            flag_RSVP = false;
         }
 
         rsvpBT.setOnClickListener(new View.OnClickListener() {
-            //TODO -toggle button to correct position when the user reopens app
             @Override
             public void onClick(View v) {
                 if (flag_RSVP) {
-                    flag_RSVP = false; //Button ON
-                    rsvpBT.setText("RSVP");
-                    attendingCount.setText( userCount+" people already attending!");
-                    //removes user from RSVP List
-                    ad.removeAll("rsvp", Collections.singleton(ParseUser.getCurrentUser()));
-                    ad.saveInBackground();
-                    Toast.makeText(DetailActivity.this, "Un-RSVP successful!", Toast.LENGTH_SHORT).show();
-                    //attendingCount.setText( userCount +" people already attending!");
-
+                    unRegisterUser();
                 } else {
-                    flag_RSVP = true; //Button OFF
-                    rsvpBT.setText("Un-RSVP");
-                    attendingCount.setText("See you there!");
-                    //add user to RSVP List
-                    ad.addUnique("rsvp", ParseUser.getCurrentUser());
-                    ad.saveInBackground();
-                    Toast.makeText(DetailActivity.this, "RSVP successful!", Toast.LENGTH_SHORT).show();
+                    registerUser();
                 }
             }
         });
@@ -104,17 +95,46 @@ public class DetailActivity extends AppCompatActivity {
         //need to use fetchIfNeeded, or else causes error
         try {
             userNameTV.setText(ad.getUser().fetchIfNeeded().getString("username"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        };
-        try {
             emailTV.setText(ad.getUser().fetchIfNeeded().getString("email"));
-            //Log.i(TAG, "success");
         } catch (ParseException e) {
-            //Log.i(TAG, "error");
             e.printStackTrace();
         };
+    }
 
+    //Registers/RSVP the user for the event
+    private void registerUser() {
+        //adds to User's list of attendingEvents
+        ParseUser.getCurrentUser().addUnique("attendingEvents", ad.getObjectId());
+        ParseUser.getCurrentUser().saveInBackground();
+        //add user to RSVP List
+        ad.addUnique("rsvp", ParseUser.getCurrentUser());
+        ad.saveInBackground();
+
+        flag_RSVP = true;
+        rsvpBT.setText("Un-RSVP");
+        attendingCount.setText("See you there!");
+    }
+
+    //Un-Registers/RSVP the user for the event
+    private void unRegisterUser() {
+        //removes from User's list of attendingEvents
+        ParseUser.getCurrentUser().removeAll("attendingEvents", Collections.singleton(ad.getObjectId()));
+        ParseUser.getCurrentUser().saveInBackground();
+        //removes user from RSVP List
+        ad.removeAll("rsvp", Collections.singleton(ParseUser.getCurrentUser()));
+        ad.saveInBackground();
+
+        flag_RSVP = false;
+        rsvpBT.setText("RSVP");
+        userCount  = ad.getRSVPCount();
+        attendingCount.setText(userCount + " people attending!");
+    }
+
+    //checks to see if the user is currently registered/RSVPed
+    private boolean isUserRegistered(){
+        ParseUser user = ParseUser.getCurrentUser();
+        List attendingEvents = user.getList("attendingEvents");
+        return attendingEvents.contains(ad.getObjectId());
 
     }
 

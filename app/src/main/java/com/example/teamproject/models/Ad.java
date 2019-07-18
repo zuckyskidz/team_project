@@ -74,6 +74,7 @@ public class Ad extends ParseObject {
     public List<Object> getRSVP(){
         return getList(KEY_RSVP);
     }
+    public int getRSVPCount() { return getRSVP().size(); }
 
 
     public static class Query extends ParseQuery<Ad>{
