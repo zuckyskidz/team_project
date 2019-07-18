@@ -1,6 +1,10 @@
 package com.example.teamproject.models;
 
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -8,15 +12,22 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.Date;
+import java.util.List;
+
 
 @ParseClassName("Ad")
 public class Ad extends ParseObject {
-    public static final String KEY_DESCRIPTION = "Description";
-    public static final String KEY_IMAGE = "image";
-    public static final String KEY_USER = "user";
+    private static final String KEY_DESCRIPTION = "Description";
+    private static final String KEY_IMAGE = "image";
+    private static final String KEY_USER = "user";
     private static final String KEY_CREATIONTIME = "createdAt";
     private static final String KEY_LOCATION = "location";
     private static final String KEY_TAGS = "tags";
+    private static final String KEY_TITLE = "title";
+    private static final String KEY_STARTTIME = "startTime";
+    private static final String KEY_ENDTIME = "endTime";
+    private static final String KEY_DATE = "date";
 
 
     public String getDescription(){
@@ -58,6 +69,21 @@ public class Ad extends ParseObject {
         return getParseObject(KEY_TAGS);
     }
 
+    public String getTitle() { return getString(KEY_TITLE); }
+    public void setTitle(String title) { put(KEY_TITLE, title); }
+
+    public String getAddress() { return getString(KEY_LOCATION); }
+    public void setAddress(String address) { put(KEY_LOCATION, address); }
+
+    public String getDate() { return getString(KEY_DATE); }
+    public void setDate(Date date) { put(KEY_DATE, date); }
+
+    public String getStartTime() { return getString(KEY_STARTTIME); }
+    public void setStartTime(String startTime) { put(KEY_STARTTIME, startTime); }
+
+    public String getEndTime() { return getString(KEY_ENDTIME); }
+    public void setEndTime(String endTime) { put(KEY_ENDTIME, endTime); }
+
     public static class Query extends ParseQuery<Ad>{
         public Query() { super(Ad.class); }
 
@@ -72,5 +98,27 @@ public class Ad extends ParseObject {
         }
 
     }
+
+//    public GeoPoint getLocationFromAddress(Context context, String strAddress){
+//
+//        Geocoder coder = new Geocoder(context);
+//        List<Address> address;
+//        GeoPoint p1 = null;
+//
+//        try {
+//            address = coder.getFromLocationName(strAddress,5);
+//            if (address==null) {
+//                return null;
+//            }
+//            Address location=address.get(0);
+//            location.getLatitude();
+//            location.getLongitude();
+//
+//            p1 = new GeoPoint((double) (location.getLatitude() * 1E6),
+//                    (double) (location.getLongitude() * 1E6));
+//
+//            return p1;
+//        }
+//    }
 
 }

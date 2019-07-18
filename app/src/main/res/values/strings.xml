@@ -3,4 +3,12 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ad_address">Ad Address</string>
+    <string name="ad_description">Ad Description</string>
+    <string name="add_ad">Add Ad</string>
+    <string name="ad_time">Ad Time</string>
+    <string name="ad_date">Ad Date</string>
+    <string name="ad_name">Ad Name</string>
+    <string name="end_time">End TIme</string>
+    <string name="start_time">Start Time</string>
 </resources>
