@@ -29,6 +29,7 @@ public class ParseApp extends Application {
                 .server("http://localad.herokuapp.com/parse")
                 .build();
 
+        Parse.enableLocalDatastore(this);
         Parse.initialize(configuration);
         //ParseInstallation.getCurrentInstallation().saveInBackground();
         ParseObject.registerSubclass(Ad.class);

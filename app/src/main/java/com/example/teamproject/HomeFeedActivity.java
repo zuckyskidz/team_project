@@ -1,5 +1,6 @@
 package com.example.teamproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 public class HomeFeedActivity extends FragmentActivity {
     /**
@@ -47,6 +49,11 @@ public class HomeFeedActivity extends FragmentActivity {
             // Otherwise, select the previous step.
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
+    }
+
+    public void onCreatePost(View view) {
+        Intent intent = new Intent(HomeFeedActivity.this, CreatePostActivity.class);
+        startActivity(intent);
     }
 
     /**
