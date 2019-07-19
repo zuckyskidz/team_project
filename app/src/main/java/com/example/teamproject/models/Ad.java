@@ -1,6 +1,7 @@
 package com.example.teamproject.models;
 
 
+import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -8,15 +9,21 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 @ParseClassName("Ad")
 public class Ad extends ParseObject {
-    public static final String KEY_DESCRIPTION = "Description";
+    public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_TITLE = "title";
     public static final String KEY_IMAGE = "image";
     public static final String KEY_USER = "user";
     private static final String KEY_CREATIONTIME = "createdAt";
     private static final String KEY_LOCATION = "location";
     private static final String KEY_TAGS = "tags";
+    private static final String KEY_RSVP = "rsvp";
 
 
     public String getDescription(){
@@ -24,6 +31,13 @@ public class Ad extends ParseObject {
     }
     public void setDescription(String description){
         put(KEY_DESCRIPTION, description);
+    }
+
+    public String getTitle(){
+        return getString(KEY_TITLE);
+    }
+    public void setTitle(String title){
+        put(KEY_TITLE, title);
     }
 
     public ParseFile getImage(){
@@ -57,6 +71,30 @@ public class Ad extends ParseObject {
     public ParseObject getTags(){
         return getParseObject(KEY_TAGS);
     }
+
+    public List<Object> getRSVP(){
+        return getList(KEY_RSVP);
+    }
+    public int getRSVPCount() { return getRSVP().size(); }
+
+    //add user to RSVP List
+    //adds to User's list of attendingEvents
+    public void registerUser() {
+        ParseUser.getCurrentUser().addUnique("attendingEvents", this.getObjectId());
+        ParseUser.getCurrentUser().saveInBackground();
+        this.addUnique("rsvp", ParseUser.getCurrentUser());
+        this.saveInBackground();
+    }
+
+    //removes user from RSVP List
+    //removes from User's list of attendingEvents
+    public void unRegisterUser() {
+        ParseUser.getCurrentUser().removeAll("attendingEvents", Collections.singleton(this.getObjectId()));
+        ParseUser.getCurrentUser().saveInBackground();
+        this.removeAll("rsvp", Collections.singleton(ParseUser.getCurrentUser()));
+        this.saveInBackground();
+    }
+
 
     public static class Query extends ParseQuery<Ad>{
         public Query() { super(Ad.class); }
