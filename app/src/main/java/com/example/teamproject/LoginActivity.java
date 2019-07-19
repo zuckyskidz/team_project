@@ -19,7 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etPassword;
     private Button btnLogin;
     private Button btnSignup;
-    private TextView tvError;
+    private TextView textError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
             etPassword = findViewById(R.id.etPassword);
             btnLogin = findViewById(R.id.btnLogin);
             btnSignup = findViewById(R.id.btnSignup);
-
+            textError = findViewById(R.id.tvError);
             btnLogin.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
@@ -62,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
         ParseUser.logInInBackground(email, password, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
-                tvError = findViewById(R.id.tvError);
                 if(e == null){
                     Log.d("LoginActivity", "Login successful!");
 
@@ -71,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
                 } else {
                     Log.d("LoginActivity", "Login failure.");
-                    tvError.setText("User not found. Please try again.");
+                    textError.setText("User not found. Please try again.");
                     e.printStackTrace();
                 }
             }
