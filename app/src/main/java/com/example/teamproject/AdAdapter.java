@@ -51,6 +51,7 @@ public class AdAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_ad, parent, false);
             holder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+            holder.tvTitle.setText(ad.getTitle());
             convertView.setTag(holder);
             Log.d("AdAdapter","Set Holder");
 
