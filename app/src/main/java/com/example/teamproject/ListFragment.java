@@ -7,10 +7,23 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
+
+import com.example.teamproject.models.Ad;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import android.widget.TextView;
 
 import com.example.teamproject.models.Ad;
@@ -31,6 +44,10 @@ import java.util.List;
 
 
 public class ListFragment extends Fragment {
+    GridView gvPostGrid;
+    AdAdapter adAdapter;
+    //List<Ad> ads;
+    Ad[] ads;
 
     private static final String TAG = "ListFragment";
     List<Ad> mAds;
@@ -84,26 +101,34 @@ public class ListFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        gvPostGrid = (GridView) view.findViewById(R.id.gvPostGrid);
+        grabAds();
+    }
 
-    public void queryPosts() {
-        final Ad.Query postQuery = new Ad.Query();
-        postQuery.getTop().withUser();
-        postQuery.findInBackground(new FindCallback<Ad>() {
+    private void grabAds() {
+        final Ad.Query adQuery = new Ad.Query();
+        adQuery.getTop().withUser();
+        adQuery.findInBackground(new FindCallback<Ad>() {
             @Override
-            public void done(List<Ad> ads, ParseException e) {
-                if(e == null){
-                    mAds.addAll(ads);
-                    Log.i(TAG, Integer.toString(mAds.size()));
-                    for (int i = 0; i < ads.size(); i++) {
-                        Log.d(TAG, "Ad[" + i + "]: "
-                                + ads.get(i).getTitle()
-                                + "\ndescription = " + ads.get(i).getDescription()
-                                + "\nusername = " + ads.get(i).getUser().getUsername()
-                                + "\nCreated at: " + ads.get(i).getCreatedAt()
-                        );
+            public void done(List<Ad> objects, ParseException e) {
+                if (e == null) {
+                    ads = new Ad[objects.size()];
+                    for (int i = 0; i < objects.size(); i++) {
+                        //ads.add(objects.get(i));
+                        Log.d("ListFragment", "Ad[" + i + "] = "
+                                + objects.get(i).getDescription()
+                                + "\nusername = " + objects.get(i).getUser().getUsername());
+                        ads[ads.length - (i + 1)] = objects.get(i);
+                        //adAdapter.notifyItemInserted(i);
                     }
-                }
-                else{
+                    adAdapter = new AdAdapter(getContext(), ads);
+                    gvPostGrid.setAdapter(adAdapter);
+                    //ads.addAll(objects);
+                    //Collections.reverse(ads);
+                    //swipeContainer.setRefreshing(false);
+                } else {
                     e.printStackTrace();
                 }
             }
