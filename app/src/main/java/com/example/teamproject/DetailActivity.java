@@ -34,6 +34,7 @@ public class DetailActivity extends AppCompatActivity {
     int userCount;
     boolean flag_RSVP;
 
+    //TODO - add location and dates
     ImageView imageIV;
     TextView titleTV;
     TextView descriptionTV;
@@ -103,27 +104,16 @@ public class DetailActivity extends AppCompatActivity {
 
     //Registers/RSVP the user for the event
     private void registerUser() {
-        //adds to User's list of attendingEvents
-        ParseUser.getCurrentUser().addUnique("attendingEvents", ad.getObjectId());
-        ParseUser.getCurrentUser().saveInBackground();
-        //add user to RSVP List
-        ad.addUnique("rsvp", ParseUser.getCurrentUser());
-        ad.saveInBackground();
-
+        ad.registerUser();
         flag_RSVP = true;
         rsvpBT.setText("Un-RSVP");
+        userCount  = ad.getRSVPCount();
         attendingCount.setText("See you there!");
     }
 
     //Un-Registers/RSVP the user for the event
     private void unRegisterUser() {
-        //removes from User's list of attendingEvents
-        ParseUser.getCurrentUser().removeAll("attendingEvents", Collections.singleton(ad.getObjectId()));
-        ParseUser.getCurrentUser().saveInBackground();
-        //removes user from RSVP List
-        ad.removeAll("rsvp", Collections.singleton(ParseUser.getCurrentUser()));
-        ad.saveInBackground();
-
+        ad.unRegisterUser();
         flag_RSVP = false;
         rsvpBT.setText("RSVP");
         userCount  = ad.getRSVPCount();

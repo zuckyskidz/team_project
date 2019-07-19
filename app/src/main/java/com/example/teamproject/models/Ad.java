@@ -10,6 +10,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -75,6 +76,24 @@ public class Ad extends ParseObject {
         return getList(KEY_RSVP);
     }
     public int getRSVPCount() { return getRSVP().size(); }
+
+    //add user to RSVP List
+    //adds to User's list of attendingEvents
+    public void registerUser() {
+        ParseUser.getCurrentUser().addUnique("attendingEvents", this.getObjectId());
+        ParseUser.getCurrentUser().saveInBackground();
+        this.addUnique("rsvp", ParseUser.getCurrentUser());
+        this.saveInBackground();
+    }
+
+    //removes user from RSVP List
+    //removes from User's list of attendingEvents
+    public void unRegisterUser() {
+        ParseUser.getCurrentUser().removeAll("attendingEvents", Collections.singleton(this.getObjectId()));
+        ParseUser.getCurrentUser().saveInBackground();
+        this.removeAll("rsvp", Collections.singleton(ParseUser.getCurrentUser()));
+        this.saveInBackground();
+    }
 
 
     public static class Query extends ParseQuery<Ad>{
