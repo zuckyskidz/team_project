@@ -13,6 +13,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import static com.parse.Parse.getApplicationContext;
@@ -49,6 +50,7 @@ public class CreatePostActivity extends AppCompatActivity {
         newAd.setEndTime(etAdEndTime.getText().toString());
         newAd.setAddress(etAdAddress.getText().toString());
         newAd.setDescription(etAdDesc.getText().toString());
+        newAd.setRSVP(new ArrayList<Object>());
 
         newAd.saveInBackground(new SaveCallback() {
             @Override

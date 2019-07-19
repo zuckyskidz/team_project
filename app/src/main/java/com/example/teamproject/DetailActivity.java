@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -87,10 +88,16 @@ public class DetailActivity extends AppCompatActivity {
         descriptionTV.setText(ad.getDescription());
 
         ParseFile imageFile = ad.getImage();
-        String imageURL = imageFile.getUrl();
+        String imageURL = null;
+        try {
+            imageURL = imageFile.getUrl();
+        } catch (NullPointerException e) {
+
+        }
         Glide.with(getApplicationContext())
                 .load(imageURL)
-                //.load(ad.getImage())
+                .apply(new RequestOptions()
+                .placeholder(R.drawable.dog))
                 .into(imageIV);
 
         //need to use fetchIfNeeded, or else causes error

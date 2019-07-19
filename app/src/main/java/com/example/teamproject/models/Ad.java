@@ -95,6 +95,10 @@ public class Ad extends ParseObject {
     public List<Object> getRSVP(){
         return getList(KEY_RSVP);
     }
+    public void setRSVP(List<Object> list){
+        put(KEY_RSVP, list);
+    }
+
     public int getRSVPCount() { return getRSVP().size(); }
 
     //add user to RSVP List
