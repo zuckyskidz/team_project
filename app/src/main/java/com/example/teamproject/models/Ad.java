@@ -18,7 +18,7 @@ import java.util.List;
 
 @ParseClassName("Ad")
 public class Ad extends ParseObject {
-    private static final String KEY_DESCRIPTION = "Description";
+    private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_USER = "user";
     private static final String KEY_CREATIONTIME = "createdAt";
@@ -55,11 +55,11 @@ public class Ad extends ParseObject {
         return getString(KEY_CREATIONTIME);
     }
 
-    public void setKeyLocation(ParseGeoPoint geoPoint){
+    public void setKeyLocation(String geoPoint){
         put(KEY_LOCATION, geoPoint);
     }
-    public ParseGeoPoint getLocation(){
-        return getParseGeoPoint(KEY_LOCATION);
+    public String getLocation(){
+        return getString(KEY_LOCATION);
     }
 
     //right now, "tags" are an array in parse dashboard
