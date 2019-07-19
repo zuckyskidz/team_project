@@ -43,7 +43,7 @@ public class ListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
         mAds = new ArrayList<>();
         queryPosts();
