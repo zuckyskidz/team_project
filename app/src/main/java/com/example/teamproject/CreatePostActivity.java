@@ -3,6 +3,7 @@ package com.example.teamproject;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CalendarView;
 import android.widget.EditText;
@@ -42,6 +43,7 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     public void submitAd(View view) {
+        Log.d("CreatePostActivity", "Posting...");
         Ad newAd = new Ad();
         newAd.setUser(ParseUser.getCurrentUser());
         newAd.setTitle(etAdName.getText().toString());

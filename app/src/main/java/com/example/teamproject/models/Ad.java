@@ -1,22 +1,13 @@
 package com.example.teamproject.models;
 
-import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
-
-import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
-import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-
-import java.util.Date;
-
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 
