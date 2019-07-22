@@ -33,7 +33,6 @@ public class SignupActivity extends AppCompatActivity {
     public final static int PICK_PHOTO_CODE = 1046;
     private static final String TAG = "SignUpActivity";
 
-
     private EditText etusername;
     private EditText etEmail;
     private EditText etPassword;
@@ -42,10 +41,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText etPhone;
     private Button btnSignup;
     private Button btnProfilePic;
-
     ParseFile photoFile;
-    public String photoFileName = "photo.jpg";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
