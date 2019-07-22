@@ -62,14 +62,11 @@ public class DetailActivity extends AppCompatActivity {
         attendingCount = findViewById(R.id.tvAttendingCount);
 
         //initialize button text to reflect user attendance status
-        attendingCount.setText( userCount+" people attending.");
         if(isUserRegistered()){
-            rsvpBT.setText("Un-RSVP");
-            flag_RSVP = true;
+            registerUser();
         }
         else{
-            rsvpBT.setText("RSVP");
-            flag_RSVP = false;
+            unRegisterUser();
         }
 
         rsvpBT.setOnClickListener(new View.OnClickListener() {
@@ -112,15 +109,18 @@ public class DetailActivity extends AppCompatActivity {
     //Registers/RSVP the user for the event
     private void registerUser() {
         ad.registerUser();
+        ad.saveInBackground();
         flag_RSVP = true;
         rsvpBT.setText("Un-RSVP");
         userCount  = ad.getRSVPCount();
         attendingCount.setText("See you there!");
+        //ad.saveInBackground();
     }
 
     //Un-Registers/RSVP the user for the event
     private void unRegisterUser() {
         ad.unRegisterUser();
+        ad.saveInBackground();
         flag_RSVP = false;
         rsvpBT.setText("RSVP");
         userCount  = ad.getRSVPCount();
