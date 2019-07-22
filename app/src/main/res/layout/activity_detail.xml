@@ -14,10 +14,6 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="70dp">
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/ivImage"
@@ -128,8 +124,6 @@
                 app:layout_constraintStart_toEndOf="@+id/tvAttendingCount"
                 app:layout_constraintTop_toTopOf="@+id/tvAttendingCount"
                 app:layout_constraintVertical_bias="0.621" />
-        </android.support.constraint.ConstraintLayout>
-
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
