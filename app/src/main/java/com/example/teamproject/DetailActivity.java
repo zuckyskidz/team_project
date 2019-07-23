@@ -108,10 +108,15 @@ public class DetailActivity extends AppCompatActivity {
         };
 
         //set profile image and details
-        ParseUser user = ad.getUser();
-        ParseFile profImageFile = user.getParseFile("profileImage");
+        ParseFile profImageFile = ad.getUser().getParseFile("profileImage");
+        String profImageURL = null;
+        try {
+            profImageURL = profImageFile.getUrl();
+        } catch (NullPointerException e) {
+
+        }
         Glide.with(getApplicationContext())
-                .load(profImageFile.getUrl())
+                .load(profImageURL)
                 .apply(new RequestOptions()
                         .placeholder(R.drawable.avatar))
                 .into(profImageIV);
