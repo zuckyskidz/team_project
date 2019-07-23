@@ -24,9 +24,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".HomeFeedActivity"></activity>
+        <activity android:name=".HomeFeedActivity"
         android:usesCleartextTraffic="true"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute"/>
 
         <activity android:name=".CreatePostActivity" />
         <activity android:name=".DetailActivity"

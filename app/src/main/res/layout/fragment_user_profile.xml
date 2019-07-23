@@ -48,14 +48,15 @@
         app:layout_constraintTop_toBottomOf="@+id/ivProfileImage" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="394dp"
-        android:layout_height="170dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:id="@+id/rvAttendingEvents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="horizontal"
+        android:scrollbarSize="4dp"
+        android:scrollbarStyle="outsideInset"
+        android:scrollbars="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/tvTitle2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle1" />
@@ -86,16 +87,18 @@
         android:text="Events I'm Hosting"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/rvAttendingEvents" />
 
-    <GridView
-        android:layout_width="395dp"
-        android:layout_height="239dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvHostingEvents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="horizontal"
+        android:scrollbarSize="4dp"
+        android:scrollbarStyle="outsideInset"
+        android:scrollbars="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle2" />

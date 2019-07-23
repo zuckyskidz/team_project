@@ -5,12 +5,15 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.List;
+
 @ParseClassName("User")
 public class User extends ParseUser {
 
     private static final String KEY_FIRST_NAME = "firstName";
     private static final String KEY_LAST_NAME = "lastName";
     public static final String KEY_PROFILE_IMAGE = "profileImage";
+    public static final String KEY_ATTENDING_EVENTS = "attendingEvents";
 
     public String getFirstName(){
         return getString(KEY_FIRST_NAME);
@@ -20,6 +23,13 @@ public class User extends ParseUser {
     }
     public ParseFile getProfileImage(){
         return getParseFile(KEY_PROFILE_IMAGE);
+    }
+    public List<Ad> getAttendingEvents(){
+        return getList(KEY_ATTENDING_EVENTS);
+    }
+
+    public static ParseUser getCurrentUser(){
+        return ParseUser.getCurrentUser();
     }
 
     public static class Query extends ParseQuery<User> {
