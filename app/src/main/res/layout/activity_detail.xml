@@ -60,7 +60,8 @@
         app:civ_border_color="#ffffff"
         app:civ_border_width="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tvUserName"
