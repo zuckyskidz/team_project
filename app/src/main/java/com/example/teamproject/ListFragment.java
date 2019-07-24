@@ -51,6 +51,7 @@ public class ListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rvPinterestFeed);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), mRecyclerView, new RecyclerItemClickListener
@@ -76,7 +77,6 @@ public class ListFragment extends Fragment {
         ads = new ArrayList<>();
         adapter = new RecAdAdapter(ads, getContext());
         mRecyclerView.setAdapter(adapter);
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
 
         grabAds();
         swipeUpRefresh();
