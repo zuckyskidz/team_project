@@ -3,7 +3,10 @@ package com.example.teamproject;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,11 +26,14 @@ import android.widget.Toast;
 
 import com.example.teamproject.models.Ad;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,6 +46,8 @@ import static com.parse.Parse.getApplicationContext;
 public class CreatePostActivity extends AppCompatActivity {
 
     private static final String TAG = "CreatePostActivity";
+    public final static int PICK_PHOTO_CODE = 1046;
+
     EditText etAdName;
     CalendarView cvAdDate;
     TextView tvDisplayDate;
@@ -49,6 +57,7 @@ public class CreatePostActivity extends AppCompatActivity {
     EditText etAdDesc;
 
     final Calendar myCalendar = Calendar.getInstance();
+    ParseFile photoFile;
 
 
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -134,6 +143,7 @@ public class CreatePostActivity extends AppCompatActivity {
         newAd.setAddress(etAdAddress.getText().toString());
         newAd.setDescription(etAdDesc.getText().toString());
         newAd.setRSVP(new ArrayList<Object>());
+        newAd.setImage(photoFile);
 
         newAd.saveInBackground(new SaveCallback() {
             @Override
@@ -164,5 +174,45 @@ public class CreatePostActivity extends AppCompatActivity {
         SimpleDateFormat sdfTime = new SimpleDateFormat(myFormatTime, Locale.US);
         ;
         tvStartTime.setText(String.format("Time: " + sdfTime.format(myCalendar.getTime())));
+    }
+
+    public void uploadPhoto(View view) {
+        // Create intent for picking a photo from the gallery
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+        // So as long as the result is not null, it's safe to use the intent.
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            // Bring up gallery to select a photo
+            startActivityForResult(intent, PICK_PHOTO_CODE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_PHOTO_CODE) {
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
+                    Uri photoUri = data.getData();
+                    // Do something with the photo based on Uri
+                    Bitmap selectedImage = null;
+                    try {
+                        selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    // Compress image to lower quality scale 1 - 100
+                    selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] image = stream.toByteArray();
+
+                    // Create the ParseFile
+                    photoFile  = new ParseFile("picture_1.jpeg", image);
+                    Toast.makeText(this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        }
     }
 }
