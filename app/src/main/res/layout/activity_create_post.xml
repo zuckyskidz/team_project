@@ -21,10 +21,17 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="55dp"
+                            android:gravity="center"
+                            android:text="Create Event"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
                         <EditText
                             android:id="@+id/etAdName"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp"
+                            android:layout_height="55dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginLeft="8dp"
                             android:layout_marginTop="8dp"
@@ -36,6 +43,23 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
+                        <EditText
+                            android:id="@+id/etAdDesc"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            android:ems="10"
+                            android:gravity="start|top"
+                            android:hint="@string/ad_description"
+                            android:inputType="textMultiLine"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/etAdAddress" />
 
                         <CalendarView
                             android:id="@+id/cvAdDate"
@@ -99,26 +123,9 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/etEndTime" />
 
-                        <EditText
-                            android:id="@+id/etAdDesc"
-                            android:layout_width="match_parent"
-                            android:layout_height="211dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            android:ems="10"
-                            android:gravity="start|top"
-                            android:hint="@string/ad_description"
-                            android:inputType="textMultiLine"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/etAdAddress" />
-
                         <Button
                             android:id="@+id/btnAddAd"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="160dp"
                             android:layout_marginLeft="160dp"

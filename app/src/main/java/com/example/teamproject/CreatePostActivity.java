@@ -15,6 +15,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.parse.Parse.getApplicationContext;
@@ -39,6 +40,10 @@ public class CreatePostActivity extends AppCompatActivity {
         etAdEndTime = (EditText) findViewById(R.id.etEndTime);
         etAdAddress = (EditText) findViewById(R.id.etAdAddress);
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
+
+        Date currentTime = Calendar.getInstance().getTime();
+        cvAdDate.setDate(currentTime.getTime());
+
 
     }
 
