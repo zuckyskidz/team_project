@@ -10,7 +10,11 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
+import com.parse.ParseFile;
 
 import java.util.List;
 
@@ -21,7 +25,7 @@ public class AdAdapter extends BaseAdapter {
 
     public AdAdapter(Context mContext, Ad[] ads) {
         this.mContext = mContext;
-        this.mAds = ads;
+        mAds = ads;
         Log.d("AdAdapter","Set Adapter");
 
     }
@@ -50,9 +54,29 @@ public class AdAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_ad, parent, false);
-            holder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+            holder.tvTitle = convertView.findViewById(R.id.tvTitle);
+            holder.ivAdImage = convertView.findViewById(R.id.ivAdImage);
+
             holder.tvTitle.setText(ad.getTitle());
             convertView.setTag(holder);
+
+            ParseFile imageFile = ad.getImage();
+            String imageURL = null;
+            try {
+                imageURL = imageFile.getUrl();
+            } catch (NullPointerException e) {
+
+            }
+            Glide.with(mContext)
+                    .load(imageURL)
+                    .apply(new RequestOptions()
+                            .override(200,200)
+                            .transform(new RoundedCorners(50))
+                            .fitCenter()
+                            .centerCrop()
+                            .placeholder(R.color.colorPrimary))
+                    .into(holder.ivAdImage);
+
             Log.d("AdAdapter","Set Holder");
 
         } else {
@@ -67,6 +91,7 @@ public class AdAdapter extends BaseAdapter {
 
     private class ViewHolder {
         private TextView tvTitle;
+        private ImageView ivAdImage;
     }
 
 }

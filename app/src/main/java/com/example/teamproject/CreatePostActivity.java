@@ -37,7 +37,7 @@ public class CreatePostActivity extends AppCompatActivity {
         cvAdDate = (CalendarView) findViewById(R.id.cvAdDate);
         etAdStartTime = (EditText) findViewById(R.id.etAdStartTime);
         etAdEndTime = (EditText) findViewById(R.id.etEndTime);
-        etAdAddress = (EditText) findViewById(R.id.etAdAddress);
+        //etAdAddress = (EditText) findViewById(R.id.etAdAddress);
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
 
     }
@@ -50,7 +50,7 @@ public class CreatePostActivity extends AppCompatActivity {
         newAd.setDate(new Date(cvAdDate.getDate() * 1000));
         newAd.setStartTime(etAdStartTime.getText().toString());
         newAd.setEndTime(etAdEndTime.getText().toString());
-        newAd.setAddress(etAdAddress.getText().toString());
+        //newAd.setAddress(etAdAddress.getText().toString());
         newAd.setDescription(etAdDesc.getText().toString());
         newAd.setRSVP(new ArrayList<Object>());
 
