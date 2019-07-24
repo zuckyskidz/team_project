@@ -66,3 +66,6 @@ fastlane/readme.md
 
 # Secrets
 secrets.xml
+
+#DS_Store
+.DS_Store
