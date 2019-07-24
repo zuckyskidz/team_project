@@ -19,13 +19,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
-import com.example.teamproject.models.User;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -51,11 +48,12 @@ public class UserProfileFragment extends Fragment {
     ArrayList<Ad> hostingEvents;
 
     public UserProfileFragment() {
-        // Required empty public constructor
+        //TODO update lists when user RSVP from details page and then goes back to this fragment
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Log.i(TAG, "HERE");
         currentUser = ParseUser.getCurrentUser();
 
         super.onViewCreated(view, savedInstanceState);
@@ -97,7 +95,6 @@ public class UserProfileFragment extends Fragment {
                         .placeholder(R.drawable.dog))
                 .into(ivProfileImage);
 
-
     }
 
     private void getHostingEvents() {
@@ -126,8 +123,6 @@ public class UserProfileFragment extends Fragment {
                     }
                     initHostingRecycler();
                     rvAdapter.notifyDataSetChanged();
-
-
                 }
             });
 
@@ -161,8 +156,6 @@ public class UserProfileFragment extends Fragment {
                 }
                 initAttendingRecycler();
                 rvAdapter.notifyDataSetChanged();
-
-
             }
         });
 
