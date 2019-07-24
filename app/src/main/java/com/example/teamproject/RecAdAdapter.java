@@ -1,6 +1,7 @@
 package com.example.teamproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
 import com.parse.ParseFile;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class RecAdAdapter extends RecyclerView.Adapter<RecAdAdapter.MasonryView>
     private static List<Ad> mAds;
     private Context context;
 
-    class MasonryView extends RecyclerView.ViewHolder {
+    class MasonryView extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imageView;
         TextView textView;
 
@@ -31,6 +34,20 @@ public class RecAdAdapter extends RecyclerView.Adapter<RecAdAdapter.MasonryView>
             imageView = (ImageView) itemView.findViewById(R.id.ivAdImage);
             textView = (TextView) itemView.findViewById(R.id.tvTitle);
 
+        }
+
+        @Override
+        public void onClick(View v) {
+            itemView.setOnClickListener(this);
+            //Toast.makeText(context, "Clicked!", Toast.LENGTH_LONG).show();
+            int position = getAdapterPosition();
+
+            Ad ad = mAds.get(position);
+
+            Intent details = new Intent(context, DetailActivity.class);
+
+            details.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+            context.startActivity(details);
         }
     }
 
