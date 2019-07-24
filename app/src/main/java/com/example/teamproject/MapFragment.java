@@ -18,7 +18,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.example.teamproject.MyLocation;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
 

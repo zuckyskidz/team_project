@@ -8,7 +8,7 @@ import android.os.Bundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MyLocation {
+public class MyLocation extends Location{
     Timer timer1;
     LocationManager lm;
     LocationResult locationResult;
@@ -20,6 +20,22 @@ public class MyLocation {
 //    }
 
 
+    public MyLocation(String provider, Timer timer1, LocationManager lm, LocationResult locationResult, boolean gps_enabled, boolean network_enabled, LocationListener locationListenerGps, LocationListener locationListenerNetwork) {
+        super(provider);
+        this.timer1 = timer1;
+        this.lm = lm;
+        this.locationResult = locationResult;
+        this.gps_enabled = gps_enabled;
+        this.network_enabled = network_enabled;
+        this.locationListenerGps = locationListenerGps;
+        this.locationListenerNetwork = locationListenerNetwork;
+    }
+
+
+    public MyLocation(Location l, Timer timer1) {
+        super(l);
+        this.timer1 = timer1;
+    }
 
     public boolean getLocation(Context context, LocationResult result)
     {
