@@ -216,7 +216,7 @@ public class CreatePostActivity extends AppCompatActivity {
                     photoFile  = new ParseFile("picture_1.jpeg", image);
                     Toast.makeText(this, "Image Uploaded", Toast.LENGTH_SHORT).show();
                     Glide.with(getApplicationContext())
-                            .load(photoFile.getUrl())
+                            .load(image)
                             .apply(new RequestOptions()
                                     .placeholder(R.drawable.ic_launcher_background))
                             .into(ivPreview);
