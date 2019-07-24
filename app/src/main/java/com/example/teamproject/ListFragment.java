@@ -1,10 +1,12 @@
 package com.example.teamproject;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.teamproject.models.Ad;
+import com.example.teamproject.models.RecyclerItemClickListener;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 
@@ -24,8 +27,10 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class ListFragment extends Fragment {
@@ -45,20 +50,27 @@ public class ListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        gvPostGrid = (GridView) view.findViewById(R.id.gvPostGrid);
-//        grabAds();
-//
-//        gvPostGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-//                Intent i = new Intent(getActivity(), DetailActivity.class);
-//                //serialize the movie using parceler, use its short name as a key
-//                i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ads[position]));
-//                startActivity(i);
-//            }
-//        });
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rvPinterestFeed);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), mRecyclerView, new RecyclerItemClickListener
+                .OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                //Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_LONG).show();
+
+                Ad ad = ads.get(position);
+
+                Intent details = new Intent(getContext(), DetailActivity.class);
+
+                details.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+                getContext().startActivity(details);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                //handle longClick if any
+            }
+        }));
         ads = new ArrayList<>();
         grabAds();
     }

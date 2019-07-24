@@ -2,6 +2,7 @@ package com.example.teamproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,10 @@ import java.util.List;
 public class RecAdAdapter extends RecyclerView.Adapter<RecAdAdapter.MasonryView> {
     private static List<Ad> mAds;
     private Context context;
+
+    public int getAdapterPosition() {
+        return getAdapterPosition();
+    }
 
     class MasonryView extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imageView;

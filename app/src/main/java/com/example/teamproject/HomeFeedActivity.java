@@ -9,6 +9,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.Toast;
+
+import com.example.teamproject.models.Ad;
+
+import org.parceler.Parcels;
 
 public class HomeFeedActivity extends FragmentActivity {
     /**
@@ -80,4 +85,5 @@ public class HomeFeedActivity extends FragmentActivity {
             return NUM_PAGES;
         }
     }
+
 }
