@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,8 +41,7 @@ public class ListFragment extends Fragment {
     RecAdAdapter adapter;
     RecyclerView mRecyclerView;
     List<Ad> ads;
-
-
+    SwipeRefreshLayout swipeContainer;
 
     public ListFragment() {
         // Required empty public constructor
@@ -71,8 +72,14 @@ public class ListFragment extends Fragment {
                 //handle longClick if any
             }
         }));
+
         ads = new ArrayList<>();
+        adapter = new RecAdAdapter(ads, getContext());
+        mRecyclerView.setAdapter(adapter);
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+
         grabAds();
+        swipeUpRefresh();
     }
 
     @Override
@@ -94,16 +101,37 @@ public class ListFragment extends Fragment {
                         Log.d("ListFragment", "Ad[" + i + "] = "
                                 + objects.get(i).getDescription()
                                 + "\nusername = " + objects.get(i).getUser().getUsername());
+                        ads.add(i, objects.get(i));
+                        adapter.notifyItemInserted(i);
                     }
-                    ads.addAll(objects);
                     Log.d(TAG,"size of ads: " + ads.size());
                     Log.d(TAG,"size of objects: " + objects.size());
-                    adapter = new RecAdAdapter(ads, getContext());
-                    mRecyclerView.setAdapter(adapter);
+                    Collections.reverse(ads);
+                    swipeContainer.setRefreshing(false);
+
                 } else {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    private void swipeUpRefresh() {
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                adapter.clear();
+                grabAds();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 }

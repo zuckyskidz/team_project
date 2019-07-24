@@ -62,6 +62,18 @@ public class RecAdAdapter extends RecyclerView.Adapter<RecAdAdapter.MasonryView>
         this.mAds = ads;
     }
 
+    // Clean all elements of the recycler
+    public void clear() {
+        mAds.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Ad> list) {
+        mAds.addAll(list);
+        notifyDataSetChanged();
+    }
+
     @Override
     public MasonryView onCreateViewHolder(ViewGroup parent, int viewType) {
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ad, parent, false);
