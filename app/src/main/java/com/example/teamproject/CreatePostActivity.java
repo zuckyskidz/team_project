@@ -43,9 +43,8 @@ public class CreatePostActivity extends AppCompatActivity {
     EditText etAdName;
     CalendarView cvAdDate;
     TextView tvDisplayDate;
-    TextView tvDisplayTime;
-    EditText etAdStartTime;
-    EditText etAdEndTime;
+    TextView tvStartTime;
+    TextView tvEndTime;
     EditText etAdAddress;
     EditText etAdDesc;
 
@@ -71,12 +70,11 @@ public class CreatePostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_post);
 
         etAdName = (EditText) findViewById(R.id.etAdName);
-        etAdStartTime = (EditText) findViewById(R.id.etAdStartTime);
-        etAdEndTime = (EditText) findViewById(R.id.etEndTime);
+        tvEndTime = (TextView) findViewById(R.id.tvTimeDisplay2);
         etAdAddress = (EditText) findViewById(R.id.etAdAddress);
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
         tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
-        tvDisplayTime = (TextView) findViewById(R.id.tvTimeDisplay);
+        tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
 
         tvDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +85,7 @@ public class CreatePostActivity extends AppCompatActivity {
             }
         });
 
-        tvDisplayTime.setOnClickListener(new View.OnClickListener() {
+        tvStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TimePickerDialog mTimePicker;
@@ -97,6 +95,25 @@ public class CreatePostActivity extends AppCompatActivity {
                         myCalendar.set(Calendar.HOUR, selectedHour);
                         myCalendar.set(Calendar.MINUTE, selectedMinute);
                         updateTimeLabel();
+                    }
+                }, 12, 00, false);
+                mTimePicker.show();
+            }
+        });
+
+        tvEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(CreatePostActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        String myFormatTime = "h:mm a"; //In which you need put here
+                        SimpleDateFormat sdfTime = new SimpleDateFormat(myFormatTime, Locale.US);
+                        Calendar myCal = Calendar.getInstance();
+                        myCal.set(Calendar.HOUR, selectedHour);
+                        myCal.set(Calendar.MINUTE, selectedMinute);
+                        tvEndTime.setText(String.format("Time: " + sdfTime.format(myCal.getTime())));
                     }
                 }, 12, 00, false);
                 mTimePicker.show();
@@ -113,8 +130,7 @@ public class CreatePostActivity extends AppCompatActivity {
         newAd.setUser(ParseUser.getCurrentUser());
         newAd.setTitle(etAdName.getText().toString());
         newAd.setDate(myCalendar.getTime());
-        newAd.setStartTime(etAdStartTime.getText().toString());
-        newAd.setEndTime(etAdEndTime.getText().toString());
+        newAd.setEndTime(tvEndTime.getText().toString());
         newAd.setAddress(etAdAddress.getText().toString());
         newAd.setDescription(etAdDesc.getText().toString());
         newAd.setRSVP(new ArrayList<Object>());
@@ -146,7 +162,7 @@ public class CreatePostActivity extends AppCompatActivity {
     private void updateTimeLabel() {
         String myFormatTime = "h:mm a"; //In which you need put here
         SimpleDateFormat sdfTime = new SimpleDateFormat(myFormatTime, Locale.US);
-;
-        tvDisplayTime.setText(String.format("Time: " + sdfTime.format(myCalendar.getTime())));
+        ;
+        tvStartTime.setText(String.format("Time: " + sdfTime.format(myCalendar.getTime())));
     }
 }
