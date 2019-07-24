@@ -42,6 +42,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView userNameTV;
     TextView emailTV;
     Button rsvpBT;
+    ImageView profImageIV;
     TextView attendingCount;
 
     @Override
@@ -60,18 +61,15 @@ public class DetailActivity extends AppCompatActivity {
         emailTV = findViewById(R.id.tvUserEmail);
         rsvpBT = findViewById(R.id.btRSVP);
         attendingCount = findViewById(R.id.tvAttendingCount);
+        profImageIV = findViewById(R.id.profile_image);
 
         //initialize button text to reflect user attendance status
-        attendingCount.setText( userCount+" people attending.");
         if(isUserRegistered()){
-            rsvpBT.setText("Un-RSVP");
-            flag_RSVP = true;
+            registerUser();
         }
         else{
-            rsvpBT.setText("RSVP");
-            flag_RSVP = false;
+            unRegisterUser();
         }
-
         rsvpBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,10 +81,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-
-        titleTV.setText(ad.getTitle());
-        descriptionTV.setText(ad.getDescription());
-
+        //set event image
         ParseFile imageFile = ad.getImage();
         String imageURL = null;
         try {
@@ -97,9 +92,10 @@ public class DetailActivity extends AppCompatActivity {
         Glide.with(getApplicationContext())
                 .load(imageURL)
                 .apply(new RequestOptions()
-                .placeholder(R.drawable.dog))
+                        .placeholder(R.drawable.ic_launcher_background))
                 .into(imageIV);
 
+        //sets event host details
         //need to use fetchIfNeeded, or else causes error
         try {
             userNameTV.setText(ad.getUser().fetchIfNeeded().getString("username"));
@@ -107,20 +103,39 @@ public class DetailActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         };
+
+        //set profile image and details
+        ParseFile profImageFile = ad.getUser().getParseFile("profileImage");
+        String profImageURL = null;
+        try {
+            profImageURL = profImageFile.getUrl();
+        } catch (NullPointerException e) {
+
+        }
+        Glide.with(getApplicationContext())
+                .load(profImageURL)
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.avatar))
+                .into(profImageIV);
+        titleTV.setText(ad.getTitle());
+        descriptionTV.setText(ad.getDescription());
     }
 
     //Registers/RSVP the user for the event
     private void registerUser() {
         ad.registerUser();
+        ad.saveInBackground();
         flag_RSVP = true;
         rsvpBT.setText("Un-RSVP");
         userCount  = ad.getRSVPCount();
         attendingCount.setText("See you there!");
+        //ad.saveInBackground();
     }
 
     //Un-Registers/RSVP the user for the event
     private void unRegisterUser() {
         ad.unRegisterUser();
+        ad.saveInBackground();
         flag_RSVP = false;
         rsvpBT.setText("RSVP");
         userCount  = ad.getRSVPCount();
