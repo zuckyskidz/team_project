@@ -18,12 +18,15 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -49,13 +52,12 @@ public class CreatePostActivity extends AppCompatActivity {
     public final static int PICK_PHOTO_CODE = 1046;
 
     EditText etAdName;
-    CalendarView cvAdDate;
     TextView tvDisplayDate;
     TextView tvStartTime;
     TextView tvEndTime;
     EditText etAdAddress;
     EditText etAdDesc;
-
+    ImageView ivPreview;
     final Calendar myCalendar = Calendar.getInstance();
     ParseFile photoFile;
 
@@ -84,6 +86,9 @@ public class CreatePostActivity extends AppCompatActivity {
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
         tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
         tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
+        ivPreview = (ImageView) findViewById(R.id.ivPreview);
+
+        ivPreview.setVisibility(View.GONE);
 
         tvDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,9 +215,15 @@ public class CreatePostActivity extends AppCompatActivity {
                     // Create the ParseFile
                     photoFile  = new ParseFile("picture_1.jpeg", image);
                     Toast.makeText(this, "Image Uploaded", Toast.LENGTH_SHORT).show();
-
+                    Glide.with(getApplicationContext())
+                            .load(photoFile.getUrl())
+                            .apply(new RequestOptions()
+                                    .placeholder(R.drawable.ic_launcher_background))
+                            .into(ivPreview);
+                    ivPreview.setVisibility(View.VISIBLE);
                 }
             }
         }
     }
+
 }
