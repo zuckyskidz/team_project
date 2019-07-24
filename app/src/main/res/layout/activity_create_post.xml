@@ -61,34 +61,23 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/etAdAddress" />
 
-                        <CalendarView
-                            android:id="@+id/cvAdDate"
+                        <TextView
+                            android:id="@+id/tvDateDisplay"
                             android:layout_width="match_parent"
-                            android:layout_height="341dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/etAdName" />
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:padding="10dp"
+                            android:text="Date: Select"
+                            android:textSize="25dp" />
 
-                        <EditText
-                            android:id="@+id/etAdStartTime"
+                        <TextView
+                            android:id="@+id/tvTimeDisplay"
                             android:layout_width="match_parent"
-                            android:layout_height="42dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            android:ems="10"
-                            android:hint="@string/start_time"
-                            android:inputType="time"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/cvAdDate" />
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:padding="10dp"
+                            android:text="Time: Select"
+                            android:textSize="25dp" />
 
                         <EditText
                             android:id="@+id/etEndTime"
