@@ -82,18 +82,12 @@ public class ListFragment extends Fragment {
                         Log.d("ListFragment", "Ad[" + i + "] = "
                                 + objects.get(i).getDescription()
                                 + "\nusername = " + objects.get(i).getUser().getUsername());
-                        //ads.add(objects.get(i));
-                        //adapter.notifyItemInserted(i);
                     }
-                    //adAdapter = new AdAdapter(getContext(), ads);
-                    //gvPostGrid.setAdapter(adAdapter);
                     ads.addAll(objects);
                     Log.d(TAG,"size of ads: " + ads.size());
                     Log.d(TAG,"size of objects: " + objects.size());
                     adapter = new RecAdAdapter(ads, getContext());
                     mRecyclerView.setAdapter(adapter);
-                    //Collections.reverse(ads);
-                    //swipeContainer.setRefreshing(false);
                 } else {
                     e.printStackTrace();
                 }

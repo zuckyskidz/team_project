@@ -56,6 +56,7 @@ dependencies {
     //for circle imageView
     implementation 'de.hdodenhof:circleimageview:2.1.0'
 
+    implementation "com.android.support:recyclerview-v7:28.0.0"
     implementation "com.google.android.gms:play-services-maps:$googlePlayVersion"
     implementation "com.google.android.gms:play-services-location:$googlePlayVersion"
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
