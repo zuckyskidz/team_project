@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -39,7 +40,7 @@ public class RecAdAdapter extends RecyclerView.Adapter<RecAdAdapter.MasonryView>
         @Override
         public void onClick(View v) {
             itemView.setOnClickListener(this);
-            //Toast.makeText(context, "Clicked!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Clicked!", Toast.LENGTH_LONG).show();
             int position = getAdapterPosition();
 
             Ad ad = mAds.get(position);
