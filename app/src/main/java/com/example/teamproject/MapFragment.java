@@ -19,6 +19,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
 
+    static final LatLng HAMBURG = new LatLng(53.558, 9.927);
+    static final LatLng KIEL = new LatLng(53.551, 9.993);
     GoogleMap mGoogleMap;
     MapView mMapView;
     View mView;
@@ -30,13 +32,39 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setContentView(R.layout.fragment_map);
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //inflate the layout for this fragment
+        //inflate the layout for\ this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
+
+////        mGoogleMap = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+//
+////        SupportMapFragment mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_map);
+////        mapFrag.getMapAsync(this);
+//
+//        Marker hamburg = mGoogleMap.addMarker(new MarkerOptions().position(HAMBURG)
+//                .title("Hamburg"));
+//        Marker kiel = mGoogleMap.addMarker(new MarkerOptions()
+//                .position(KIEL)
+//                .title("Kiel")
+//                .snippet("Kiel is cool")
+//                .icon(BitmapDescriptorFactory
+//                        .fromResource(R.drawable.ic_launcher_background)));
+//
+//        // Move the camera instantly to hamburg with a zoom of 15.
+//        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HAMBURG, 15));
+//
+//        // Zoom in, animating the camera.
+//        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+
+
         return mView;
     }
 
@@ -44,7 +72,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mMapView = (MapView) mView.findViewById(R.id.map);
+        mMapView = (MapView) mView.findViewById(R.id.mapView);
         if(mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
