@@ -106,7 +106,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 mTimePicker = new TimePickerDialog(CreatePostActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        myCalendar.set(Calendar.HOUR, selectedHour);
+                        myCalendar.set(Calendar.HOUR_OF_DAY, selectedHour);
                         myCalendar.set(Calendar.MINUTE, selectedMinute);
                         updateTimeLabel();
                     }
@@ -125,7 +125,7 @@ public class CreatePostActivity extends AppCompatActivity {
                         String myFormatTime = "h:mm a"; //In which you need put here
                         SimpleDateFormat sdfTime = new SimpleDateFormat(myFormatTime, Locale.US);
                         Calendar myCal = Calendar.getInstance();
-                        myCal.set(Calendar.HOUR, selectedHour);
+                        myCal.set(Calendar.HOUR_OF_DAY, selectedHour);
                         myCal.set(Calendar.MINUTE, selectedMinute);
                         tvEndTime.setText(String.format("Time: " + sdfTime.format(myCal.getTime())));
                     }
