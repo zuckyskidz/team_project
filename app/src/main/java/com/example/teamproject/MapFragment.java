@@ -27,6 +27,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,6 +45,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
 
     private LocationRequest mLocationRequest;
+
+    Location myLocation;
 
     private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
@@ -74,16 +78,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         fusedLocationClient = getFusedLocationProviderClient(getContext());
 
-//        Task<Location> location = fusedLocationClient.getLastLocation()
-//                .addOnSuccessListener(getContext(), new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        // Got last known location. In some rare situations this can be null.
-//                        if (location != null) {
-//                            Toast.makeText(getContext(), "Error: Could not get location", Toast.LENGTH_LONG);
-//                        }
-//                    }
-//                });
 
         startLocationUpdates();
 
@@ -98,9 +92,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
-            mMapView.getMapAsync((OnMapReadyCallback) getContext());
+            mMapView.getMapAsync(this);
 
         }
+
     }
 
     // Trigger new location updates at interval
@@ -149,6 +144,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Get last known recent location using new Google Play Services SDK (v11+)
         FusedLocationProviderClient locationClient = getFusedLocationProviderClient(getContext());
 
+        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         locationClient.getLastLocation()
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
@@ -180,8 +185,53 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(Liberty));
 
-        if(checkPermissions()) {
+
+        if (checkPermissions()) {
+            if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             googleMap.setMyLocationEnabled(true);
+        }
+
+//        Task<Location> location = fusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(getContext(), new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        // Got last known location. In some rare situations this can be null.
+//                        if (location != null) {
+//                            Toast.makeText(getContext(), "Error: Could not get location", Toast.LENGTH_LONG);
+//                        }
+//                    }
+//                });
+
+    getCurrentLocation();
+    }
+
+    void getCurrentLocation() {
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_pointer);
+
+        Location myLocation  = mGoogleMap.getMyLocation();
+        if(myLocation!=null)
+        {
+            double dLatitude = myLocation.getLatitude();
+            double dLongitude = myLocation.getLongitude();
+            Log.i("APPLICATION"," : "+dLatitude);
+            Log.i("APPLICATION"," : "+dLongitude);
+            mGoogleMap.addMarker(new MarkerOptions().position(
+                    new LatLng(dLatitude, dLongitude)).title("My Location").icon(icon));
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(dLatitude, dLongitude), 8));
+
+        }
+        else
+        {
+            Toast.makeText(getContext(), "Unable to fetch the current location", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -191,14 +241,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
-            requestPermissions();
+            //requestPermissions();
             return false;
         }
     }
 
-    private void requestPermissions() {
-        ActivityCompat.requestPermissions(getContext(),
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                REQUEST_FINE_LOCATION);
-    }
+//    private void requestPermissions() {
+//        ActivityCompat.requestPermissions(getContext(),
+//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                REQUEST_FINE_LOCATION);
+//
+//    }
 }
