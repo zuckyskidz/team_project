@@ -110,7 +110,7 @@ public class CreatePostActivity extends AppCompatActivity {
                         Calendar myCal = Calendar.getInstance();
                         myCal.set(Calendar.HOUR_OF_DAY, selectedHour);
                         myCal.set(Calendar.MINUTE, selectedMinute);
-                        tvEndTime.setText(String.format("Time: " + sdfTime.format(myCal.getTime())));
+                        tvEndTime.setText(String.format(sdfTime.format(myCal.getTime())));
                     }
                 }, 12, 00, false);
                 mTimePicker.show();
@@ -161,7 +161,7 @@ public class CreatePostActivity extends AppCompatActivity {
         String myFormatTime = "h:mm a"; //In which you need put here
         SimpleDateFormat sdfTime = new SimpleDateFormat(myFormatTime, Locale.US);
         ;
-        tvStartTime.setText(String.format("Time: " + sdfTime.format(myCalendar.getTime())));
+        tvStartTime.setText(String.format(sdfTime.format(myCalendar.getTime())));
     }
 
     public void uploadPhoto(View view) {

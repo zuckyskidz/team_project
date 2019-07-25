@@ -21,12 +21,30 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="55dp"
-                            android:gravity="center"
-                            android:text="Create Event"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="55dp"
+                                    android:layout_weight="6"
+                                    android:gravity="center"
+                                    android:text="Create Event"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+                                <ImageButton
+                                    android:id="@+id/imageButton"
+                                    android:layout_width="0dp"
+                                    android:layout_height="35dp"
+                                    android:layout_gravity="center|right"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/checkmark"
+                                    android:onClick="submitAd"
+                                    android:padding="2dp" />
+
+                        </LinearLayout>
 
                         <EditText
                             android:id="@+id/etAdName"
@@ -71,30 +89,44 @@
                             android:textSize="25dp" />
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:weightSum="2">
 
                                 <TextView
                                     android:id="@+id/tvTimeDisplay"
-                                    android:layout_width="200dp"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="left"
                                     android:layout_margin="8dp"
-                                    android:gravity="left"
+                                    android:gravity="right"
+                                    android:hint="@string/start_time"
                                     android:padding="10dp"
-                                    android:text="Start time: "
+                                    android:text="@string/start_time"
                                     android:textSize="20dp" />
 
                                 <TextView
+                                    android:id="@+id/textView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:gravity="center"
+                                    android:text="-"
+                                    android:textSize="24sp" />
+
+                                <TextView
                                     android:id="@+id/tvTimeDisplay2"
-                                    android:layout_width="200dp"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="right"
                                     android:layout_margin="8dp"
                                     android:gravity="right|left"
+                                    android:hint="@string/end_time"
                                     android:padding="10dp"
-                                    android:text="End time:"
+                                    android:text="@string/end_time"
                                     android:textSize="20dp" />
                         </LinearLayout>
 
@@ -121,23 +153,17 @@
                             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
                         <Button
-                            android:id="@+id/button"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:onClick="uploadPhoto"
-                            android:text="Upload a photo" />
-
-                        <Button
                             android:id="@+id/btnAddAd"
-                            android:layout_width="wrap_content"
+                            android:layout_width="112dp"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:layout_marginStart="160dp"
                             android:layout_marginLeft="160dp"
                             android:layout_marginTop="36dp"
                             android:layout_marginEnd="163dp"
                             android:layout_marginRight="163dp"
-                            android:onClick="submitAd"
-                            android:text="@string/add_ad"
+                            android:onClick="uploadPhoto"
+                            android:text="Upload Event Photo"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="1.0"
                             app:layout_constraintStart_toStartOf="parent"

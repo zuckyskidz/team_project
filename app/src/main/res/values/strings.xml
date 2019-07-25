@@ -12,6 +12,6 @@
     <string name="ad_time">Time</string>
     <string name="ad_date">Date</string>
     <string name="ad_name">Event Title</string>
-    <string name="end_time">End TIme</string>
+    <string name="end_time">End Time</string>
     <string name="start_time">Start Time</string>
 </resources>
