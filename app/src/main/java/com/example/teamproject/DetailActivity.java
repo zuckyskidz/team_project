@@ -129,7 +129,7 @@ public class DetailActivity extends AppCompatActivity {
         locationTV.setText(ad.getLocation());
 
         Date date = ad.getDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, yyyy");
         dateTV.setText(sdf.format(date));
 
         SimpleDateFormat stf = new SimpleDateFormat("h:mm a");

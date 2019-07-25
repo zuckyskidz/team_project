@@ -151,7 +151,7 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private void updateDateLabel() {
-        String myFormatDate = "EEE, d MMM yyyy"; //In which you need put here
+        String myFormatDate = "EEE, MMM d, yyyy"; //In which you need put here
         SimpleDateFormat sdfDATE = new SimpleDateFormat(myFormatDate, Locale.US);
 
         tvDisplayDate.setText("Date: " + sdfDATE.format(myCalendar.getTime()));
