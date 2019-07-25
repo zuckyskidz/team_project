@@ -74,7 +74,7 @@ public class Ad extends ParseObject {
     public String getAddress() { return getString(KEY_LOCATION); }
     public void setAddress(String address) { put(KEY_LOCATION, address); }
 
-    public String getDate() { return getString(KEY_DATE); }
+    public Date getDate() { return getDate(KEY_DATE); }
     public void setDate(Date date) { put(KEY_DATE, date); }
 
     public String getStartTime() { return getString(KEY_STARTTIME); }

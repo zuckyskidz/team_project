@@ -149,13 +149,13 @@
                         <ImageView
                             android:id="@+id/ivPreview"
                             android:layout_width="match_parent"
-                            android:layout_height="200dp"
+                            android:layout_height="230dp"
                             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
                         <Button
                             android:id="@+id/btnAddAd"
-                            android:layout_width="112dp"
-                            android:layout_height="wrap_content"
+                            android:layout_width="205dp"
+                            android:layout_height="39dp"
                             android:layout_gravity="center"
                             android:layout_marginStart="160dp"
                             android:layout_marginLeft="160dp"

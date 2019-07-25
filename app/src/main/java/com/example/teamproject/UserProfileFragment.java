@@ -50,10 +50,18 @@ public class UserProfileFragment extends Fragment {
     public UserProfileFragment() {
         //TODO update lists when user RSVP from details page and then goes back to this fragment
     }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            Log.i(TAG, "HERE");
+            getAttendingEvents();
+            getHostingEvents();
+        }
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Log.i(TAG, "HERE");
         currentUser = ParseUser.getCurrentUser();
 
         super.onViewCreated(view, savedInstanceState);
@@ -75,8 +83,6 @@ public class UserProfileFragment extends Fragment {
         rvHosting = (RecyclerView) view.findViewById(R.id.rvHostingEvents);
         rvAttending = (RecyclerView) view.findViewById(R.id.rvAttendingEvents);
 
-        getAttendingEvents();
-        getHostingEvents();
         //adAdapter = new AdAdapter(getContext(), attendingEvents);
 //        gvPostGrid.setAdapter(adAdapter);
 

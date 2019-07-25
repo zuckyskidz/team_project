@@ -21,9 +21,11 @@ import com.parse.ParseUser;
 import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
@@ -38,6 +40,9 @@ public class DetailActivity extends AppCompatActivity {
     //TODO - add location and dates
     ImageView imageIV;
     TextView titleTV;
+    TextView locationTV;
+    TextView dateTV;
+    TextView timeTV;
     TextView descriptionTV;
     TextView userNameTV;
     TextView emailTV;
@@ -56,6 +61,9 @@ public class DetailActivity extends AppCompatActivity {
 
         imageIV = findViewById(R.id.ivImage);
         titleTV = findViewById(R.id.tvTitle);
+        locationTV = findViewById(R.id.tvLocation);
+        dateTV = findViewById(R.id.tvDate);
+        timeTV = findViewById(R.id.tvTime);
         descriptionTV = findViewById(R.id.tvDescription);
         userNameTV = findViewById(R.id.tvUserName);
         emailTV = findViewById(R.id.tvUserEmail);
@@ -118,6 +126,15 @@ public class DetailActivity extends AppCompatActivity {
                         .placeholder(R.drawable.avatar))
                 .into(profImageIV);
         titleTV.setText(ad.getTitle());
+        locationTV.setText(ad.getLocation());
+
+        Date date = ad.getDate();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy");
+        dateTV.setText(sdf.format(date));
+
+        SimpleDateFormat stf = new SimpleDateFormat("h:mm a");
+        timeTV.setText(stf.format(date) + " - " + ad.getEndTime());
+
         descriptionTV.setText(ad.getDescription());
     }
 
