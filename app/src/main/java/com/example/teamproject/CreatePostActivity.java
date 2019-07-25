@@ -5,26 +5,17 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
@@ -32,36 +23,18 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import org.w3c.dom.Text;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
-
-import static com.parse.Parse.getApplicationContext;
 
 public class CreatePostActivity extends AppCompatActivity {
 
     private static final String TAG = "CreatePostActivity";
-    public final static int PICK_PHOTO_CODE = 1046;
-
-    EditText etAdName;
-    TextView tvDisplayDate;
-    TextView tvStartTime;
-    TextView tvEndTime;
-    EditText etAdAddress;
-    EditText etAdDesc;
-    ImageView ivPreview;
-    final Calendar myCalendar = Calendar.getInstance();
-    ParseFile photoFile;
-
-
+    private final static int PICK_PHOTO_CODE = 1046;
+    private final Calendar myCalendar = Calendar.getInstance();
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -74,6 +47,16 @@ public class CreatePostActivity extends AppCompatActivity {
         }
 
     };
+
+    EditText etAdName;
+    TextView tvDisplayDate;
+    TextView tvStartTime;
+    TextView tvEndTime;
+    EditText etAdAddress;
+    EditText etAdDesc;
+    ImageView ivPreview;
+    ParseFile photoFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
