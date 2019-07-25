@@ -59,6 +59,12 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
+    public void onResume() {
+        super.onResume();
+        getAttendingEvents();
+        getHostingEvents();
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         currentUser = ParseUser.getCurrentUser();
