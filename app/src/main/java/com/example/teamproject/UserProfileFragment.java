@@ -50,14 +50,6 @@ public class UserProfileFragment extends Fragment {
     public UserProfileFragment() {
         //TODO update lists when user RSVP from details page and then goes back to this fragment
     }
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            getAttendingEvents();
-            getHostingEvents();
-        }
-    }
 
     public void onResume() {
         super.onResume();
