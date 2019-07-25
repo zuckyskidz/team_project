@@ -30,6 +30,7 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -74,7 +75,9 @@ public class CreatePostActivity extends AppCompatActivity {
         }
     };
 
-    //String MAP_KEY = getString(R.string.google_maps_api_key);
+    private PlacesClient placesClient;
+
+//    String MAP_Key = getString(R.string.google_maps_api_key);
 
     EditText etAdName;
     CalendarView cvAdDate;
@@ -90,6 +93,8 @@ public class CreatePostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
+        // Retrieve a PlacesClient (previously initialized - see MainActivity)
+        placesClient = Places.createClient(this);
 
         etAdName = (EditText) findViewById(R.id.etAdName);
         cvAdDate = (CalendarView) findViewById(R.id.cvAdDate);
@@ -98,8 +103,8 @@ public class CreatePostActivity extends AppCompatActivity {
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
         mSearchText = (AutoCompleteTextView) findViewById(R.id.atvAddress);
 
-        grabPlace();
 
+        grabPlace();
     }
 
     public void grabPlace() {
@@ -110,7 +115,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(getApplicationContext(), "Can't find addresses right now! Please Check back soon!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Bad Connection! Can't find addresses right now! Please Check back soon!", Toast.LENGTH_LONG).show();
                     }
                 })
                 .build();
