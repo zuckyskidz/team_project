@@ -82,22 +82,6 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/etAdStartTime" />
 
-                        <Button
-                            android:id="@+id/btnLocation"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="160dp"
-                            android:layout_marginLeft="160dp"
-                            android:layout_marginTop="36dp"
-                            android:layout_marginEnd="163dp"
-                            android:layout_marginRight="163dp"
-                            android:onClick="grabPlace"
-                            android:text="@string/pick_a_location"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/etEndTime" />
-
                         <!--<EditText-->
                             <!--android:id="@+id/etAdAddress"-->
                             <!--android:layout_width="match_parent"-->
@@ -114,6 +98,12 @@
                             <!--app:layout_constraintStart_toStartOf="parent"-->
                             <!--app:layout_constraintTop_toBottomOf="@+id/etEndTime" />-->
 
+                        <AutoCompleteTextView
+                            android:id="@+id/atvAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/ad_address"/>
+
                         <EditText
                             android:id="@+id/etAdDesc"
                             android:layout_width="match_parent"
@@ -129,7 +119,7 @@
                             android:inputType="textMultiLine"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/btnLocation" />
+                            app:layout_constraintTop_toBottomOf="@+id/atvAddress" />
 
                         <Button
                             android:id="@+id/btnAddAd"
@@ -149,4 +139,5 @@
 
                 </LinearLayout>
         </ScrollView>
+
 </android.support.constraint.ConstraintLayout>
