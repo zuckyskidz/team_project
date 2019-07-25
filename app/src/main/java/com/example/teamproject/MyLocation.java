@@ -8,33 +8,15 @@ import android.os.Bundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MyLocation extends Location{
+public class MyLocation{
     Timer timer1;
     LocationManager lm;
     LocationResult locationResult;
     boolean gps_enabled=false;
     boolean network_enabled=false;
 
-//    public MyLocation {
-//        //empty constructor
-//    }
+    public MyLocation() {
 
-
-    public MyLocation(String provider, Timer timer1, LocationManager lm, LocationResult locationResult, boolean gps_enabled, boolean network_enabled, LocationListener locationListenerGps, LocationListener locationListenerNetwork) {
-        super(provider);
-        this.timer1 = timer1;
-        this.lm = lm;
-        this.locationResult = locationResult;
-        this.gps_enabled = gps_enabled;
-        this.network_enabled = network_enabled;
-        this.locationListenerGps = locationListenerGps;
-        this.locationListenerNetwork = locationListenerNetwork;
-    }
-
-
-    public MyLocation(Location l, Timer timer1) {
-        super(l);
-        this.timer1 = timer1;
     }
 
     public boolean getLocation(Context context, LocationResult result)
@@ -57,7 +39,7 @@ public class MyLocation extends Location{
         if(network_enabled)
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
         timer1=new Timer();
-        timer1.schedule(new GetLastLocation(), 20000);
+        timer1.schedule(new GetLastLocation(), 60000);
         return true;
     }
 

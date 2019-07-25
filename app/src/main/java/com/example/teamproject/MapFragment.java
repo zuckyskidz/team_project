@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.common.api.internal.TaskApiCall;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -18,26 +20,29 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback{
 
     GoogleMap mGoogleMap;
     MapView mMapView;
     View mView;
+    private FusedLocationProviderClient fusedLocationClient;
 
-    LocationResult locationResult = new LocationResult(){
-        @Override
-        public void gotLocation(Location location){
-            //Got the location!
-        }
-    };
-    MyLocation myLocation = new MyLocation();
-    myLocation.getLocation(this, locationResult);
-
-
-    public MapFragment() {
-        //Required empty public constructor
-    }
+//    LocationResult locationResult = new LocationResult(){
+//        @Override
+//        public void gotLocation(Location location){
+//            //Got the location!
+//        }
+//    };
+//
+//    MyLocation myLocation = new MyLocation();
+//    myLocation.getLocation(this, locationResult);
+//
+//    public MapFragment() {
+//        //Required empty public constructor
+//    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +55,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         //inflate the layout for\ this fragment
         mView = inflater.inflate(R.layout.fragment_map, container, false);
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+
+//        Task task = fusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(getContext(), new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        // Got last known location. In some rare situations this can be null.
+//                        if (location != null) {
+//                            // Logic to handle location object
+//                        }
+//                    }
+//                });
 
         return mView;
     }
@@ -64,7 +81,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
             mMapView.onResume();
             mMapView.getMapAsync(this);
 
-        }    }
+        }
+
+
+
+
+
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -77,6 +100,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         CameraPosition Liberty = CameraPosition.builder().target(new LatLng(40.689247, -74.044502)).zoom(16).bearing(0).tilt(45).build();
 
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(Liberty));
+
+
 
     }
 }
