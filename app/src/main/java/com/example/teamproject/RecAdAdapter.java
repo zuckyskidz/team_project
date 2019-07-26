@@ -27,10 +27,6 @@ public class RecAdAdapter extends RecyclerView.Adapter<RecAdAdapter.MasonryView>
     private static List<Ad> mAds;
     private Context context;
 
-    public int getAdapterPosition() {
-        return getAdapterPosition();
-    }
-
     class MasonryView extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imageView;
         TextView textView;
