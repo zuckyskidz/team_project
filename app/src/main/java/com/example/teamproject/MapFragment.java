@@ -50,20 +50,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
-
-//    LocationResult locationResult = new LocationResult(){
-//        @Override
-//        public void gotLocation(Location location){
-//            //Got the location!
-//        }
-//    };
-//
-//    MyLocation myLocation = new MyLocation();
-//    myLocation.getLocation(this, locationResult);
-//
-//    public MapFragment() {
-//        //Required empty public constructor
-//    }
+    private int LOCATION_REQUEST_ID = 2222;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -200,37 +187,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             googleMap.setMyLocationEnabled(true);
         }
 
-//        Task<Location> location = fusedLocationClient.getLastLocation()
-//                .addOnSuccessListener(getContext(), new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        // Got last known location. In some rare situations this can be null.
-//                        if (location != null) {
-//                            Toast.makeText(getContext(), "Error: Could not get location", Toast.LENGTH_LONG);
-//                        }
-//                    }
-//                });
-
-    getCurrentLocation();
+        getCurrentLocation();
     }
 
     void getCurrentLocation() {
-        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_pointer);
+     //   BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_pointer);
 
-        Location myLocation  = mGoogleMap.getMyLocation();
-        if(myLocation!=null)
-        {
+        //TODO – uncomment this and figure out how to replace the deprecated function
+        Location myLocation = mGoogleMap.getMyLocation();
+        if (myLocation != null) {
             double dLatitude = myLocation.getLatitude();
             double dLongitude = myLocation.getLongitude();
-            Log.i("APPLICATION"," : "+dLatitude);
-            Log.i("APPLICATION"," : "+dLongitude);
+            Log.i("APPLICATION", " : " + dLatitude);
+            Log.i("APPLICATION", " : " + dLongitude);
             mGoogleMap.addMarker(new MarkerOptions().position(
-                    new LatLng(dLatitude, dLongitude)).title("My Location").icon(icon));
+                    new LatLng(dLatitude, dLongitude)).title("My Location"));
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(dLatitude, dLongitude), 8));
 
-        }
-        else
-        {
+        } else {
             Toast.makeText(getContext(), "Unable to fetch the current location", Toast.LENGTH_SHORT).show();
         }
 
@@ -241,15 +215,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
-            //requestPermissions();
+            requestPermissions(
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_REQUEST_ID);
             return false;
         }
     }
-
-//    private void requestPermissions() {
-//        ActivityCompat.requestPermissions(getContext(),
-//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                REQUEST_FINE_LOCATION);
-//
-//    }
 }
