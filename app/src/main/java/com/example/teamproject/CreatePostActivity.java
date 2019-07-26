@@ -1,169 +1,165 @@
 package com.example.teamproject;
 
-import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.support.annotation.NonNull;
+import android.graphics.Bitmap;
+import android.graphics.ColorFilter;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
-
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
-//import com.google.android.gms.common.ConnectionResult;
-//import com.google.android.gms.common.api.GoogleApiClient;
-//import com.google.android.gms.common.api.PendingResult;
-//import com.google.android.gms.common.api.ResultCallback;
-//import com.google.android.gms.location.places.AutocompletePrediction;
-//import com.google.android.gms.location.places.Place;
-//import com.google.android.gms.location.places.PlaceBuffer;
-//import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-//import com.google.android.libraries.places.api.net.PlacesClient;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class CreatePostActivity extends AppCompatActivity {
 
-    String TAG = "CreatePostActivity";
-    private static final String FINE_LOCATION = android.Manifest.permission.ACCESS_FINE_LOCATION;
-    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final float DEFAULT_ZOOM = 15f;
-    private static final int PLACE_PICKER_REQUEST = 1;
-    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
-            new LatLng(-40, -168), new LatLng(71, 136));
-//    private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
-//        @Override
-//        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//            final AutocompletePrediction item = mPlaceAutocompleteAdapter.getItem(i);
-//            final String placeId = item.getPlaceId();
-//
-//            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-//                    .getPlaceById(mGoogleApiClient, placeId);
-//            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-//        }
-//    };
-//    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
-//        @Override
-//        public void onResult(@NonNull PlaceBuffer places) {
-//            if(!places.getStatus().isSuccess()){
-//                Log.d(TAG, "onResult: Place query did not complete successfully: " + places.getStatus().toString());
-//                places.release();
-//                return;
-//            }
-//            final Place place = places.get(0);
-//
-//            places.release();
-//        }
-//    };
-//
-//    private PlacesClient placesClient;
+    private static final String TAG = "CreatePostActivity";
+    private final static int PICK_PHOTO_CODE = 1046;
+    private final Calendar myCalendar = Calendar.getInstance();
+    final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateDateLabel();
+        }
 
-//    String MAP_Key = getString(R.string.google_maps_api_key);
+    };
 
     EditText etAdName;
-    CalendarView cvAdDate;
-    EditText etAdStartTime;
-    EditText etAdEndTime;
+    TextView tvDisplayDate;
+    TextView tvStartTime;
+    TextView tvEndTime;
+    EditText etAdAddress;
     EditText etAdDesc;
-    private AutoCompleteTextView mSearchText;
+    ImageView ivPreview;
+    ParseFile photoFile;
+    ImageButton btnSubmit;
 
-//    private GoogleApiClient mGoogleApiClient;
-//    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
-        // Retrieve a PlacesClient (previously initialized - see MainActivity)
-//        placesClient = Places.createClient(this);
 
         etAdName = (EditText) findViewById(R.id.etAdName);
-//        cvAdDate = (CalendarView) findViewById(R.id.cvAdDate);
-//        etAdStartTime = (EditText) findViewById(R.id.etAdStartTime);
-//        etAdEndTime = (EditText) findViewById(R.id.etEndTime);
+        tvEndTime = (TextView) findViewById(R.id.tvTimeDisplay2);
+        etAdAddress = (EditText) findViewById(R.id.etAdAddress);
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
-//        mSearchText = (AutoCompleteTextView) findViewById(R.id.atvAddress);
+        tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
+        tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
+        ivPreview = (ImageView) findViewById(R.id.ivPreview);
+        btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
+
+        ivPreview.setVisibility(View.GONE);
+
+        tvDisplayDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(CreatePostActivity.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        tvStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(CreatePostActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        myCalendar.set(Calendar.HOUR_OF_DAY, selectedHour);
+                        myCalendar.set(Calendar.MINUTE, selectedMinute);
+                        updateTimeLabel();
+                    }
+                }, 12, 00, false);
+                mTimePicker.show();
+            }
+        });
+
+        tvEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(CreatePostActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        String myFormatTime = "h:mm a"; //In which you need put here
+                        SimpleDateFormat sdfTime = new SimpleDateFormat(myFormatTime, Locale.US);
+                        Calendar myCal = Calendar.getInstance();
+                        myCal.set(Calendar.HOUR_OF_DAY, selectedHour);
+                        myCal.set(Calendar.MINUTE, selectedMinute);
+                        tvEndTime.setText(String.format(sdfTime.format(myCal.getTime())));
+                    }
+                }, 12, 00, false);
+                mTimePicker.show();
+            }
+        });
 
 
-//        grabPlace();
     }
-
-//    public void grabPlace() {
-//        mGoogleApiClient = new GoogleApiClient
-//                .Builder(this)
-//                .addApi(Places.GEO_DATA_API)
-//                .addApi(Places.PLACE_DETECTION_API)
-//                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-//                    @Override
-//                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//                        Toast.makeText(getApplicationContext(), "Bad Connection! Can't find addresses right now! Please Check back soon!", Toast.LENGTH_LONG).show();
-//                    }
-//                })
-//                .build();
-//
-//        mSearchText.setOnItemClickListener(mAutocompleteClickListener);
-//
-//        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient,
-//                LAT_LNG_BOUNDS, null);
-//
-//        mSearchText.setAdapter(mPlaceAutocompleteAdapter);
-//
-//        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-//                if(actionId == EditorInfo.IME_ACTION_SEARCH
-//                        || actionId == EditorInfo.IME_ACTION_DONE
-//                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-//                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
-//
-//                    //execute our method for searching
-//                    geoLocate();
-//                }
-//
-//                return false;
-//            }
-//        });
-//    }
 
     public void submitAd(View view) {
         Log.d(TAG, "Posting...");
         Ad newAd = new Ad();
-        newAd.setUser(ParseUser.getCurrentUser());
-        newAd.setTitle(etAdName.getText().toString());
-        newAd.setDate(new Date(cvAdDate.getDate() * 1000));
-        newAd.setStartTime(etAdStartTime.getText().toString());
-        newAd.setEndTime(etAdEndTime.getText().toString());
-        newAd.setDescription(etAdDesc.getText().toString());
-        newAd.setRSVP(new ArrayList<Object>());
+        if(makeSurePostable()) {
+            newAd = new Ad();
+            newAd.setUser(ParseUser.getCurrentUser());
+            newAd.setTitle(etAdName.getText().toString());
+            newAd.setDate(myCalendar.getTime());
+            newAd.setEndTime(tvEndTime.getText().toString());
+            newAd.setAddress(etAdAddress.getText().toString());
+            newAd.setDescription(etAdDesc.getText().toString());
+            newAd.setRSVP(new ArrayList<Object>());
+            newAd.setImage(photoFile);
+        }
+        else{
+            Toast.makeText(CreatePostActivity.this, "Missing informtaion.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        postAd(newAd);
+    }
 
+    private void postAd(Ad newAd) {
         newAd.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
+                    Log.i(TAG, "Posting successful!");
                     Toast.makeText(getApplicationContext(), "Posting successful!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(CreatePostActivity.this, HomeFeedActivity.class);
                     startActivity(intent);
                     finish();
+                    return;
                 } else {
+                    Log.i(TAG, "FAILED");
                     Toast.makeText(getApplicationContext(), "Posting Failed!", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                     return;
@@ -172,25 +168,94 @@ public class CreatePostActivity extends AppCompatActivity {
         });
     }
 
-    private void geoLocate(){
-        Log.d(TAG, "geoLocate: geolocating");
-
-        String searchString = mSearchText.getText().toString();
-
-        Geocoder geocoder = new Geocoder(CreatePostActivity.this);
-        List<Address> list = new ArrayList<>();
-        try{
-            list = geocoder.getFromLocationName(searchString, 1);
-        }catch (IOException e){
-            Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
+    private boolean makeSurePostable() {
+        if(etAdName.getText().equals("")) {
+            Log.i(TAG, "title missing");
+            return false;
         }
+        if (tvDisplayDate.getText().equals(R.string.ad_date)){
+            Log.i(TAG, "date missing");
+            return false;
+        }
+        if(tvEndTime.getText().equals(R.string.end_time)){
+            Log.i(TAG, "end time missing");
+            return false;
+        }
+        if(tvStartTime.getText().equals(R.string.start_time)){
+            Log.i(TAG, "end time missing");
+            return false;
+        }
+        if(etAdAddress.getText().equals("")){
+            Log.i(TAG, "address missing");
+            return false;
+        }
+        if(etAdDesc.getText().equals("")){
+            Log.i(TAG, "description missing");
+            return false;
+        }
+        if(photoFile == null){
+            Log.i(TAG, "photo missing");
+            return false;
+        }
+        return true;
+    }
 
-        if(list.size() > 0){
-            Address address = list.get(0);
+    private void updateDateLabel() {
+        String myFormatDate = "EEE, MMM d, yyyy"; //In which you need put here
+        SimpleDateFormat sdfDATE = new SimpleDateFormat(myFormatDate, Locale.US);
 
-            Log.d(TAG, "geoLocate: found a location: " + address.toString());
-            //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
+        tvDisplayDate.setText(sdfDATE.format(myCalendar.getTime()));
+    }
 
+    private void updateTimeLabel() {
+        String myFormatTime = "h:mm a"; //In which you need put here
+        SimpleDateFormat sdfTime = new SimpleDateFormat(myFormatTime, Locale.US);
+        ;
+        tvStartTime.setText(String.format(sdfTime.format(myCalendar.getTime())));
+    }
+
+    public void uploadPhoto(View view) {
+        // Create intent for picking a photo from the gallery
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+        // So as long as the result is not null, it's safe to use the intent.
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            // Bring up gallery to select a photo
+            startActivityForResult(intent, PICK_PHOTO_CODE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_PHOTO_CODE) {
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
+                    Uri photoUri = data.getData();
+                    // Do something with the photo based on Uri
+                    Bitmap selectedImage = null;
+                    try {
+                        selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    // Compress image to lower quality scale 1 - 100
+                    selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] image = stream.toByteArray();
+
+                    // Create the ParseFile
+                    photoFile  = new ParseFile("picture_1.jpeg", image);
+                    Toast.makeText(this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+                    Glide.with(getApplicationContext())
+                            .load(image)
+                            .apply(new RequestOptions()
+                                    .placeholder(R.drawable.ic_launcher_background))
+                            .into(ivPreview);
+                    ivPreview.setVisibility(View.VISIBLE);
+                }
+            }
         }
     }
 
