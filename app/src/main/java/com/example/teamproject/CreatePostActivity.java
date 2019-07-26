@@ -121,33 +121,72 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     public void submitAd(View view) {
-        Log.d("CreatePostActivity", "Posting...");
+        Log.d(TAG, "Posting...");
         Ad newAd = new Ad();
-
-        newAd.setUser(ParseUser.getCurrentUser());
-        newAd.setTitle(etAdName.getText().toString());
-        newAd.setDate(myCalendar.getTime());
-        newAd.setEndTime(tvEndTime.getText().toString());
-        newAd.setAddress(etAdAddress.getText().toString());
-        newAd.setDescription(etAdDesc.getText().toString());
-        newAd.setRSVP(new ArrayList<Object>());
-        newAd.setImage(photoFile);
-
+        if(makeSurePostable()) {
+            newAd = new Ad();
+            newAd.setUser(ParseUser.getCurrentUser());
+            newAd.setTitle(etAdName.getText().toString());
+            newAd.setDate(myCalendar.getTime());
+            newAd.setEndTime(tvEndTime.getText().toString());
+            newAd.setAddress(etAdAddress.getText().toString());
+            newAd.setDescription(etAdDesc.getText().toString());
+            newAd.setRSVP(new ArrayList<Object>());
+            newAd.setImage(photoFile);
+        }
+        else{
+            Toast.makeText(CreatePostActivity.this, "Missing informtaion.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         newAd.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
+                    Log.i(TAG, "Posting successful!");
                     Toast.makeText(getApplicationContext(), "Posting successful!", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(CreatePostActivity.this, HomeFeedActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
+                    Log.i(TAG, "FAILED");
                     Toast.makeText(getApplicationContext(), "Posting Failed!", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                     return;
                 }
             }
         });
+    }
+
+    private boolean makeSurePostable() {
+        if(etAdName.getText().equals("")) {
+            Log.i(TAG, "title missing");
+            return false;
+        }
+        if (myCalendar.getTime() == null){
+            Log.i(TAG, "date missing");
+            return false;
+        }
+        if(tvEndTime.getText().equals(R.string.end_time)){
+            Log.i(TAG, "end time missing");
+            return false;
+        }
+        if(tvStartTime.getText().equals(R.string.start_time)){
+            Log.i(TAG, "end time missing");
+            return false;
+        }
+        if(etAdAddress.getText().equals("")){
+            Log.i(TAG, "address missing");
+            return false;
+        }
+        if(etAdDesc.getText().equals("")){
+            Log.i(TAG, "description missing");
+            return false;
+        }
+        if(photoFile == null){
+            Log.i(TAG, "photo missing");
+            return false;
+        }
+        return true;
     }
 
     private void updateDateLabel() {

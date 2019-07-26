@@ -9,9 +9,8 @@
     <string name="ad_address">Location</string>
     <string name="ad_description">Description</string>
     <string name="add_ad">Create</string>
-    <string name="ad_time">Time</string>
-    <string name="ad_date">Date</string>
-    <string name="ad_name">Event Title</string>
+    <string name="ad_date">Date: Select</string>
+    <string name="ad_name">Title</string>
     <string name="end_time">End Time</string>
     <string name="start_time">Start Time</string>
 </resources>
