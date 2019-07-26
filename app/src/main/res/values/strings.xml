@@ -8,7 +8,6 @@
 
     <string name="ad_address">Location</string>
     <string name="ad_description">Description</string>
-    <string name="add_ad">Create</string>
     <string name="ad_date">Date: Select</string>
     <string name="ad_name">Title</string>
     <string name="end_time">End Time</string>

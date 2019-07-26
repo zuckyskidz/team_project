@@ -35,7 +35,7 @@
                                     android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
                                 <ImageButton
-                                    android:id="@+id/imageButton"
+                                    android:id="@+id/btnSubmit"
                                     android:layout_width="0dp"
                                     android:layout_height="35dp"
                                     android:layout_gravity="center|right"
@@ -85,7 +85,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="8dp"
                             android:padding="10dp"
-                            android:text="Date: Select"
+                            android:text="@string/ad_date"
                             android:textSize="25dp" />
 
                         <LinearLayout

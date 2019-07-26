@@ -4,14 +4,18 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.ColorFilter;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -56,6 +60,7 @@ public class CreatePostActivity extends AppCompatActivity {
     EditText etAdDesc;
     ImageView ivPreview;
     ParseFile photoFile;
+    ImageButton btnSubmit;
 
 
     @Override
@@ -70,6 +75,7 @@ public class CreatePostActivity extends AppCompatActivity {
         tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
         tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
         ivPreview = (ImageView) findViewById(R.id.ivPreview);
+        btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
 
         ivPreview.setVisibility(View.GONE);
 
@@ -138,6 +144,10 @@ public class CreatePostActivity extends AppCompatActivity {
             Toast.makeText(CreatePostActivity.this, "Missing informtaion.", Toast.LENGTH_SHORT).show();
             return;
         }
+        postAd(newAd);
+    }
+
+    private void postAd(Ad newAd) {
         newAd.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -147,6 +157,7 @@ public class CreatePostActivity extends AppCompatActivity {
                     Intent intent = new Intent(CreatePostActivity.this, HomeFeedActivity.class);
                     startActivity(intent);
                     finish();
+                    return;
                 } else {
                     Log.i(TAG, "FAILED");
                     Toast.makeText(getApplicationContext(), "Posting Failed!", Toast.LENGTH_LONG).show();
@@ -162,7 +173,7 @@ public class CreatePostActivity extends AppCompatActivity {
             Log.i(TAG, "title missing");
             return false;
         }
-        if (myCalendar.getTime() == null){
+        if (tvDisplayDate.getText().equals(R.string.ad_date)){
             Log.i(TAG, "date missing");
             return false;
         }
@@ -193,7 +204,7 @@ public class CreatePostActivity extends AppCompatActivity {
         String myFormatDate = "EEE, MMM d, yyyy"; //In which you need put here
         SimpleDateFormat sdfDATE = new SimpleDateFormat(myFormatDate, Locale.US);
 
-        tvDisplayDate.setText("Date: " + sdfDATE.format(myCalendar.getTime()));
+        tvDisplayDate.setText(sdfDATE.format(myCalendar.getTime()));
     }
 
     private void updateTimeLabel() {
