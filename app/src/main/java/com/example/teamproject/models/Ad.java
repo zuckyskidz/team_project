@@ -95,7 +95,7 @@ public class Ad extends ParseObject {
     //add user to RSVP List
     //adds to User's list of attendingEvents
     public void registerUser() {
-        ParseUser.getCurrentUser().addUnique("attendingEvents", this.getObjectId());
+        ParseUser.getCurrentUser().addUnique("attendingEvents", this);
         ParseUser.getCurrentUser().saveInBackground();
         this.addUnique("rsvp", ParseUser.getCurrentUser());
         this.saveInBackground();
@@ -104,7 +104,7 @@ public class Ad extends ParseObject {
     //removes user from RSVP List
     //removes from User's list of attendingEvents
     public void unRegisterUser() {
-        ParseUser.getCurrentUser().removeAll("attendingEvents", Collections.singleton(this.getObjectId()));
+        ParseUser.getCurrentUser().removeAll("attendingEvents", Collections.singleton(this));
         ParseUser.getCurrentUser().saveInBackground();
         this.removeAll("rsvp", Collections.singleton(ParseUser.getCurrentUser()));
         this.saveInBackground();
