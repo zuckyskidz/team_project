@@ -42,6 +42,14 @@ public class ListFragment extends Fragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            grabAds();
+        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -51,10 +59,9 @@ public class ListFragment extends Fragment {
         gvPostGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Intent i = new Intent(getActivity(), DetailActivity.class);
-                //serialize the movie using parceler, use its short name as a key
+                Intent i = new Intent(getContext(), DetailActivity.class);
                 i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ads[position]));
-                startActivity(i);
+                getContext().startActivity(i);
             }
         });
 

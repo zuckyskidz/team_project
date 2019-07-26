@@ -21,10 +21,35 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="55dp"
+                                    android:layout_weight="6"
+                                    android:gravity="center"
+                                    android:text="Create Event"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+                                <ImageButton
+                                    android:id="@+id/btnSubmit"
+                                    android:layout_width="0dp"
+                                    android:layout_height="35dp"
+                                    android:layout_gravity="center|right"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/checkmark"
+                                    android:onClick="submitAd"
+                                    android:padding="2dp" />
+
+                        </LinearLayout>
+
                         <EditText
                             android:id="@+id/etAdName"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp"
+                            android:layout_height="55dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginLeft="8dp"
                             android:layout_marginTop="8dp"
@@ -37,50 +62,73 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <CalendarView
-                            android:id="@+id/cvAdDate"
-                            android:layout_width="match_parent"
-                            android:layout_height="341dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/etAdName" />
-
                         <EditText
-                            android:id="@+id/etAdStartTime"
+                            android:id="@+id/etAdDesc"
                             android:layout_width="match_parent"
-                            android:layout_height="42dp"
+                            android:layout_height="100dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginLeft="8dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="8dp"
                             android:layout_marginRight="8dp"
                             android:ems="10"
-                            android:hint="@string/start_time"
-                            android:inputType="time"
+                            android:gravity="start|top"
+                            android:hint="@string/ad_description"
+                            android:inputType="textMultiLine"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/cvAdDate" />
+                            app:layout_constraintTop_toBottomOf="@+id/etAdAddress" />
 
-                        <EditText
-                            android:id="@+id/etEndTime"
+                        <TextView
+                            android:id="@+id/tvDateDisplay"
                             android:layout_width="match_parent"
-                            android:layout_height="46dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            android:ems="10"
-                            android:hint="@string/end_time"
-                            android:inputType="time"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/etAdStartTime" />
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:padding="10dp"
+                            android:text="@string/ad_date"
+                            android:textSize="25dp" />
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+
+                                <TextView
+                                    android:id="@+id/tvTimeDisplay"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="left"
+                                    android:layout_margin="8dp"
+                                    android:gravity="right"
+                                    android:hint="@string/start_time"
+                                    android:padding="10dp"
+                                    android:text="@string/start_time"
+                                    android:textSize="20dp" />
+
+                                <TextView
+                                    android:id="@+id/textView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:gravity="center"
+                                    android:text="-"
+                                    android:textSize="24sp" />
+
+                                <TextView
+                                    android:id="@+id/tvTimeDisplay2"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_margin="8dp"
+                                    android:gravity="right|left"
+                                    android:hint="@string/end_time"
+                                    android:padding="10dp"
+                                    android:text="@string/end_time"
+                                    android:textSize="20dp" />
+                        </LinearLayout>
 
 
                         <EditText
@@ -96,37 +144,26 @@
                             android:hint="@string/ad_address"
                             android:inputType="textPostalAddress"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/etEndTime" />
+                            app:layout_constraintStart_toStartOf="parent" />
 
-                        <EditText
-                            android:id="@+id/etAdDesc"
+                        <ImageView
+                            android:id="@+id/ivPreview"
                             android:layout_width="match_parent"
-                            android:layout_height="211dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginRight="8dp"
-                            android:ems="10"
-                            android:gravity="start|top"
-                            android:hint="@string/ad_description"
-                            android:inputType="textMultiLine"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/etAdAddress" />
+                            android:layout_height="230dp"
+                            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
                         <Button
                             android:id="@+id/btnAddAd"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_width="205dp"
+                            android:layout_height="39dp"
+                            android:layout_gravity="center"
                             android:layout_marginStart="160dp"
                             android:layout_marginLeft="160dp"
                             android:layout_marginTop="36dp"
                             android:layout_marginEnd="163dp"
                             android:layout_marginRight="163dp"
-                            android:onClick="submitAd"
-                            android:text="@string/add_ad"
+                            android:onClick="uploadPhoto"
+                            android:text="Upload Event Photo"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="1.0"
                             app:layout_constraintStart_toStartOf="parent"
