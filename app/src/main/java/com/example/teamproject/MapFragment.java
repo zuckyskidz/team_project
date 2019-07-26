@@ -65,7 +65,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         fusedLocationClient = getFusedLocationProviderClient(getContext());
 
-        geofencingClient = LocationServices.getGeofencingClient(getContext());
+//        geofencingClient = LocationServices.getGeofencingClient(getContext());
 
         startLocationUpdates();
 
@@ -76,7 +76,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mMapView = (MapView) mView.findViewById(R.id.map);
+        mMapView = (MapView) mView.findViewById(R.id.mapView);
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -122,7 +122,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
         // You can now create a LatLng Object for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
     }
