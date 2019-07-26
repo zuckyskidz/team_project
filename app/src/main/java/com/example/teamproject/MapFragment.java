@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -27,8 +28,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,6 +42,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     MapView mMapView;
     View mView;
     private FusedLocationProviderClient fusedLocationClient;
+    private GeofencingClient geofencingClient;
 
     private LocationRequest mLocationRequest;
 
@@ -65,6 +65,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         fusedLocationClient = getFusedLocationProviderClient(getContext());
 
+        geofencingClient = LocationServices.getGeofencingClient(getContext());
 
         startLocationUpdates();
 
@@ -75,7 +76,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mMapView = (MapView) mView.findViewById(R.id.mapView);
+        mMapView = (MapView) mView.findViewById(R.id.map);
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
