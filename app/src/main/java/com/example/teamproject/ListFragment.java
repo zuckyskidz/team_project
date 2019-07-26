@@ -79,9 +79,11 @@ public class ListFragment extends Fragment {
             @Override
             public void onItemLongClick(View view, int position) {
                 //handle longClick if any
+            }
+
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Intent i = new Intent(getContext(), DetailActivity.class);
-                i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ads[position]));
+                i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ads.get(position)));
                 getContext().startActivity(i);
             }
         }));

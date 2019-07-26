@@ -69,9 +69,6 @@ public class CreatePostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_post);
 
         etAdName = (EditText) findViewById(R.id.etAdName);
-        cvAdDate = (CalendarView) findViewById(R.id.cvAdDate);
-        etAdStartTime = (EditText) findViewById(R.id.etAdStartTime);
-        etAdEndTime = (EditText) findViewById(R.id.etEndTime);
         tvEndTime = (TextView) findViewById(R.id.tvTimeDisplay2);
         etAdAddress = (EditText) findViewById(R.id.etAdAddress);
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
