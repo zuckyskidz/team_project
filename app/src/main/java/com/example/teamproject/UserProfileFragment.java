@@ -50,9 +50,14 @@ public class UserProfileFragment extends Fragment {
         //TODO update lists when user RSVP from details page and then goes back to this fragment
     }
 
+    public void onResume() {
+        super.onResume();
+        getAttendingEvents();
+        getHostingEvents();
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Log.i(TAG, "HERE");
         currentUser = ParseUser.getCurrentUser();
 
         super.onViewCreated(view, savedInstanceState);
@@ -73,9 +78,10 @@ public class UserProfileFragment extends Fragment {
         rvHosting = (RecyclerView) view.findViewById(R.id.rvHostingEvents);
         rvAttending = (RecyclerView) view.findViewById(R.id.rvAttendingEvents);
 
+
         getAttendingEvents();
         getHostingEvents();
-
+      
         tvName.setText(currentUser.getUsername());
 
         ParseFile imageFile = currentUser.getParseFile("profileImage");
@@ -94,37 +100,31 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void getHostingEvents() {
-            hostingEvents = new ArrayList<Ad>();
-            final Ad.Query adQuery = new Ad.Query();
-            adQuery.withUser();
-            adQuery.whereEqualTo("user", currentUser);
-            adQuery.findInBackground(new FindCallback<Ad>() {
-                @Override
-                public void done(List<Ad> objects, ParseException e) {
-                    if (e == null) {
-                        hostingEvents.addAll(objects);
-                        //ads = new Ad[objects.size()];
-                        for (int i = 0; i < hostingEvents.size(); i++) {
-                            //ads.add(objects.get(i));
-                            Log.d(TAG, "HOSTING[" + i + "] = "
-                                    + hostingEvents.get(i).getDescription()
-                                    + "\nusername = " + hostingEvents.get(i).getUser().getUsername());
-                            //ads[ads.length - (i + 1)] = objects.get(i);
-                        }
-                        //ads.addAll(objects);
-                        //Collections.reverse(ads);
-                        //swipeContainer.setRefreshing(false);
-                    } else {
-                        e.printStackTrace();
+        hostingEvents = new ArrayList<Ad>();
+        final Ad.Query adQuery = new Ad.Query();
+        adQuery.withUser();
+        adQuery.whereEqualTo("user", currentUser);
+        adQuery.findInBackground(new FindCallback<Ad>() {
+            @Override
+            public void done(List<Ad> objects, ParseException e) {
+                if (e == null) {
+                    hostingEvents.addAll(objects);
+                    for (int i = 0; i < hostingEvents.size(); i++) {
+                        Log.d(TAG, "HOSTING[" + i + "] = "
+                                + hostingEvents.get(i).getDescription()
+                                + "\nusername = " + hostingEvents.get(i).getUser().getUsername());
                     }
-                    initHostingRecycler();
-                    rvAdapter.notifyDataSetChanged();
+                } else {
+                    e.printStackTrace();
                 }
-            });
+                initHostingRecycler();
+                rvAdapter.notifyDataSetChanged();
+            }
+        });
 
     }
 
-    private void getAttendingEvents() {
+    public void getAttendingEvents() {
         attendingEvents = new ArrayList<Ad>();
         final Ad.Query adQuery = new Ad.Query();
         adQuery.withUser();
@@ -136,17 +136,11 @@ public class UserProfileFragment extends Fragment {
             public void done(List<Ad> objects, ParseException e) {
                 if (e == null) {
                     attendingEvents.addAll(objects);
-                    //ads = new Ad[objects.size()];
                     for (int i = 0; i < attendingEvents.size(); i++) {
-                        //ads.add(objects.get(i));
                         Log.d(TAG, "ATTENDING[" + i + "] = "
                                 + attendingEvents.get(i).getDescription()
                                 + "\nusername = " + attendingEvents.get(i).getUser().getUsername());
-                        //ads[ads.length - (i + 1)] = objects.get(i);
                     }
-                    //ads.addAll(objects);
-                    //Collections.reverse(ads);
-                    //swipeContainer.setRefreshing(false);
                 } else {
                     e.printStackTrace();
                 }
@@ -158,7 +152,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void initHostingRecycler() {
-        Log.i(TAG, "initRecyclerView");
+       // Log.i(TAG, "initRecyclerView");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false);
         rvHosting.setLayoutManager(layoutManager);
         rvAdapter = new RecyclerViewAdapter(this.getContext(), hostingEvents);
@@ -166,7 +160,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void initAttendingRecycler() {
-        Log.i(TAG, "initRecyclerView");
+      //  Log.i(TAG, "initRecyclerView");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false);
         rvAttending.setLayoutManager(layoutManager);
         rvAdapter = new RecyclerViewAdapter(this.getContext(), attendingEvents);

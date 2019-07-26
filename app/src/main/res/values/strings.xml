@@ -6,12 +6,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
 
-    <string name="ad_address">Ad Address</string>
-    <string name="ad_description">Ad Description</string>
-    <string name="add_ad">Add Ad</string>
-    <string name="ad_time">Ad Time</string>
-    <string name="ad_date">Ad Date</string>
-    <string name="ad_name">Ad Name</string>
-    <string name="end_time">End TIme</string>
+    <string name="ad_address">Location</string>
+    <string name="ad_description">Description</string>
+    <string name="ad_date">Date: Select</string>
+    <string name="ad_name">Title</string>
+    <string name="end_time">End Time</string>
     <string name="start_time">Start Time</string>
 </resources>
