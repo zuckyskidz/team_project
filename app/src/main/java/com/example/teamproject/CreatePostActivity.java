@@ -20,17 +20,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.teamproject.models.Ad;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
+//import com.google.android.gms.common.ConnectionResult;
+//import com.google.android.gms.common.api.GoogleApiClient;
+//import com.google.android.gms.common.api.PendingResult;
+//import com.google.android.gms.common.api.ResultCallback;
+//import com.google.android.gms.location.places.AutocompletePrediction;
+//import com.google.android.gms.location.places.Place;
+//import com.google.android.gms.location.places.PlaceBuffer;
+//import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.libraries.places.api.net.PlacesClient;
+//import com.google.android.libraries.places.api.net.PlacesClient;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -50,32 +50,32 @@ public class CreatePostActivity extends AppCompatActivity {
     private static final int PLACE_PICKER_REQUEST = 1;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
-    private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            final AutocompletePrediction item = mPlaceAutocompleteAdapter.getItem(i);
-            final String placeId = item.getPlaceId();
-
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-                    .getPlaceById(mGoogleApiClient, placeId);
-            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-        }
-    };
-    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
-        @Override
-        public void onResult(@NonNull PlaceBuffer places) {
-            if(!places.getStatus().isSuccess()){
-                Log.d(TAG, "onResult: Place query did not complete successfully: " + places.getStatus().toString());
-                places.release();
-                return;
-            }
-            final Place place = places.get(0);
-
-            places.release();
-        }
-    };
-
-    private PlacesClient placesClient;
+//    private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
+//        @Override
+//        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//            final AutocompletePrediction item = mPlaceAutocompleteAdapter.getItem(i);
+//            final String placeId = item.getPlaceId();
+//
+//            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+//                    .getPlaceById(mGoogleApiClient, placeId);
+//            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+//        }
+//    };
+//    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
+//        @Override
+//        public void onResult(@NonNull PlaceBuffer places) {
+//            if(!places.getStatus().isSuccess()){
+//                Log.d(TAG, "onResult: Place query did not complete successfully: " + places.getStatus().toString());
+//                places.release();
+//                return;
+//            }
+//            final Place place = places.get(0);
+//
+//            places.release();
+//        }
+//    };
+//
+//    private PlacesClient placesClient;
 
 //    String MAP_Key = getString(R.string.google_maps_api_key);
 
@@ -86,63 +86,63 @@ public class CreatePostActivity extends AppCompatActivity {
     EditText etAdDesc;
     private AutoCompleteTextView mSearchText;
 
-    private GoogleApiClient mGoogleApiClient;
-    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
+//    private GoogleApiClient mGoogleApiClient;
+//    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
         // Retrieve a PlacesClient (previously initialized - see MainActivity)
-        placesClient = Places.createClient(this);
+//        placesClient = Places.createClient(this);
 
         etAdName = (EditText) findViewById(R.id.etAdName);
-        cvAdDate = (CalendarView) findViewById(R.id.cvAdDate);
-        etAdStartTime = (EditText) findViewById(R.id.etAdStartTime);
-        etAdEndTime = (EditText) findViewById(R.id.etEndTime);
+//        cvAdDate = (CalendarView) findViewById(R.id.cvAdDate);
+//        etAdStartTime = (EditText) findViewById(R.id.etAdStartTime);
+//        etAdEndTime = (EditText) findViewById(R.id.etEndTime);
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
-        mSearchText = (AutoCompleteTextView) findViewById(R.id.atvAddress);
+//        mSearchText = (AutoCompleteTextView) findViewById(R.id.atvAddress);
 
 
-        grabPlace();
+//        grabPlace();
     }
 
-    public void grabPlace() {
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(getApplicationContext(), "Bad Connection! Can't find addresses right now! Please Check back soon!", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .build();
-
-        mSearchText.setOnItemClickListener(mAutocompleteClickListener);
-
-        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient,
-                LAT_LNG_BOUNDS, null);
-
-        mSearchText.setAdapter(mPlaceAutocompleteAdapter);
-
-        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
-
-                    //execute our method for searching
-                    geoLocate();
-                }
-
-                return false;
-            }
-        });
-    }
+//    public void grabPlace() {
+//        mGoogleApiClient = new GoogleApiClient
+//                .Builder(this)
+//                .addApi(Places.GEO_DATA_API)
+//                .addApi(Places.PLACE_DETECTION_API)
+//                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+//                    @Override
+//                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//                        Toast.makeText(getApplicationContext(), "Bad Connection! Can't find addresses right now! Please Check back soon!", Toast.LENGTH_LONG).show();
+//                    }
+//                })
+//                .build();
+//
+//        mSearchText.setOnItemClickListener(mAutocompleteClickListener);
+//
+//        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient,
+//                LAT_LNG_BOUNDS, null);
+//
+//        mSearchText.setAdapter(mPlaceAutocompleteAdapter);
+//
+//        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+//                if(actionId == EditorInfo.IME_ACTION_SEARCH
+//                        || actionId == EditorInfo.IME_ACTION_DONE
+//                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
+//                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
+//
+//                    //execute our method for searching
+//                    geoLocate();
+//                }
+//
+//                return false;
+//            }
+//        });
+//    }
 
     public void submitAd(View view) {
         Log.d(TAG, "Posting...");
