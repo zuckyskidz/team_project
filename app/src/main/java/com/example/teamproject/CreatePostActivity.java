@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -177,7 +179,12 @@ public class CreatePostActivity extends AppCompatActivity {
         boolean isPostable = true;
         if(etAdName.getText().length() == 0){
             Log.i(TAG, "title missing");
-            etAdName.setHintTextColor(getResources().getColor(R.color.local_orange));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                etAdName.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+            }
+            else{
+                etAdName.setHintTextColor(getResources().getColor(R.color.local_orange));
+            }
             isPostable = false;
         }
         if (tvDisplayDate.getText().length() == 0){
@@ -197,13 +204,22 @@ public class CreatePostActivity extends AppCompatActivity {
         }
         if(etAdAddress.getText().length() == 0){
             Log.i(TAG, "address missing");
-            etAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                etAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+            }
+            else{
+                etAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
+            }
             isPostable = false;
         }
         if(etAdDesc.getText().length() == 0){
             Log.i(TAG, "description missing");
-            etAdDesc.setHintTextColor(getResources().getColor(R.color.local_orange));
-            isPostable = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                etAdDesc.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+            }
+            else{
+                etAdDesc.setHintTextColor(getResources().getColor(R.color.local_orange));
+            }            isPostable = false;
         }
         if(photoFile == null){
             Log.i(TAG, "photo missing");
