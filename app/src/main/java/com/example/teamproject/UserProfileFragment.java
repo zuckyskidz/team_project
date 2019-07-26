@@ -33,7 +33,6 @@ import static com.parse.Parse.getApplicationContext;
 
 public class UserProfileFragment extends Fragment {
     private static final String TAG = "UserProfileFragment";
-    GridView gvPostGrid;
     RecyclerView rvHosting;
     RecyclerView rvAttending;
     RecyclerViewAdapter rvAdapter;
@@ -76,10 +75,13 @@ public class UserProfileFragment extends Fragment {
 
         ivProfileImage = view.findViewById(R.id.ivProfileImage);
         tvName = view.findViewById(R.id.tvName);
-        gvPostGrid = (GridView) view.findViewById(R.id.gvPostGrid);
         rvHosting = (RecyclerView) view.findViewById(R.id.rvHostingEvents);
         rvAttending = (RecyclerView) view.findViewById(R.id.rvAttendingEvents);
 
+
+        getAttendingEvents();
+        getHostingEvents();
+      
         tvName.setText(currentUser.getUsername());
 
         ParseFile imageFile = currentUser.getParseFile("profileImage");
