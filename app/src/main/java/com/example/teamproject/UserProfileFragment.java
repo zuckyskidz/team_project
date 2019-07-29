@@ -81,9 +81,6 @@ public class UserProfileFragment extends Fragment {
         rvAttending = (RecyclerView) view.findViewById(R.id.rvAttendingEvents);
         tvNoAttending= view.findViewById(R.id.tvNoAttending);
         tvNoHosting = view.findViewById(R.id.tvNoHosting);
-
-        getAttendingEvents();
-        getHostingEvents();
       
         tvName.setText(currentUser.getUsername());
 
@@ -103,6 +100,9 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void getHostingEvents() {
+        if(rvAdapter != null){
+            rvAdapter.clear();
+        }
         hostingEvents = new ArrayList<Ad>();
         final Ad.Query adQuery = new Ad.Query();
         adQuery.withUser();
@@ -136,6 +136,9 @@ public class UserProfileFragment extends Fragment {
     }
 
     public void getAttendingEvents() {
+        if(rvAdapter != null){
+            rvAdapter.clear();
+        }
         attendingEvents = new ArrayList<Ad>();
         final Ad.Query adQuery = new Ad.Query();
         adQuery.withUser();

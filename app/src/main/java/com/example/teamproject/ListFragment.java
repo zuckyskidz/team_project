@@ -53,6 +53,9 @@ public class ListFragment extends Fragment {
         if (isVisibleToUser) {
             grabAds();
         }
+        if(!isVisibleToUser && adapter!=null){
+            adapter.clear();
+        }
     }
 
     @Override
@@ -91,8 +94,7 @@ public class ListFragment extends Fragment {
         ads = new ArrayList<>();
         adapter = new RecAdAdapter(ads, getContext());
         mRecyclerView.setAdapter(adapter);
-
-        grabAds();
+        adapter.clear();
         swipeUpRefresh();
     }
 
