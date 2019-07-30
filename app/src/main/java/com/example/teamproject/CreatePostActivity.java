@@ -233,18 +233,6 @@ public class CreatePostActivity extends AppCompatActivity {
             tvStartTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;;
         }
-
-        if(btnAdAddress.getText().equals("")){
-
-            Log.i(TAG, "address missing");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                etAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
-            }
-            else{
-                etAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
-            }
-            isPostable = false;
-        }
         if(etAdDesc.getText().length() == 0){
             Log.i(TAG, "description missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
