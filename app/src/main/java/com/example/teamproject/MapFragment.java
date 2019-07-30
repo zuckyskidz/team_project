@@ -16,7 +16,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -34,6 +36,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.List;
+
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -47,10 +51,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private LocationRequest mLocationRequest;
 
     Location myLocation;
+    List<Geofence> geofenceList;
 
     private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     private int LOCATION_REQUEST_ID = 2222;
+    private int GEOFENCE_RADIUS_IN_METERS = 8000;
+    private int GEOFENCE_EXPIRATION_IN_MILLISECONDS = 1000;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,8 +71,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mView = inflater.inflate(R.layout.fragment_map, container, false);
 
         fusedLocationClient = getFusedLocationProviderClient(getContext());
-
-//        geofencingClient = LocationServices.getGeofencingClient(getContext());
+        geofencingClient = LocationServices.getGeofencingClient(getContext());
 
         startLocationUpdates();
 
@@ -106,6 +112,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         settingsClient.checkLocationSettings(locationSettingsRequest);
 
         // new Google API SDK v11 uses getFusedLocationProviderClient(this)
+        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         getFusedLocationProviderClient(getContext()).requestLocationUpdates(mLocationRequest, new LocationCallback() {
                     @Override
                     public void onLocationResult(LocationResult locationResult) {
@@ -124,7 +140,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Double.toString(location.getLongitude());
 //        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
         // You can now create a LatLng Object for use with maps
+
+        //TODO — recreate geofence around user once location updated ????????????
+//        createGeofence(location.getLatitude(), location.getLongitude());
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
     }
 
 
@@ -189,6 +209,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         getCurrentLocation();
+
+
+
     }
 
     void getCurrentLocation() {
@@ -209,6 +232,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Toast.makeText(getContext(), "Unable to fetch the current location", Toast.LENGTH_SHORT).show();
         }
 
+
+
     }
 
     private boolean checkPermissions() {
@@ -222,4 +247,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             return false;
         }
     }
+
+    public void createGeofence(double lat, double lng){
+
+        if(geofenceList != null) geofenceList.clear();
+
+        geofenceList.add(new Geofence.Builder()
+                // Set the request ID of the geofence. This is a string to identify this
+                // geofence.
+                .setRequestId("My Location")
+
+                .setCircularRegion(
+                        lat,
+                        lng,
+                        GEOFENCE_RADIUS_IN_METERS
+                )
+                .setExpirationDuration(GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                        Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build());
+
+    }
+
+    private boolean inGeofence(){
+
+        return false;
+    }
+
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(geofenceList);
+        return builder.build();
+    }
+
+
+
+
 }

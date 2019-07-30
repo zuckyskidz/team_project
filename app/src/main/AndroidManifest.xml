@@ -29,6 +29,7 @@
         android:usesCleartextTraffic="true">
 
         <receiver android:name=".GeofenceBroadcastReceiver"/>
+        <service android:name=".GeofenceTransitionsIntentService"/>
 
         <activity android:name=".HomeFeedActivity"
         android:usesCleartextTraffic="true"
