@@ -2,6 +2,7 @@ package com.example.teamproject.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -24,6 +25,7 @@ public class Ad extends ParseObject {
     private static final String KEY_LOCATION = "location";
     private static final String KEY_TAGS = "tags";
     private static final String KEY_RSVP = "rsvp";
+    public static final String KEY_GEOPPOINT = "geoPoints";
 
     public String getDescription() {
         return getString(KEY_DESCRIPTION);
@@ -61,9 +63,11 @@ public class Ad extends ParseObject {
         return getString(KEY_CREATIONTIME);
     }
 
-    public void setKeyLocation(String geoPoint) {
-        put(KEY_LOCATION, geoPoint);
+    public void setGeoPoint(ParseGeoPoint geoPoint) {
+        put(KEY_GEOPPOINT, geoPoint);
     }
+
+    public ParseGeoPoint getGeoPoint() { return getParseGeoPoint(KEY_GEOPPOINT); }
 
     public String getLocation() {
         return getString(KEY_LOCATION);
