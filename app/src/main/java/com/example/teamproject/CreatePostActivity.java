@@ -41,6 +41,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import java.io.ByteArrayOutputStream;
@@ -72,6 +73,8 @@ public class CreatePostActivity extends AppCompatActivity {
     };
     List<Place.Field> fields;
     PlacesClient placesClient;
+    String localeString;
+    ParseGeoPoint geoPoint;
 
     EditText etAdName;
     TextView tvDisplayDate;
@@ -148,7 +151,7 @@ public class CreatePostActivity extends AppCompatActivity {
             }
         });
 
-        fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+        fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
 
         //init();
     }
@@ -162,7 +165,8 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setTitle(etAdName.getText().toString());
             newAd.setDate(myCalendar.getTime());
             newAd.setEndTime(tvEndTime.getText().toString());
-            newAd.setAddress(btnAdAddress.getText().toString());
+            newAd.setAddress(localeString);
+            newAd.setGeoPoint(geoPoint);
             newAd.setDescription(etAdDesc.getText().toString());
             newAd.setRSVP(new ArrayList<Object>());
             newAd.setImage(photoFile);
@@ -218,6 +222,10 @@ public class CreatePostActivity extends AppCompatActivity {
         }
         if(etAdDesc.getText().equals("")){
             Log.i(TAG, "description missing");
+            return false;
+        }
+        if(localeString.equals("")){
+            Log.i(TAG, "location missing");
             return false;
         }
         if(photoFile == null){
@@ -295,15 +303,28 @@ public class CreatePostActivity extends AppCompatActivity {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.i(TAG, "Place LAT_LNG: " + place.getLatLng() + ", " + place.getName());
+                btnAdAddress.setText(place.getName());
+                localeString = place.getAddress().toString();
+                geoPoint = new ParseGeoPoint();
+                makeGeoPoint(place.getLatLng().toString());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
+                Toast.makeText(this, "Sorry! Can't find locations right now!", Toast.LENGTH_LONG).show();
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Log.i(TAG, status.getStatusMessage());
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
             }
         }
+    }
+
+    public void makeGeoPoint(String s) {
+        String[] lat_long = s.substring(9).split("[(,)]");
+        for (int i = 0; i < lat_long.length; i++) {
+            Log.d(TAG, ""+ i + ": " + lat_long[i]);
+        }
+        geoPoint.setLatitude(Double.parseDouble(lat_long[1]));
+        geoPoint.setLongitude(Double.parseDouble(lat_long[2]));
     }
 
 //    private void geoLocate(){
