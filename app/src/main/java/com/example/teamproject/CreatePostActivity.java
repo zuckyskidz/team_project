@@ -1,32 +1,42 @@
 package com.example.teamproject;
 
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ClipData;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.ColorFilter;
+import android.graphics.Path;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -58,9 +68,15 @@ public class CreatePostActivity extends AppCompatActivity {
     TextView tvEndTime;
     EditText etAdAddress;
     EditText etAdDesc;
-    ImageView ivPreview;
+    //ImageView ivPreview;
     ParseFile photoFile;
     ImageButton btnSubmit;
+    ViewFlipper viewFlipper;
+
+
+    private ArrayList<Uri> mArrayUri;
+    private ArrayList<Bitmap> mBitmapsSelected;
+    private ArrayList<ParseFile> mImages;
 
 
     @Override
@@ -74,10 +90,15 @@ public class CreatePostActivity extends AppCompatActivity {
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
         tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
         tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
-        ivPreview = (ImageView) findViewById(R.id.ivPreview);
+        //ivPreview = (ImageView) findViewById(R.id.ivPreview);
         btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
 
-        ivPreview.setVisibility(View.GONE);
+        viewFlipper = findViewById(R.id.viewFlipper);
+
+
+
+
+        //ivPreview.setVisibility(View.GONE);
 
         tvDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,7 +150,7 @@ public class CreatePostActivity extends AppCompatActivity {
     public void submitAd(View view) {
         Log.d(TAG, "Posting...");
         Ad newAd = new Ad();
-        if(makeSurePostable()) {
+        if (makeSurePostable()) {
             newAd = new Ad();
             newAd.setUser(ParseUser.getCurrentUser());
             newAd.setTitle(etAdName.getText().toString());
@@ -138,16 +159,16 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setAddress(etAdAddress.getText().toString());
             newAd.setDescription(etAdDesc.getText().toString());
             newAd.setRSVP(new ArrayList<Object>());
-            newAd.setImage(photoFile);
-        }
-        else{
-            Toast.makeText(CreatePostActivity.this, "Missing informtaion.", Toast.LENGTH_SHORT).show();
+            newAd.setImages(mImages);
+        } else {
+            Toast.makeText(CreatePostActivity.this, "Missing information.", Toast.LENGTH_SHORT).show();
             return;
         }
         postAd(newAd);
     }
 
     private void postAd(Ad newAd) {
+        btnSubmit.setEnabled(false);
         newAd.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -157,11 +178,13 @@ public class CreatePostActivity extends AppCompatActivity {
                     Intent intent = new Intent(CreatePostActivity.this, HomeFeedActivity.class);
                     startActivity(intent);
                     finish();
+                    btnSubmit.setEnabled(true);
                     return;
                 } else {
                     Log.i(TAG, "FAILED");
                     Toast.makeText(getApplicationContext(), "Posting Failed!", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
+                    btnSubmit.setEnabled(true);
                     return;
                 }
             }
@@ -169,35 +192,55 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private boolean makeSurePostable() {
-        if(etAdName.getText().equals("")) {
+        boolean isPostable = true;
+        if (etAdName.getText().length() == 0) {
             Log.i(TAG, "title missing");
-            return false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                etAdName.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+            } else {
+                etAdName.setHintTextColor(getResources().getColor(R.color.local_orange));
+            }
+            isPostable = false;
         }
-        if (tvDisplayDate.getText().equals(R.string.ad_date)){
+        if (tvDisplayDate.getText().length() == 0) {
             Log.i(TAG, "date missing");
-            return false;
+            tvDisplayDate.setHintTextColor(getResources().getColor(R.color.local_orange));
+            isPostable = false;
         }
-        if(tvEndTime.getText().equals(R.string.end_time)){
+        if (tvEndTime.getText().length() == 0) {
             Log.i(TAG, "end time missing");
-            return false;
+            tvEndTime.setHintTextColor(getResources().getColor(R.color.local_orange));
+            isPostable = false;
         }
-        if(tvStartTime.getText().equals(R.string.start_time)){
+        if (tvStartTime.getText().length() == 0) {
             Log.i(TAG, "end time missing");
-            return false;
+            tvStartTime.setHintTextColor(getResources().getColor(R.color.local_orange));
+            isPostable = false;
+            ;
         }
-        if(etAdAddress.getText().equals("")){
+        if (etAdAddress.getText().length() == 0) {
             Log.i(TAG, "address missing");
-            return false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                etAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+            } else {
+                etAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
+            }
+            isPostable = false;
         }
-        if(etAdDesc.getText().equals("")){
+        if (etAdDesc.getText().length() == 0) {
             Log.i(TAG, "description missing");
-            return false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                etAdDesc.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+            } else {
+                etAdDesc.setHintTextColor(getResources().getColor(R.color.local_orange));
+            }
+            isPostable = false;
         }
-        if(photoFile == null){
+        if (photoFile == null) {
             Log.i(TAG, "photo missing");
-            return false;
+            isPostable = false;
         }
-        return true;
+        return isPostable;
     }
 
     private void updateDateLabel() {
@@ -215,15 +258,16 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     public void uploadPhoto(View view) {
-        // Create intent for picking a photo from the gallery
-        Intent intent = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Create intent for picking photos from the gallery
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
         // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
         // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getPackageManager()) != null) {
             // Bring up gallery to select a photo
-            startActivityForResult(intent, PICK_PHOTO_CODE);
+            startActivityForResult(Intent.createChooser(intent, "Select Pictures"), PICK_PHOTO_CODE);
         }
     }
 
@@ -232,29 +276,57 @@ public class CreatePostActivity extends AppCompatActivity {
         if (requestCode == PICK_PHOTO_CODE) {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
-                    Uri photoUri = data.getData();
-                    // Do something with the photo based on Uri
-                    Bitmap selectedImage = null;
-                    try {
-                        selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    // Compress image to lower quality scale 1 - 100
-                    selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] image = stream.toByteArray();
+                    if (data.getClipData() != null) {
+                        ClipData mClipData = data.getClipData();
+                        mArrayUri = new ArrayList<Uri>();
+                        mBitmapsSelected = new ArrayList<Bitmap>();
+                        mImages = new ArrayList<ParseFile>();
+                        for (int i = 0; i < mClipData.getItemCount(); i++) {
+                            ClipData.Item item = mClipData.getItemAt(i);
+                            Uri uri = item.getUri();
+                            mArrayUri.add(uri);
+                            // !! You may need to resize the image if it's too large
+                            Bitmap selectedImageBitmap = null;
+                            try {
+                                selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            mBitmapsSelected.add(selectedImageBitmap);
 
-                    // Create the ParseFile
-                    photoFile  = new ParseFile("picture_1.jpeg", image);
-                    Toast.makeText(this, "Image Uploaded", Toast.LENGTH_SHORT).show();
-                    Glide.with(getApplicationContext())
-                            .load(image)
-                            .apply(new RequestOptions()
-                                    .placeholder(R.drawable.ic_launcher_background))
-                            .into(ivPreview);
-                    ivPreview.setVisibility(View.VISIBLE);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            // Compress image to lower quality scale 1 - 100
+                            selectedImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                            byte[] image = stream.toByteArray();
+
+                            photoFile = new ParseFile("picture_" + i + ".jpeg", image);
+                            mImages.add(photoFile);
+
+                            initViewFlipper();
+                        }
+                    }
+
                 }
+            }
+        }
+    }
+
+    private void initViewFlipper() {
+        if (viewFlipper != null) {
+            viewFlipper.setInAnimation(getApplicationContext(), android.R.anim.slide_in_left);
+            viewFlipper.setOutAnimation(getApplicationContext(), android.R.anim.slide_out_right);
+        }
+
+        if (viewFlipper != null) {
+            for (Bitmap image : mBitmapsSelected) {
+                ImageView imageView = new ImageView(this);
+                FrameLayout.LayoutParams layoutParams =
+                        new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(30, 30, 30, 30);
+                layoutParams.gravity = Gravity.CENTER;
+                imageView.setLayoutParams(layoutParams);
+                imageView.setImageBitmap(image);
+                viewFlipper.addView(imageView);
             }
         }
     }

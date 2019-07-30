@@ -146,11 +146,15 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent" />
 
-                        <ImageView
-                            android:id="@+id/ivPreview"
+
+                        <ViewFlipper
+                            android:id="@+id/viewFlipper"
                             android:layout_width="match_parent"
                             android:layout_height="230dp"
-                            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                            android:autoStart="true"
+                            android:flipInterval="2000">
+                        </ViewFlipper>
+
 
                         <Button
                             android:id="@+id/btnAddAd"

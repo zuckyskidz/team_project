@@ -33,7 +33,7 @@ public class RecAdAdapter extends RecyclerView.Adapter<RecAdAdapter.MasonryView>
 
         public MasonryView(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.ivAdImage);
+            //imageView = (ImageView) itemView.findViewById(R.id.ivAdImage);
             textView = (TextView) itemView.findViewById(R.id.tvTitle);
 
         }
@@ -90,15 +90,15 @@ public class RecAdAdapter extends RecyclerView.Adapter<RecAdAdapter.MasonryView>
 
         }
 
-        Glide.with(context)
-                .load(imageURL)
-                .apply(new RequestOptions()
-                        //.override(800,800)
-                        .transform(new RoundedCorners(50))
-                        .fitCenter()
-                        //.centerCrop()
-                        .placeholder(R.drawable.dog))
-                .into(holder.imageView);
+//        Glide.with(context)
+//                .load(imageURL)
+//                .apply(new RequestOptions()
+//                        //.override(800,800)
+//                        .transform(new RoundedCorners(50))
+//                        .fitCenter()
+//                        //.centerCrop()
+//                        .placeholder(R.drawable.dog))
+//                .into(holder.imageView);
 
         holder.textView.setText(ad.getTitle());
         Log.d("RecAdAdapter","Set Holder");
