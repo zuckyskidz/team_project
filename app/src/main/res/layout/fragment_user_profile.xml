@@ -100,6 +100,15 @@
                 app:layout_constraintStart_toStartOf="@+id/rvAttendingEvents"
                 app:layout_constraintTop_toBottomOf="@+id/divider" />
 
+            <TextView
+                android:id="@+id/tvNoAttending"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:background="@color/colorPrimaryDark"
+                android:gravity="center"
+                android:text="You aren't signed up for any events."
+                android:visibility="gone" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvAttendingEvents"
                 android:layout_width="match_parent"
@@ -132,6 +141,15 @@
                 app:layout_constraintStart_toStartOf="@+id/rvHostingEvents"
                 app:layout_constraintTop_toBottomOf="@+id/rvAttendingEvents" />
 
+            <TextView
+                android:id="@+id/tvNoHosting"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:background="@color/colorPrimaryDark"
+                android:gravity="center"
+                android:text="You aren't hosting any events."
+                android:visibility="gone" />
+          
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvHostingEvents"
                 android:layout_width="match_parent"

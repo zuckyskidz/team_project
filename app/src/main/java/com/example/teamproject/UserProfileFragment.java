@@ -47,6 +47,8 @@ public class UserProfileFragment extends Fragment {
     Button logoutBT;
     ImageView ivProfileImage;
     TextView tvName;
+    TextView tvNoAttending;
+    TextView tvNoHosting;
 
     ParseUser currentUser;
     ArrayList<Ad> attendingEvents;
@@ -83,10 +85,8 @@ public class UserProfileFragment extends Fragment {
         tvName = view.findViewById(R.id.tvName);
         rvHosting = (RecyclerView) view.findViewById(R.id.rvHostingEvents);
         rvAttending = (RecyclerView) view.findViewById(R.id.rvAttendingEvents);
-
-
-        getAttendingEvents();
-        getHostingEvents();
+        tvNoAttending= view.findViewById(R.id.tvNoAttending);
+        tvNoHosting = view.findViewById(R.id.tvNoHosting);
       
         tvName.setText(currentUser.getUsername());
 
@@ -106,6 +106,9 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void getHostingEvents() {
+        if(rvAdapter != null){
+            rvAdapter.clear();
+        }
         hostingEvents = new ArrayList<Ad>();
         final Ad.Query adQuery = new Ad.Query();
         adQuery.withUser();
@@ -114,11 +117,19 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void done(List<Ad> objects, ParseException e) {
                 if (e == null) {
-                    hostingEvents.addAll(objects);
-                    for (int i = 0; i < hostingEvents.size(); i++) {
-                        Log.d(TAG, "HOSTING[" + i + "] = "
-                                + hostingEvents.get(i).getDescription()
-                                + "\nusername = " + hostingEvents.get(i).getUser().getUsername());
+                    if(objects.size()!=0) {
+                        hostingEvents.addAll(objects);
+                        for (int i = 0; i < hostingEvents.size(); i++) {
+                            Log.d(TAG, "HOSTING[" + i + "] = "
+                                    + hostingEvents.get(i).getDescription()
+                                    + "\nusername = " + hostingEvents.get(i).getUser().getUsername());
+                            tvNoHosting.setVisibility(View.GONE);
+                        }
+                    }
+                    else{
+                        tvNoHosting.setVisibility(View.VISIBLE);
+                        rvHosting.setVisibility(View.GONE);
+                        return;
                     }
                 } else {
                     e.printStackTrace();
@@ -131,6 +142,9 @@ public class UserProfileFragment extends Fragment {
     }
 
     public void getAttendingEvents() {
+        if(rvAdapter != null){
+            rvAdapter.clear();
+        }
         attendingEvents = new ArrayList<Ad>();
         final Ad.Query adQuery = new Ad.Query();
         adQuery.withUser();
@@ -141,11 +155,19 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void done(List<Ad> objects, ParseException e) {
                 if (e == null) {
-                    attendingEvents.addAll(objects);
-                    for (int i = 0; i < attendingEvents.size(); i++) {
-                        Log.d(TAG, "ATTENDING[" + i + "] = "
-                                + attendingEvents.get(i).getDescription()
-                                + "\nusername = " + attendingEvents.get(i).getUser().getUsername());
+                    if(objects.size()!=0) {
+                        attendingEvents.addAll(objects);
+                        for (int i = 0; i < attendingEvents.size(); i++) {
+                            Log.d(TAG, "ATTENDING[" + i + "] = "
+                                    + attendingEvents.get(i).getDescription()
+                                    + "\nusername = " + attendingEvents.get(i).getUser().getUsername());
+                            tvNoAttending.setVisibility(View.GONE);
+                        }
+                    }
+                    else{
+                        tvNoAttending.setVisibility(View.VISIBLE);
+                        rvAttending.setVisibility(View.GONE);
+                        return;
                     }
                 } else {
                     e.printStackTrace();
