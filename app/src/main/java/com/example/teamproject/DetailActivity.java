@@ -1,18 +1,11 @@
 package com.example.teamproject;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentTransaction;
-//import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -22,12 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
-import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -38,6 +28,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+
 public class DetailActivity extends AppCompatActivity {
 
     private static final String TAG = "DetailActivity";
@@ -45,9 +36,7 @@ public class DetailActivity extends AppCompatActivity {
     Ad ad;
     int userCount;
 
-    //TODO - add location
     ViewFlipper viewFlipper;
-    //ImageView imageIV;
     TextView titleTV;
     TextView locationTV;
     TextView dateTV;
@@ -64,7 +53,6 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Log.i(TAG, "in ON Create");
         ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
         userCount = ad.getRSVPCount();
 
@@ -100,20 +88,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        //set event image
         initViewFlipper();
-//        ParseFile imageFile = ad.getImage();
-//        String imageURL = null;
-//        try {
-//            imageURL = imageFile.getUrl();
-//        } catch (NullPointerException e) {
-//
-//        }
-//        Glide.with(getApplicationContext())
-//                .load(imageURL)
-//                .apply(new RequestOptions()
-//                        .placeholder(R.drawable.ic_launcher_background))
-//                .into(imageIV);
 
         //sets event host details
         //need to use fetchIfNeeded, or else causes error
@@ -214,19 +189,20 @@ public class DetailActivity extends AppCompatActivity {
 
         if (viewFlipper != null) {
             for (ParseFile file : ad.getImages()) {
-                    ImageView imageView = new ImageView(getApplicationContext());
+                ImageView imageView = new ImageView(getApplicationContext());
 
-                    Bitmap bmp= null;
-                    try {
-                        bmp = BitmapFactory.decodeByteArray(file.getData(), 0, file.getData().length);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    imageView.setImageBitmap(bmp);
-                    viewFlipper.addView(imageView);
-                    if(ad.getImages().size() > 1){
-                        viewFlipper.startFlipping();
-                    }
+                Bitmap bmp = null;
+                try {
+                    bmp = BitmapFactory.decodeByteArray(file.getData(), 0, file.getData().length);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                imageView.setImageBitmap(bmp);
+                viewFlipper.addView(imageView);
+                //starts flipping for more than one image
+                if (ad.getImages().size() > 1) {
+                    viewFlipper.startFlipping();
+                }
             }
         }
     }

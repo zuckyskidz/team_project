@@ -2,17 +2,12 @@ package com.example.teamproject;
 
 import android.content.Intent;
 import android.os.Bundle;
-//import android.support.annotation.NonNull;
-//import android.support.annotation.Nullable;
-//import android.support.v4.app.Fragment;
-//import android.support.v7.widget.LinearLayoutManager;
-//import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-//import android.widget.GridView;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -85,9 +80,9 @@ public class UserProfileFragment extends Fragment {
         tvName = view.findViewById(R.id.tvName);
         rvHosting = (RecyclerView) view.findViewById(R.id.rvHostingEvents);
         rvAttending = (RecyclerView) view.findViewById(R.id.rvAttendingEvents);
-        tvNoAttending= view.findViewById(R.id.tvNoAttending);
+        tvNoAttending = view.findViewById(R.id.tvNoAttending);
         tvNoHosting = view.findViewById(R.id.tvNoHosting);
-      
+
         tvName.setText(currentUser.getUsername());
 
         ParseFile imageFile = currentUser.getParseFile("profileImage");
@@ -106,7 +101,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void getHostingEvents() {
-        if(rvAdapter != null){
+        if (rvAdapter != null) {
             rvAdapter.clear();
         }
         hostingEvents = new ArrayList<Ad>();
@@ -117,7 +112,7 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void done(List<Ad> objects, ParseException e) {
                 if (e == null) {
-                    if(objects.size()!=0) {
+                    if (objects.size() != 0) {
                         hostingEvents.addAll(objects);
                         for (int i = 0; i < hostingEvents.size(); i++) {
                             Log.d(TAG, "HOSTING[" + i + "] = "
@@ -125,8 +120,7 @@ public class UserProfileFragment extends Fragment {
                                     + "\nusername = " + hostingEvents.get(i).getUser().getUsername());
                             tvNoHosting.setVisibility(View.GONE);
                         }
-                    }
-                    else{
+                    } else {
                         tvNoHosting.setVisibility(View.VISIBLE);
                         rvHosting.setVisibility(View.GONE);
                         return;
@@ -142,7 +136,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     public void getAttendingEvents() {
-        if(rvAdapter != null){
+        if (rvAdapter != null) {
             rvAdapter.clear();
         }
         attendingEvents = new ArrayList<Ad>();
@@ -155,7 +149,7 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void done(List<Ad> objects, ParseException e) {
                 if (e == null) {
-                    if(objects.size()!=0) {
+                    if (objects.size() != 0) {
                         attendingEvents.addAll(objects);
                         for (int i = 0; i < attendingEvents.size(); i++) {
                             Log.d(TAG, "ATTENDING[" + i + "] = "
@@ -163,8 +157,7 @@ public class UserProfileFragment extends Fragment {
                                     + "\nusername = " + attendingEvents.get(i).getUser().getUsername());
                             tvNoAttending.setVisibility(View.GONE);
                         }
-                    }
-                    else{
+                    } else {
                         tvNoAttending.setVisibility(View.VISIBLE);
                         rvAttending.setVisibility(View.GONE);
                         return;
@@ -180,7 +173,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void initHostingRecycler() {
-       // Log.i(TAG, "initRecyclerView");
+        // Log.i(TAG, "initRecyclerView");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false);
         rvHosting.setLayoutManager(layoutManager);
         rvAdapter = new RecyclerViewAdapter(this.getContext(), hostingEvents);
@@ -188,7 +181,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void initAttendingRecycler() {
-      //  Log.i(TAG, "initRecyclerView");
+        //  Log.i(TAG, "initRecyclerView");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false);
         rvAttending.setLayoutManager(layoutManager);
         rvAdapter = new RecyclerViewAdapter(this.getContext(), attendingEvents);

@@ -1,58 +1,37 @@
 package com.example.teamproject;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
-//import android.support.v4.view.ViewPager;
-//import android.support.v7.app.AppCompatActivity;
-//import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.widget.ViewFlipper;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
 import com.google.android.gms.common.api.Status;
-//import com.google.android.gms.location.places.Place;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -68,6 +47,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+
 public class CreatePostActivity extends AppCompatActivity {
 
     private static final String TAG = "CreatePostActivity";
@@ -78,7 +58,6 @@ public class CreatePostActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            // TODO Auto-generated method stub
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -97,14 +76,11 @@ public class CreatePostActivity extends AppCompatActivity {
     TextView tvEndTime;
     Button btnAdAddress;
     EditText etAdDesc;
-    //ImageView ivPreview;
     ParseFile photoFile;
     ImageButton btnSubmit;
-//    EditText mSearchText;
     ViewFlipper viewFlipper;
 
 
-    private ArrayList<Uri> mArrayUri;
     private ArrayList<Bitmap> mBitmapsSelected;
     private ArrayList<ParseFile> mImages;
 
@@ -127,8 +103,6 @@ public class CreatePostActivity extends AppCompatActivity {
         btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
 
         viewFlipper = findViewById(R.id.viewFlipper);
-
-
 
 
         //ivPreview.setVisibility(View.GONE);
@@ -227,19 +201,19 @@ public class CreatePostActivity extends AppCompatActivity {
         });
     }
 
+    //Checks each field and verifies they are all filled out, or else changes color of field.
     private boolean makeSurePostable() {
         boolean isPostable = true;
-        if(etAdName.getText().length() == 0){
+        if (etAdName.getText().length() == 0) {
             Log.i(TAG, "title missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 etAdName.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
-            }
-            else{
+            } else {
                 etAdName.setHintTextColor(getResources().getColor(R.color.local_orange));
             }
             isPostable = false;
         }
-        if (tvDisplayDate.getText().length() == 0){
+        if (tvDisplayDate.getText().length() == 0) {
             Log.i(TAG, "date missing");
             tvDisplayDate.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
@@ -249,32 +223,32 @@ public class CreatePostActivity extends AppCompatActivity {
             tvEndTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
         }
-        if(tvStartTime.getText().length() == 0){
+        if (tvStartTime.getText().length() == 0) {
             Log.i(TAG, "end time missing");
             tvStartTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
         }
-        if(etAdDesc.getText().length() == 0){
+        if (etAdDesc.getText().length() == 0) {
             Log.i(TAG, "description missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 etAdDesc.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
-            }
-            else{
+            } else {
                 etAdDesc.setHintTextColor(getResources().getColor(R.color.local_orange));
             }
             isPostable = false;
         }
-        if(localeString == null){
+        if (localeString == null) {
             Log.i(TAG, "location missing");
             isPostable = false;
         }
-        if(mImages == null){
+        if (mImages == null) {
             Log.i(TAG, "photo missing");
             isPostable = false;
         }
         return isPostable;
     }
 
+    //updates Date Labal
     private void updateDateLabel() {
         String myFormatDate = "EEE, MMM d, yyyy"; //In which you need put here
         SimpleDateFormat sdfDATE = new SimpleDateFormat(myFormatDate, Locale.US);
@@ -282,6 +256,7 @@ public class CreatePostActivity extends AppCompatActivity {
         tvDisplayDate.setText(sdfDATE.format(myCalendar.getTime()));
     }
 
+    //updates Time label
     private void updateTimeLabel() {
         String myFormatTime = "h:mm a"; //In which you need put here
         SimpleDateFormat sdfTime = new SimpleDateFormat(myFormatTime, Locale.US);
@@ -289,6 +264,7 @@ public class CreatePostActivity extends AppCompatActivity {
         tvStartTime.setText(String.format(sdfTime.format(myCalendar.getTime())));
     }
 
+    //launches Gallery
     public void uploadPhoto(View view) {
         // Create intent for picking photos from the gallery
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -310,6 +286,7 @@ public class CreatePostActivity extends AppCompatActivity {
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
+    //on result of picking multiple photos, saves photos as bitmaps and parseFiles
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_PHOTO_CODE) {
@@ -317,13 +294,11 @@ public class CreatePostActivity extends AppCompatActivity {
                 if (data != null) {
                     if (data.getClipData() != null) {
                         ClipData mClipData = data.getClipData();
-                        mArrayUri = new ArrayList<Uri>();
                         mBitmapsSelected = new ArrayList<Bitmap>();
                         mImages = new ArrayList<ParseFile>();
                         for (int i = 0; i < mClipData.getItemCount(); i++) {
                             ClipData.Item item = mClipData.getItemAt(i);
                             Uri uri = item.getUri();
-                            mArrayUri.add(uri);
                             // !! You may need to resize the image if it's too large
                             Bitmap selectedImageBitmap = null;
                             try {
@@ -353,7 +328,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 Log.i(TAG, "Place LAT_LNG: " + place.getLatLng() + ", " + place.getName());
                 btnAdAddress.setText(place.getName());
-                localeString = place.getAddress().toString();
+                localeString = place.getAddress();
                 geoPoint = new ParseGeoPoint();
                 makeGeoPoint(place.getLatLng().toString());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
@@ -366,6 +341,7 @@ public class CreatePostActivity extends AppCompatActivity {
         }
     }
 
+    //initializes viewFlipper to preview images
     private void initViewFlipper() {
         if (viewFlipper != null) {
             viewFlipper.setInAnimation(getApplicationContext(), android.R.anim.slide_in_left);
@@ -378,7 +354,8 @@ public class CreatePostActivity extends AppCompatActivity {
 
                 imageView.setImageBitmap(bmp);
                 viewFlipper.addView(imageView);
-                if(mBitmapsSelected.size() > 1){
+                //if more than one image, start flipping
+                if (mBitmapsSelected.size() > 1) {
                     viewFlipper.startFlipping();
                 }
             }
@@ -388,7 +365,7 @@ public class CreatePostActivity extends AppCompatActivity {
     public void makeGeoPoint(String s) {
         String[] lat_long = s.substring(9).split("[(,)]");
         for (int i = 0; i < lat_long.length; i++) {
-            Log.d(TAG, ""+ i + ": " + lat_long[i]);
+            Log.d(TAG, "" + i + ": " + lat_long[i]);
         }
         geoPoint.setLatitude(Double.parseDouble(lat_long[1]));
         geoPoint.setLongitude(Double.parseDouble(lat_long[2]));
