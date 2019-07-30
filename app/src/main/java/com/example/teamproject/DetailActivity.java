@@ -3,9 +3,9 @@ package com.example.teamproject;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentTransaction;
+//import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -16,6 +16,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -211,9 +213,6 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         if (viewFlipper != null) {
-            if(ad.getImages().size() == 1){
-                viewFlipper.stopFlipping();
-            }
             for (ParseFile file : ad.getImages()) {
                     ImageView imageView = new ImageView(getApplicationContext());
 
@@ -225,6 +224,9 @@ public class DetailActivity extends AppCompatActivity {
                     }
                     imageView.setImageBitmap(bmp);
                     viewFlipper.addView(imageView);
+                    if(ad.getImages().size() > 1){
+                        viewFlipper.startFlipping();
+                    }
             }
         }
     }

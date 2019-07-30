@@ -1,23 +1,32 @@
 package com.example.teamproject;
 
-
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Path;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+//import android.support.v4.view.ViewPager;
+//import android.support.v7.app.AppCompatActivity;
+//import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -26,14 +35,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
+import com.google.android.gms.common.api.Status;
+//import com.google.android.gms.location.places.Place;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -41,13 +62,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class CreatePostActivity extends AppCompatActivity {
 
     private static final String TAG = "CreatePostActivity";
     private final static int PICK_PHOTO_CODE = 1046;
+    int AUTOCOMPLETE_REQUEST_CODE = 1;
     private final Calendar myCalendar = Calendar.getInstance();
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -61,16 +85,21 @@ public class CreatePostActivity extends AppCompatActivity {
         }
 
     };
+    List<Place.Field> fields;
+    PlacesClient placesClient;
+    String localeString;
+    ParseGeoPoint geoPoint;
 
     EditText etAdName;
     TextView tvDisplayDate;
     TextView tvStartTime;
     TextView tvEndTime;
-    EditText etAdAddress;
+    Button btnAdAddress;
     EditText etAdDesc;
     //ImageView ivPreview;
     ParseFile photoFile;
     ImageButton btnSubmit;
+//    EditText mSearchText;
     ViewFlipper viewFlipper;
 
 
@@ -83,10 +112,13 @@ public class CreatePostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
+        Places.initialize(getApplicationContext(), getResources().getString(R.string.google_maps_api_key));
+        placesClient = Places.createClient(this);
+
 
         etAdName = (EditText) findViewById(R.id.etAdName);
         tvEndTime = (TextView) findViewById(R.id.tvTimeDisplay2);
-        etAdAddress = (EditText) findViewById(R.id.etAdAddress);
+        btnAdAddress = (Button) findViewById(R.id.btnAdAddress);
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
         tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
         tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
@@ -144,7 +176,9 @@ public class CreatePostActivity extends AppCompatActivity {
             }
         });
 
+        fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
 
+        //init();
     }
 
     public void submitAd(View view) {
@@ -156,15 +190,16 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setTitle(etAdName.getText().toString());
             newAd.setDate(myCalendar.getTime());
             newAd.setEndTime(tvEndTime.getText().toString());
-            newAd.setAddress(etAdAddress.getText().toString());
+            newAd.setAddress(localeString);
+            newAd.setGeoPoint(geoPoint);
             newAd.setDescription(etAdDesc.getText().toString());
             newAd.setRSVP(new ArrayList<Object>());
             newAd.setImages(mImages);
+            postAd(newAd);
         } else {
             Toast.makeText(CreatePostActivity.this, "Missing information.", Toast.LENGTH_SHORT).show();
-            return;
+            //newAd.setImage(photoFile);
         }
-        postAd(newAd);
     }
 
     private void postAd(Ad newAd) {
@@ -193,16 +228,17 @@ public class CreatePostActivity extends AppCompatActivity {
 
     private boolean makeSurePostable() {
         boolean isPostable = true;
-        if (etAdName.getText().length() == 0) {
+        if(etAdName.getText().length() == 0){
             Log.i(TAG, "title missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 etAdName.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
-            } else {
+            }
+            else{
                 etAdName.setHintTextColor(getResources().getColor(R.color.local_orange));
             }
             isPostable = false;
         }
-        if (tvDisplayDate.getText().length() == 0) {
+        if (tvDisplayDate.getText().length() == 0){
             Log.i(TAG, "date missing");
             tvDisplayDate.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
@@ -212,31 +248,26 @@ public class CreatePostActivity extends AppCompatActivity {
             tvEndTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
         }
-        if (tvStartTime.getText().length() == 0) {
+        if(tvStartTime.getText().length() == 0){
             Log.i(TAG, "end time missing");
             tvStartTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
-            ;
         }
-        if (etAdAddress.getText().length() == 0) {
-            Log.i(TAG, "address missing");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                etAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
-            } else {
-                etAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
-            }
-            isPostable = false;
-        }
-        if (etAdDesc.getText().length() == 0) {
+        if(etAdDesc.getText().length() == 0){
             Log.i(TAG, "description missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 etAdDesc.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
-            } else {
+            }
+            else{
                 etAdDesc.setHintTextColor(getResources().getColor(R.color.local_orange));
             }
             isPostable = false;
         }
-        if (photoFile == null) {
+        if(localeString == null){
+            Log.i(TAG, "location missing");
+            isPostable = false;
+        }
+        if(mImages == null){
             Log.i(TAG, "photo missing");
             isPostable = false;
         }
@@ -269,6 +300,13 @@ public class CreatePostActivity extends AppCompatActivity {
             // Bring up gallery to select a photo
             startActivityForResult(Intent.createChooser(intent, "Select Pictures"), PICK_PHOTO_CODE);
         }
+    }
+
+    public void onClickLocation(View view) {
+        Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.FULLSCREEN, fields)
+                .build(this);
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
     @Override
@@ -309,6 +347,23 @@ public class CreatePostActivity extends AppCompatActivity {
                 }
             }
         }
+
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Log.i(TAG, "Place LAT_LNG: " + place.getLatLng() + ", " + place.getName());
+                btnAdAddress.setText(place.getName());
+                localeString = place.getAddress().toString();
+                geoPoint = new ParseGeoPoint();
+                makeGeoPoint(place.getLatLng().toString());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Toast.makeText(this, "Sorry! Can't find locations right now!", Toast.LENGTH_LONG).show();
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i(TAG, status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
     }
 
     private void initViewFlipper() {
@@ -330,5 +385,71 @@ public class CreatePostActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void makeGeoPoint(String s) {
+        String[] lat_long = s.substring(9).split("[(,)]");
+        for (int i = 0; i < lat_long.length; i++) {
+            Log.d(TAG, ""+ i + ": " + lat_long[i]);
+        }
+        geoPoint.setLatitude(Double.parseDouble(lat_long[1]));
+        geoPoint.setLongitude(Double.parseDouble(lat_long[2]));
+    }
+
+//    private void geoLocate(){
+//        Log.d(TAG, "geoLocate: geolocating");
+//
+//        String searchString = mSearchText.getText().toString();
+//
+//        Geocoder geocoder = new Geocoder(CreatePostActivity.this);
+//        List<Address> list = new ArrayList<>();
+//        try{
+//            list = geocoder.getFromLocationName(searchString, 1);
+//        }catch (IOException e){
+//            Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
+//        }
+//
+//        if(list.size() > 0){
+//            Address address = list.get(0);
+//
+//            Log.d(TAG, "geoLocate: found a location: " + address.toString());
+//            //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
+//
+//        }
+//    }
+//
+//    private void init(){
+//        Log.d(TAG, "init: initializing");
+//
+//        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+//                if(actionId == EditorInfo.IME_ACTION_SEARCH
+//                        || actionId == EditorInfo.IME_ACTION_DONE
+//                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
+//                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
+//
+//                    //execute our method for searching
+//                    geoLocate();
+//                }
+//
+//                return false;
+//            }
+//        });
+//    }
+
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+//            if (resultCode == RESULT_OK) {
+//                Place place = Autocomplete.getPlaceFromIntent(data);
+//                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+//            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+//                // TODO: Handle the error.
+//                Status status = Autocomplete.getStatusFromIntent(data);
+//                Log.i(TAG, status.getStatusMessage());
+//            } else if (resultCode == RESULT_CANCELED) {
+//                // The user canceled the operation.
+//            }
+//        }
+//    }
 
 }

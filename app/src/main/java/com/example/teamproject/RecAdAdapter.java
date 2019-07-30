@@ -2,8 +2,10 @@ package com.example.teamproject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;
@@ -82,7 +85,14 @@ public class RecAdAdapter extends RecyclerView.Adapter<RecAdAdapter.MasonryView>
     public void onBindViewHolder(MasonryView holder, int position) {
         Ad ad = mAds.get(position);
 
-        ParseFile imageFile = ad.getImage();
+        ParseFile imageFile;
+        if( ad.getImages().isEmpty()){
+            imageFile = ad.getImage();
+        }
+        else{
+            imageFile = ad.getImages().get(0);
+        }
+
         String imageURL = null;
         try {
             imageURL = imageFile.getUrl();
