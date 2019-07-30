@@ -7,6 +7,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.location.Address;
@@ -339,9 +340,8 @@ public class CreatePostActivity extends AppCompatActivity {
 
                             photoFile = new ParseFile("picture_" + i + ".jpeg", image);
                             mImages.add(photoFile);
-
-                            initViewFlipper();
                         }
+                        initViewFlipper();
                     }
 
                 }
@@ -373,15 +373,14 @@ public class CreatePostActivity extends AppCompatActivity {
         }
 
         if (viewFlipper != null) {
-            for (Bitmap image : mBitmapsSelected) {
-                ImageView imageView = new ImageView(this);
-                FrameLayout.LayoutParams layoutParams =
-                        new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(30, 30, 30, 30);
-                layoutParams.gravity = Gravity.CENTER;
-                imageView.setLayoutParams(layoutParams);
-                imageView.setImageBitmap(image);
+            for (Bitmap bmp : mBitmapsSelected) {
+                ImageView imageView = new ImageView(getApplicationContext());
+
+                imageView.setImageBitmap(bmp);
                 viewFlipper.addView(imageView);
+                if(mBitmapsSelected.size() > 1){
+                    viewFlipper.startFlipping();
+                }
             }
         }
     }
@@ -394,62 +393,5 @@ public class CreatePostActivity extends AppCompatActivity {
         geoPoint.setLatitude(Double.parseDouble(lat_long[1]));
         geoPoint.setLongitude(Double.parseDouble(lat_long[2]));
     }
-
-//    private void geoLocate(){
-//        Log.d(TAG, "geoLocate: geolocating");
-//
-//        String searchString = mSearchText.getText().toString();
-//
-//        Geocoder geocoder = new Geocoder(CreatePostActivity.this);
-//        List<Address> list = new ArrayList<>();
-//        try{
-//            list = geocoder.getFromLocationName(searchString, 1);
-//        }catch (IOException e){
-//            Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
-//        }
-//
-//        if(list.size() > 0){
-//            Address address = list.get(0);
-//
-//            Log.d(TAG, "geoLocate: found a location: " + address.toString());
-//            //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
-//
-//        }
-//    }
-//
-//    private void init(){
-//        Log.d(TAG, "init: initializing");
-//
-//        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-//                if(actionId == EditorInfo.IME_ACTION_SEARCH
-//                        || actionId == EditorInfo.IME_ACTION_DONE
-//                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-//                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
-//
-//                    //execute our method for searching
-//                    geoLocate();
-//                }
-//
-//                return false;
-//            }
-//        });
-//    }
-
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-//            if (resultCode == RESULT_OK) {
-//                Place place = Autocomplete.getPlaceFromIntent(data);
-//                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-//            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-//                // TODO: Handle the error.
-//                Status status = Autocomplete.getStatusFromIntent(data);
-//                Log.i(TAG, status.getStatusMessage());
-//            } else if (resultCode == RESULT_CANCELED) {
-//                // The user canceled the operation.
-//            }
-//        }
-//    }
 
 }
