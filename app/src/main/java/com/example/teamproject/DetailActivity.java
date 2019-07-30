@@ -1,14 +1,21 @@
 package com.example.teamproject;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -37,7 +44,8 @@ public class DetailActivity extends AppCompatActivity {
     int userCount;
 
     //TODO - add location
-    ImageView imageIV;
+    ViewFlipper viewFlipper;
+    //ImageView imageIV;
     TextView titleTV;
     TextView locationTV;
     TextView dateTV;
@@ -58,7 +66,8 @@ public class DetailActivity extends AppCompatActivity {
         ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
         userCount = ad.getRSVPCount();
 
-        imageIV = findViewById(R.id.ivImage);
+        //imageIV = findViewById(R.id.ivImage);
+        viewFlipper = findViewById(R.id.viewFlipper);
         titleTV = findViewById(R.id.tvTitle);
         locationTV = findViewById(R.id.tvLocation);
         dateTV = findViewById(R.id.tvDate);
@@ -90,18 +99,19 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         //set event image
-        ParseFile imageFile = ad.getImage();
-        String imageURL = null;
-        try {
-            imageURL = imageFile.getUrl();
-        } catch (NullPointerException e) {
-
-        }
-        Glide.with(getApplicationContext())
-                .load(imageURL)
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.ic_launcher_background))
-                .into(imageIV);
+        initViewFlipper();
+//        ParseFile imageFile = ad.getImage();
+//        String imageURL = null;
+//        try {
+//            imageURL = imageFile.getUrl();
+//        } catch (NullPointerException e) {
+//
+//        }
+//        Glide.with(getApplicationContext())
+//                .load(imageURL)
+//                .apply(new RequestOptions()
+//                        .placeholder(R.drawable.ic_launcher_background))
+//                .into(imageIV);
 
         //sets event host details
         //need to use fetchIfNeeded, or else causes error
@@ -191,6 +201,32 @@ public class DetailActivity extends AppCompatActivity {
         }
         Log.i(TAG, "isUserRegistered: false");
         return false;
+    }
+
+
+    private void initViewFlipper() {
+        if (viewFlipper != null) {
+            viewFlipper.setInAnimation(getApplicationContext(), android.R.anim.slide_in_left);
+            viewFlipper.setOutAnimation(getApplicationContext(), android.R.anim.slide_out_right);
+        }
+
+        if (viewFlipper != null) {
+            if(ad.getImages().size() == 1){
+                viewFlipper.stopFlipping();
+            }
+            for (ParseFile file : ad.getImages()) {
+                    ImageView imageView = new ImageView(getApplicationContext());
+
+                    Bitmap bmp= null;
+                    try {
+                        bmp = BitmapFactory.decodeByteArray(file.getData(), 0, file.getData().length);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    imageView.setImageBitmap(bmp);
+                    viewFlipper.addView(imageView);
+            }
+        }
     }
 
 }

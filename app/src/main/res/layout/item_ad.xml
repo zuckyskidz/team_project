@@ -39,13 +39,21 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <ViewFlipper
-            android:id="@+id/viewFlipper"
-            android:layout_width="wrap_content"
+        <!--<ViewFlipper-->
+            <!--android:id="@+id/viewFlipper"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="150dp"-->
+            <!--android:autoStart="true"-->
+            <!--android:flipInterval="2000">-->
+        <!--</ViewFlipper>-->
+
+        <ImageView
+            android:id="@+id/ivAdImage"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autoStart="true"
-            android:flipInterval="2000">
-        </ViewFlipper>
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
+
 
         <TextView
             android:id="@+id/tvTitle"

@@ -39,7 +39,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_ad, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_ad_user_profile, viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -57,13 +57,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         if (viewHolder.viewFlipper != null) {
             for (Ad ad : mAds) {
+                if(ad.getImages().size() == 1){
+                    viewHolder.viewFlipper.stopFlipping();
+                }
                 for(ParseFile image : ad.getImages()){
                     ImageView imageView = new ImageView(mContext);
-                    FrameLayout.LayoutParams layoutParams =
-                            new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(30, 30, 30, 30);
-                    layoutParams.gravity = Gravity.CENTER;
-                    imageView.setLayoutParams(layoutParams);
+//                    FrameLayout.LayoutParams layoutParams =
+//                            new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    layoutParams.gravity = Gravity.CENTER;
+//                    imageView.setLayoutParams(layoutParams);
                     Bitmap bmp= null;
                     try {
                         bmp = BitmapFactory.decodeByteArray(image.getData(), 0, image.getData().length);
