@@ -164,6 +164,7 @@ public class SignupActivity extends AppCompatActivity {
         user.put("phone", phone);
         user.put("attendingEvents", new ArrayList<Ad>());
         user.put("profileImage",imageFile);
+        user.put("level", 1);
 
         // Invoke signUpInBackground
         user.signUpInBackground(new SignUpCallback() {

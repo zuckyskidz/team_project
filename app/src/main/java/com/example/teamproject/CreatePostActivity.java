@@ -26,6 +26,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -89,7 +90,8 @@ public class CreatePostActivity extends AppCompatActivity {
     ImageView ivPreview;
     ParseFile photoFile;
     ImageButton btnSubmit;
-//    EditText mSearchText;
+    RatingBar rbSetLevel;
+    TextView tvLevelDisp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,9 +109,16 @@ public class CreatePostActivity extends AppCompatActivity {
         tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
         ivPreview = (ImageView) findViewById(R.id.ivPreview);
         btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
-//        mSearchText = (EditText) findViewById(R.id.btnAdAddress);
-
+        rbSetLevel = (RatingBar) findViewById(R.id.rbSetLevel);
+        tvLevelDisp = (TextView) findViewById(R.id.tvLevelDisp);
         ivPreview.setVisibility(View.GONE);
+
+        rbSetLevel.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                tvLevelDisp.setText("Level " + ((int) rating));
+            }
+        });
 
         tvDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +183,7 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setDescription(etAdDesc.getText().toString());
             newAd.setRSVP(new ArrayList<Object>());
             newAd.setImage(photoFile);
+            newAd.setLevel((int) rbSetLevel.getRating());
         }
         else{
             Toast.makeText(CreatePostActivity.this, "Missing information.", Toast.LENGTH_SHORT).show();
@@ -238,10 +248,10 @@ public class CreatePostActivity extends AppCompatActivity {
 
             Log.i(TAG, "address missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                etAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+                btnAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
             }
             else{
-                etAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
+                btnAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
             }
             isPostable = false;
         }

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 //import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,7 @@ public class UserProfileFragment extends Fragment {
     TextView tvName;
     TextView tvNoAttending;
     TextView tvNoHosting;
+    RatingBar rbLevel;
 
     ParseUser currentUser;
     ArrayList<Ad> attendingEvents;
@@ -87,8 +89,10 @@ public class UserProfileFragment extends Fragment {
         rvAttending = (RecyclerView) view.findViewById(R.id.rvAttendingEvents);
         tvNoAttending= view.findViewById(R.id.tvNoAttending);
         tvNoHosting = view.findViewById(R.id.tvNoHosting);
+        rbLevel = view.findViewById(R.id.rbLevels);
       
         tvName.setText(currentUser.getUsername());
+        rbLevel.setRating(currentUser.getInt("level"));
 
         ParseFile imageFile = currentUser.getParseFile("profileImage");
         String imageURL = null;

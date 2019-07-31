@@ -26,6 +26,7 @@ public class Ad extends ParseObject {
     private static final String KEY_TAGS = "tags";
     private static final String KEY_RSVP = "rsvp";
     public static final String KEY_GEOPPOINT = "geoPoints";
+    public static final String KEY_LEVEL = "level";
 
     public String getDescription() {
         return getString(KEY_DESCRIPTION);
@@ -123,6 +124,10 @@ public class Ad extends ParseObject {
     public int getRSVPCount() {
         return getRSVP().size();
     }
+
+    public int getLevel() { return getInt(KEY_LEVEL); }
+
+    public void setLevel(int newLevel) { put(KEY_LEVEL, newLevel); }
 
     public static class Query extends ParseQuery<Ad> {
         public Query() {

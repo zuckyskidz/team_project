@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,6 +51,7 @@ public class DetailActivity extends AppCompatActivity {
     Button rsvpBT;
     ImageView profImageIV;
     TextView attendingCount;
+    RatingBar rbLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,9 @@ public class DetailActivity extends AppCompatActivity {
         rsvpBT = findViewById(R.id.btRSVP);
         attendingCount = findViewById(R.id.tvAttendingCount);
         profImageIV = findViewById(R.id.profile_image);
+        rbLevel = findViewById(R.id.rbLevels);
+
+        rbLevel.setRating(ad.getLevel());
 
         if (isUserRegistered()) {
             showUserRegistered();
