@@ -1,6 +1,9 @@
 package com.example.teamproject;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.Bundle;
 //import android.support.annotation.NonNull;
 //import android.support.annotation.Nullable;
@@ -8,12 +11,14 @@ import android.os.Bundle;
 //import android.support.v7.widget.LinearLayoutManager;
 //import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 //import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +30,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -34,6 +44,8 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 import static com.parse.Parse.getApplicationContext;
 
 
@@ -45,6 +57,7 @@ public class UserProfileFragment extends Fragment {
 
 
     Button logoutBT;
+    Button qrBT;
     ImageView ivProfileImage;
     TextView tvName;
     TextView tvNoAttending;
@@ -70,7 +83,6 @@ public class UserProfileFragment extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
-
         logoutBT = getView().findViewById(R.id.logout);
         logoutBT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +90,14 @@ public class UserProfileFragment extends Fragment {
                 ParseUser.logOut();
                 Intent i = new Intent(getActivity(), LoginActivity.class);
                 startActivity(i);
+            }
+        });
+
+        qrBT = getView().findViewById(R.id.qrCode);
+        qrBT.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                showPopup(v);
             }
         });
 
@@ -201,6 +221,47 @@ public class UserProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_user_profile, container, false);
+    }
+
+    public void showPopup(View anchorView) {
+
+        View popupView = getLayoutInflater().inflate(R.layout.qr_popup, null);
+
+        PopupWindow popupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        // Example: If you have a TextView inside `popup_layout.xml`
+        ImageView ivQR = popupView.findViewById(R.id.ivQR);
+
+        ivQR.setImageBitmap(getQR(ParseUser.getCurrentUser().getUsername()));
+
+
+        // If the PopupWindow should be focusable
+        popupWindow.setFocusable(true);
+
+        // If you need the PopupWindow to dismiss when when touched outside
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+        int location[] = new int[2];
+
+        // Get the View's(the one that was clicked in the Fragment) location
+        anchorView.getLocationOnScreen(location);
+
+        // Using location, the PopupWindow will be displayed right under anchorView
+        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY,
+                location[0], location[1] + anchorView.getHeight());
+
+        Log.i(TAG, String.valueOf(popupView.isShown()));
+
+    }
+
+    private Bitmap getQR(String str){
+            Bitmap bitmap = QRCodeHelper
+                    .newInstance(getContext())
+                    .setContent(str)
+                    .setErrorCorrectionLevel(ErrorCorrectionLevel.Q)
+                    .setMargin(2)
+                    .getQRCOde();
+            return bitmap;
     }
 
 }
