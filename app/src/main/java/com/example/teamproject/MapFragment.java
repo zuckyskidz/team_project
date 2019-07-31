@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
-import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -248,38 +247,38 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public void createGeofence(double lat, double lng){
-
-        if(geofenceList != null) geofenceList.clear();
-
-        geofenceList.add(new Geofence.Builder()
-                // Set the request ID of the geofence. This is a string to identify this
-                // geofence.
-                .setRequestId("My Location")
-
-                .setCircularRegion(
-                        lat,
-                        lng,
-                        GEOFENCE_RADIUS_IN_METERS
-                )
-                .setExpirationDuration(GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                        Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build());
-
-    }
-
-    private boolean inGeofence(){
-
-        return false;
-    }
-
-    private GeofencingRequest getGeofencingRequest() {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(geofenceList);
-        return builder.build();
-    }
+//    public void createGeofence(double lat, double lng){
+//
+//        if(geofenceList != null) geofenceList.clear();
+//
+//        geofenceList.add(new Geofence.Builder()
+//                // Set the request ID of the geofence. This is a string to identify this
+//                // geofence.
+//                .setRequestId("My Location")
+//
+//                .setCircularRegion(
+//                        lat,
+//                        lng,
+//                        GEOFENCE_RADIUS_IN_METERS
+//                )
+//                .setExpirationDuration(GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+//                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+//                        Geofence.GEOFENCE_TRANSITION_EXIT)
+//                .build());
+//
+//    }
+//
+//    private boolean inGeofence(){
+//
+//        return false;
+//    }
+//
+//    private GeofencingRequest getGeofencingRequest() {
+//        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+//        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+//        builder.addGeofences(geofenceList);
+//        return builder.build();
+//    }
 
 
 
