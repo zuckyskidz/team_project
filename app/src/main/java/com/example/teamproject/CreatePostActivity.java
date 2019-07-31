@@ -113,6 +113,7 @@ public class CreatePostActivity extends AppCompatActivity {
         tvLevelDisp = (TextView) findViewById(R.id.tvLevelDisp);
         ivPreview.setVisibility(View.GONE);
 
+        tvLevelDisp.setText("Level " + ((int) rbSetLevel.getRating()));
         rbSetLevel.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {

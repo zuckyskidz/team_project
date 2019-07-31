@@ -92,6 +92,7 @@ public class UserProfileFragment extends Fragment {
         rbLevel = view.findViewById(R.id.rbLevels);
       
         tvName.setText(currentUser.getUsername());
+        Log.d(TAG, "User Level is " + currentUser.getInt("level"));
         rbLevel.setRating(currentUser.getInt("level"));
 
         ParseFile imageFile = currentUser.getParseFile("profileImage");
