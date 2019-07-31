@@ -1,9 +1,7 @@
 package com.example.teamproject;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
 //import android.support.annotation.NonNull;
 //import android.support.annotation.Nullable;
 //import android.support.annotation.RequiresApi;
@@ -17,18 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 
 import com.example.teamproject.models.Ad;
-import com.example.teamproject.models.RecyclerItemClickListener;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,7 +33,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 
 public class ListFragment extends Fragment {
