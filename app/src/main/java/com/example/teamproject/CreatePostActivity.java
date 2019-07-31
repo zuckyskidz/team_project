@@ -218,32 +218,59 @@ public class CreatePostActivity extends AppCompatActivity {
             }
             isPostable = false;
         }
+        else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                etAdName.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.defaultGray)));
+            }
+        }
         if (tvDisplayDate.getText().length() == 0){
             Log.i(TAG, "date missing");
             tvDisplayDate.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
+        }
+        else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                tvDisplayDate.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.defaultGray)));
+            }
         }
         if(tvEndTime.getText().length() == 0){
             Log.i(TAG, "end time missing");
             tvEndTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
         }
+        else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                tvEndTime.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.defaultGray)));
+            }
+        }
+
         if(tvStartTime.getText().length() == 0){
             Log.i(TAG, "end time missing");
             tvStartTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;;
         }
+        else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                tvStartTime.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.defaultGray)));
+            }
+        }
+
 
         if(btnAdAddress.getText().equals("")){
 
             Log.i(TAG, "address missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                etAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+                btnAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
             }
             else{
-                etAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
+                btnAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
             }
             isPostable = false;
+        }
+        else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                btnAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.defaultGray)));
+            }
         }
         if(etAdDesc.getText().length() == 0){
             Log.i(TAG, "description missing");
@@ -254,7 +281,12 @@ public class CreatePostActivity extends AppCompatActivity {
                 etAdDesc.setHintTextColor(getResources().getColor(R.color.local_orange));
             }            isPostable = false;
         }
-        if(localeString.equals("")){
+        else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                etAdDesc.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.defaultGray)));
+            }
+        }
+        if(localeString == null){
             Log.i(TAG, "location missing");
             return false;
         }
