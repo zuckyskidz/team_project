@@ -195,4 +195,8 @@ public class DetailActivity extends AppCompatActivity {
         return false;
     }
 
+    private void onDelete(View view) {
+
+    }
+
 }
