@@ -26,7 +26,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <receiver android:name=".GeofenceBroadcastReceiver"/>
         <service android:name=".GeofenceTransitionsIntentService"/>
@@ -38,9 +39,9 @@
 
 
         <activity android:name=".CreatePostActivity" />
-        <activity android:name=".DetailActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+        <activity
+            android:name=".DetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity"
         android:theme="@style/AppTheme">

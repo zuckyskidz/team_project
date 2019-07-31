@@ -4,17 +4,19 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.example.teamproject.models.Ad;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
@@ -34,7 +36,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.parse.ParseQuery;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
@@ -57,6 +62,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private int LOCATION_REQUEST_ID = 2222;
     private int GEOFENCE_RADIUS_IN_METERS = 8000;
     private int GEOFENCE_EXPIRATION_IN_MILLISECONDS = 1000;
+
+    ArrayList<Ad> closestEvents;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -209,7 +216,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         getCurrentLocation();
 
-
+        getClosestEvents();
+        pinClosestEvents();
 
     }
 
@@ -246,6 +254,49 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             return false;
         }
     }
+
+    public void getClosestEvents(){
+        closestEvents = new ArrayList<Ad>();
+        ParseQuery<Ad> query = ParseQuery.getQuery("Ad");
+
+    }
+
+    public void pinClosestEvents(){
+
+    }
+
+    //radius measured in
+    boolean isWithinRadius(double radius){
+
+        return false;
+    }
+
+    double distanceBetweenGeopoints(LatLng start, LatLng end) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = start.latitude;
+        double lat2 = end.latitude;
+        double lng1 = start.longitude;
+        double lng2 = end.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lng2 - lng1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+
+        return Radius * c;
+    }
+
+
 
 //    public void createGeofence(double lat, double lng){
 //

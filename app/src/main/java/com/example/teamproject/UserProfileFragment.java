@@ -2,19 +2,19 @@ package com.example.teamproject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -30,6 +30,8 @@ import java.util.List;
 
 import static com.parse.Parse.getApplicationContext;
 
+//import android.widget.GridView;
+
 
 public class UserProfileFragment extends Fragment {
     private static final String TAG = "UserProfileFragment";
@@ -41,6 +43,8 @@ public class UserProfileFragment extends Fragment {
     Button logoutBT;
     ImageView ivProfileImage;
     TextView tvName;
+    TextView tvNoAttending;
+    TextView tvNoHosting;
 
     ParseUser currentUser;
     ArrayList<Ad> attendingEvents;
@@ -77,10 +81,8 @@ public class UserProfileFragment extends Fragment {
         tvName = view.findViewById(R.id.tvName);
         rvHosting = (RecyclerView) view.findViewById(R.id.rvHostingEvents);
         rvAttending = (RecyclerView) view.findViewById(R.id.rvAttendingEvents);
-
-
-        getAttendingEvents();
-        getHostingEvents();
+        tvNoAttending= view.findViewById(R.id.tvNoAttending);
+        tvNoHosting = view.findViewById(R.id.tvNoHosting);
       
         tvName.setText(currentUser.getUsername());
 
@@ -100,6 +102,9 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void getHostingEvents() {
+        if(rvAdapter != null){
+            rvAdapter.clear();
+        }
         hostingEvents = new ArrayList<Ad>();
         final Ad.Query adQuery = new Ad.Query();
         adQuery.withUser();
@@ -108,11 +113,19 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void done(List<Ad> objects, ParseException e) {
                 if (e == null) {
-                    hostingEvents.addAll(objects);
-                    for (int i = 0; i < hostingEvents.size(); i++) {
-                        Log.d(TAG, "HOSTING[" + i + "] = "
-                                + hostingEvents.get(i).getDescription()
-                                + "\nusername = " + hostingEvents.get(i).getUser().getUsername());
+                    if(objects.size()!=0) {
+                        hostingEvents.addAll(objects);
+                        for (int i = 0; i < hostingEvents.size(); i++) {
+                            Log.d(TAG, "HOSTING[" + i + "] = "
+                                    + hostingEvents.get(i).getDescription()
+                                    + "\nusername = " + hostingEvents.get(i).getUser().getUsername());
+                            tvNoHosting.setVisibility(View.GONE);
+                        }
+                    }
+                    else{
+                        tvNoHosting.setVisibility(View.VISIBLE);
+                        rvHosting.setVisibility(View.GONE);
+                        return;
                     }
                 } else {
                     e.printStackTrace();
@@ -125,6 +138,9 @@ public class UserProfileFragment extends Fragment {
     }
 
     public void getAttendingEvents() {
+        if(rvAdapter != null){
+            rvAdapter.clear();
+        }
         attendingEvents = new ArrayList<Ad>();
         final Ad.Query adQuery = new Ad.Query();
         adQuery.withUser();
@@ -135,11 +151,19 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void done(List<Ad> objects, ParseException e) {
                 if (e == null) {
-                    attendingEvents.addAll(objects);
-                    for (int i = 0; i < attendingEvents.size(); i++) {
-                        Log.d(TAG, "ATTENDING[" + i + "] = "
-                                + attendingEvents.get(i).getDescription()
-                                + "\nusername = " + attendingEvents.get(i).getUser().getUsername());
+                    if(objects.size()!=0) {
+                        attendingEvents.addAll(objects);
+                        for (int i = 0; i < attendingEvents.size(); i++) {
+                            Log.d(TAG, "ATTENDING[" + i + "] = "
+                                    + attendingEvents.get(i).getDescription()
+                                    + "\nusername = " + attendingEvents.get(i).getUser().getUsername());
+                            tvNoAttending.setVisibility(View.GONE);
+                        }
+                    }
+                    else{
+                        tvNoAttending.setVisibility(View.VISIBLE);
+                        rvAttending.setVisibility(View.GONE);
+                        return;
                     }
                 } else {
                     e.printStackTrace();
