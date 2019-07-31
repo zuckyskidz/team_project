@@ -6,12 +6,9 @@ package com.example.teamproject;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -23,21 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Result;
-import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -59,8 +48,7 @@ public class DetailActivity extends AppCompatActivity{
     Ad ad;
     int userCount;
     private Class<?> mClss;
-    ArrayAdapter<String> adapter;
-    ArrayList<String> names;
+
 
     //TODO - add location
     Button qrScanBTN;
@@ -77,12 +65,39 @@ public class DetailActivity extends AppCompatActivity{
     ImageView profImageIV;
     TextView attendingCount;
     ListView lvAttendees;
-    private ZXingScannerView mScannerView;
+
+    View popupView;
+    PopupWindow popupWindow;
+    ArrayAdapter<String> adapter;
+    ArrayList<String> names;
+
+    @Override
+   protected void onResume(){
+       super.onResume();
+       if(adapter!=null) {
+           populate();
+           adapter.notifyDataSetChanged();
+       }
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        popupView = getLayoutInflater().inflate(R.layout.attendees_list_popup, null);
+
+        popupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        names = new ArrayList<>();
+        // Example: If you have a TextView inside `popup_layout.xml`
+        lvAttendees = popupView.findViewById(R.id.lvAttendees);
+        adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+        lvAttendees.setAdapter(adapter);
+
 
         Log.i(TAG, "in ON Create");
         ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
@@ -194,44 +209,25 @@ public class DetailActivity extends AppCompatActivity{
     }
 
     private void showPopup(View anchorView) {
-        View popupView = getLayoutInflater().inflate(R.layout.attendees_list_popup, null);
+        populate();
 
-        PopupWindow popupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        // Example: If you have a TextView inside `popup_layout.xml`
-        lvAttendees = popupView.findViewById(R.id.lvAttendees);
-
-        populate(lvAttendees);
-
-        // If the PopupWindow should be focusable
         popupWindow.setFocusable(true);
-
-        // If you need the PopupWindow to dismiss when when touched outside
         popupWindow.setBackgroundDrawable(new ColorDrawable());
-
         popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
 
         Log.i(TAG, String.valueOf(popupView.isShown()));
 
     }
 
-    private void populate(ListView lvAttendees) {
-
-        names = new ArrayList<>();
+    private void populate() {
         List<Object> attendees = ad.getAttendees();
+        Log.i(TAG, String.valueOf(ad.getAttendees().size()));
         for(int i = 0; i < attendees.size(); i++){
             ParseUser user = (ParseUser) attendees.get(i);
-            Log.i(TAG, user.getUsername());
             names.add( user.getUsername());
+            adapter.notifyDataSetChanged();
+
         }
-
-        adapter=new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1,
-                names);
-
-        lvAttendees.setAdapter(adapter);
-
     }
 
 

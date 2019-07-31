@@ -174,6 +174,7 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setDescription(etAdDesc.getText().toString());
             newAd.setRSVP(new ArrayList<Object>());
             newAd.setImage(photoFile);
+            newAd.setAttendees(new ArrayList<Object>());
         }
         else{
             Toast.makeText(CreatePostActivity.this, "Missing information.", Toast.LENGTH_SHORT).show();

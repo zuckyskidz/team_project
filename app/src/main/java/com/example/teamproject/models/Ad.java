@@ -121,6 +121,10 @@ public class Ad extends ParseObject {
     public List<Object> getAttendees() {
         return getList(KEY_ATTENDEES);
     }
+    public void setAttendees(List<Object> users) {
+        put(KEY_ATTENDEES, users);
+    }
+
 
     public void setRSVP(List<Object> list) {
         put(KEY_RSVP, list);

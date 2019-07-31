@@ -1,6 +1,5 @@
 package com.example.teamproject;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,12 +14,10 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.teamproject.models.Ad;
 import com.google.zxing.Result;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
@@ -90,14 +87,19 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
     private void signInAttendee(ParseUser parseUser) {
         ad.addAllUnique("attendees", Collections.singleton(parseUser));
-        ad.saveInBackground();
+        ad.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                Log.i(TAG, "user attendence saved");
+            }
+        });
     }
 
     public void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
-        if(ab != null) {
+        if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
     }
