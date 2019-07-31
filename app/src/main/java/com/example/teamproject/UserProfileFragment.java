@@ -240,14 +240,8 @@ public class UserProfileFragment extends Fragment {
 
         // If you need the PopupWindow to dismiss when when touched outside
         popupWindow.setBackgroundDrawable(new ColorDrawable());
-        int location[] = new int[2];
 
-        // Get the View's(the one that was clicked in the Fragment) location
-        anchorView.getLocationOnScreen(location);
-
-        // Using location, the PopupWindow will be displayed right under anchorView
-        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY,
-                location[0], location[1] + anchorView.getHeight());
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
 
         Log.i(TAG, String.valueOf(popupView.isShown()));
 
