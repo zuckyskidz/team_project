@@ -75,13 +75,15 @@ public class DetailActivity extends AppCompatActivity {
         profImageIV = findViewById(R.id.profile_image);
         fabDelete = findViewById(R.id.fabDelete);
 
+        Log.d(TAG, "Ownership is being checked...");
+        isOwner();
+        Log.d(TAG, "Ownership checked been checked.");
+
         if (isUserRegistered()) {
             showUserRegistered();
         } else {
             showUserUnregistered();
         }
-
-        isOwner();
 
         rsvpBT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,10 +203,12 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public boolean isOwner() {
-        if (ParseUser.getCurrentUser().equals(ad.getUser())) {
+        if (ParseUser.getCurrentUser().getUsername().equals(ad.getUser().getUsername())) {
+            Log.d(TAG, "User is Owner!");
             fabDelete.show();
             return true;
         } else {
+            Log.d(TAG, "User is NOT Owner!");
             fabDelete.hide();
             return false;
         }
