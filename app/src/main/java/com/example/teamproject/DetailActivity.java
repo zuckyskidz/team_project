@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseConfig;
@@ -50,6 +51,7 @@ public class DetailActivity extends AppCompatActivity {
     Button rsvpBT;
     ImageView profImageIV;
     TextView attendingCount;
+    FloatingActionButton fabDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +73,15 @@ public class DetailActivity extends AppCompatActivity {
         rsvpBT = findViewById(R.id.btRSVP);
         attendingCount = findViewById(R.id.tvAttendingCount);
         profImageIV = findViewById(R.id.profile_image);
+        fabDelete = findViewById(R.id.fabDelete);
 
         if (isUserRegistered()) {
             showUserRegistered();
         } else {
             showUserUnregistered();
         }
+
+        isOwner();
 
         rsvpBT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,8 +200,19 @@ public class DetailActivity extends AppCompatActivity {
         return false;
     }
 
-    private void onDelete(View view) {
-
+    public boolean isOwner() {
+        if (ParseUser.getCurrentUser().equals(ad.getUser())) {
+            fabDelete.show();
+            return true;
+        } else {
+            fabDelete.hide();
+            return false;
+        }
     }
 
+    public void onDelete(View view) {
+        if (isOwner()) {
+            ad.deleteInBackground();
+        }
+    }
 }
