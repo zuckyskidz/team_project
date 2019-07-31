@@ -5,15 +5,20 @@ package com.example.teamproject;
 //import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +37,14 @@ import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -52,9 +59,12 @@ public class DetailActivity extends AppCompatActivity{
     Ad ad;
     int userCount;
     private Class<?> mClss;
+    ArrayAdapter<String> adapter;
+    ArrayList<String> names;
 
     //TODO - add location
     Button qrScanBTN;
+    Button viewAttendeesBTN;
     ImageView imageIV;
     TextView titleTV;
     TextView locationTV;
@@ -66,6 +76,7 @@ public class DetailActivity extends AppCompatActivity{
     Button rsvpBT;
     ImageView profImageIV;
     TextView attendingCount;
+    ListView lvAttendees;
     private ZXingScannerView mScannerView;
 
     @Override
@@ -89,10 +100,19 @@ public class DetailActivity extends AppCompatActivity{
         attendingCount = findViewById(R.id.tvAttendingCount);
         profImageIV = findViewById(R.id.profile_image);
         qrScanBTN = findViewById(R.id.btnQRScan);
+        viewAttendeesBTN = findViewById(R.id.btnAttendees);
 
         if(ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())){
             qrScanBTN.setVisibility(View.VISIBLE);
-            
+            viewAttendeesBTN.setVisibility(View.VISIBLE);
+
+            viewAttendeesBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showPopup(v);
+                }
+            });
+
             qrScanBTN.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -170,6 +190,48 @@ public class DetailActivity extends AppCompatActivity{
         timeTV.setText(stf.format(date) + " - " + ad.getEndTime());
 
         descriptionTV.setText(ad.getDescription());
+
+    }
+
+    private void showPopup(View anchorView) {
+        View popupView = getLayoutInflater().inflate(R.layout.attendees_list_popup, null);
+
+        PopupWindow popupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        // Example: If you have a TextView inside `popup_layout.xml`
+        lvAttendees = popupView.findViewById(R.id.lvAttendees);
+
+        populate(lvAttendees);
+
+        // If the PopupWindow should be focusable
+        popupWindow.setFocusable(true);
+
+        // If you need the PopupWindow to dismiss when when touched outside
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
+
+        Log.i(TAG, String.valueOf(popupView.isShown()));
+
+    }
+
+    private void populate(ListView lvAttendees) {
+
+        names = new ArrayList<>();
+        List<Object> attendees = ad.getAttendees();
+        for(int i = 0; i < attendees.size(); i++){
+            ParseUser user = (ParseUser) attendees.get(i);
+            Log.i(TAG, user.getUsername());
+            names.add( user.getUsername());
+        }
+
+        adapter=new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1,
+                names);
+
+        lvAttendees.setAdapter(adapter);
+
     }
 
 
@@ -226,17 +288,7 @@ public class DetailActivity extends AppCompatActivity{
         Log.i(TAG, "isUserRegistered: false");
         return false;
     }
-    public void launchActivity(Class<?> clss) {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            mClss = clss;
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.CAMERA}, ZXING_CAMERA_PERMISSION);
-        } else {
-            Intent intent = new Intent(this, clss);
-            startActivity(intent);
-        }
-    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,  String permissions[], int[] grantResults) {

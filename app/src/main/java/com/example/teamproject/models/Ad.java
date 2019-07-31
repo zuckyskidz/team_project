@@ -25,6 +25,8 @@ public class Ad extends ParseObject {
     private static final String KEY_LOCATION = "location";
     private static final String KEY_TAGS = "tags";
     private static final String KEY_RSVP = "rsvp";
+    private static final String KEY_ATTENDEES = "attendees";
+
     public static final String KEY_GEOPPOINT = "geoPoints";
 
     public String getDescription() {
@@ -114,6 +116,10 @@ public class Ad extends ParseObject {
 
     public List<Object> getRSVP() {
         return getList(KEY_RSVP);
+    }
+
+    public List<Object> getAttendees() {
+        return getList(KEY_ATTENDEES);
     }
 
     public void setRSVP(List<Object> list) {
