@@ -3,6 +3,7 @@ package com.example.teamproject;
 //import android.support.v4.app.Fragment;
 //import android.support.v4.app.FragmentTransaction;
 //import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -120,7 +121,6 @@ public class DetailActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        ;
 
         //set profile image and details
         ParseFile profImageFile = ad.getUser().getParseFile("profileImage");
@@ -216,7 +216,9 @@ public class DetailActivity extends AppCompatActivity {
 
     public void onDelete(View view) {
         if (isOwner()) {
+            Intent home = new Intent(DetailActivity.this, HomeFeedActivity.class);
             ad.deleteInBackground();
+            startActivity(home);
         }
     }
 }
