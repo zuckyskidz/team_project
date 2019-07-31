@@ -96,7 +96,9 @@ public class DetailActivity extends AppCompatActivity{
             qrScanBTN.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    launchActivity(ScannerActivity.class);
+                    Intent i = new Intent(getApplicationContext(), ScannerActivity.class);
+                    i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+                    startActivity(i);
                 }
             });
         }

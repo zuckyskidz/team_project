@@ -34,7 +34,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -233,7 +232,7 @@ public class UserProfileFragment extends Fragment {
         // Example: If you have a TextView inside `popup_layout.xml`
         ImageView ivQR = popupView.findViewById(R.id.ivQR);
 
-        ivQR.setImageBitmap(getQR(ParseUser.getCurrentUser().getUsername()));
+        ivQR.setImageBitmap(getQR(ParseUser.getCurrentUser().getObjectId()));
 
 
         // If the PopupWindow should be focusable
@@ -258,7 +257,6 @@ public class UserProfileFragment extends Fragment {
             Bitmap bitmap = QRCodeHelper
                     .newInstance(getContext())
                     .setContent(str)
-                    .setErrorCorrectionLevel(ErrorCorrectionLevel.Q)
                     .setMargin(2)
                     .getQRCOde();
             return bitmap;
