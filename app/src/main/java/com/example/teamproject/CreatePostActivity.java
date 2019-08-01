@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.PaintDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -126,15 +127,44 @@ public class CreatePostActivity extends AppCompatActivity {
         foodBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleBackground(foodBTN);
-
+                toggle(foodBTN);
             }
         });
         sportsBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3C3	))));
+        sportsBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(foodBTN);
+            }
+        });
         ageBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3C3	))));
+        ageBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(foodBTN);
+            }
+        });
         artsBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3AD	))));
+        artsBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(foodBTN);
+            }
+        });
         holidayBTN.setText(new StringBuilder(new String(Character.toChars(0x1F383	))));
+        holidayBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(foodBTN);
+            }
+        });
         musicBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3B6	))));
+        musicBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(foodBTN);
+            }
+        });
 
 
         etAdName = (EditText) findViewById(R.id.etAdName);
@@ -198,14 +228,14 @@ public class CreatePostActivity extends AppCompatActivity {
         //init();
     }
 
-    private void toggleBackground(EmojiButton button) {
-        ColorDrawable buttonColor = (ColorDrawable) button.getBackground();
-        int colorId = buttonColor.getColor();
-        if(colorId == R.color.quantum_white_100){
-            button.setBackgroundColor(getResources().getColor(R.color.local_orange));
+    private void toggle(EmojiButton button) {
+        if(button.isSelected()){
+            button.setSelected(false);
+            button.setBackgroundColor(getResources().getColor(R.color.quantum_white_100));
         }
         else{
-            button.setBackgroundColor(getResources().getColor(R.color.quantum_white_100));
+            button.setSelected(true);
+            button.setBackgroundColor(getResources().getColor(R.color.local_orange));
         }
     }
 
