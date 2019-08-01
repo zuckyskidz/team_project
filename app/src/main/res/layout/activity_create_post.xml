@@ -80,6 +80,13 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/btnAdAddress" />
 
+                        <TextView
+                            android:id="@+id/tvTagsOverview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:text="Pick a few tags to describe your event!" />
+
                         <HorizontalScrollView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">

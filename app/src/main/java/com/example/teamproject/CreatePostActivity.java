@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -122,6 +123,13 @@ public class CreatePostActivity extends AppCompatActivity {
         musicBTN = findViewById(R.id.music);
 
         foodBTN.setText(new StringBuilder(new String(Character.toChars(0x1F37D))));
+        foodBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleBackground(foodBTN);
+
+            }
+        });
         sportsBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3C3	))));
         ageBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3C3	))));
         artsBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3AD	))));
@@ -188,6 +196,17 @@ public class CreatePostActivity extends AppCompatActivity {
         fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
 
         //init();
+    }
+
+    private void toggleBackground(EmojiButton button) {
+        ColorDrawable buttonColor = (ColorDrawable) button.getBackground();
+        int colorId = buttonColor.getColor();
+        if(colorId == R.color.quantum_white_100){
+            button.setBackgroundColor(getResources().getColor(R.color.local_orange));
+        }
+        else{
+            button.setBackgroundColor(getResources().getColor(R.color.quantum_white_100));
+        }
     }
 
     public void submitAd(View view) {
