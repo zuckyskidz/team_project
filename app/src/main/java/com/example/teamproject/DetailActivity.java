@@ -86,6 +86,10 @@ public class DetailActivity extends AppCompatActivity {
 
         names = new ArrayList<>();
 
+        lvAttendees = popupView.findViewById(R.id.lvAttendees);
+        adapter = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, names);
+        lvAttendees.setAdapter(adapter);
+
 
         imageIV = findViewById(R.id.ivImage);
         titleTV = findViewById(R.id.tvTitle);
@@ -112,10 +116,7 @@ public class DetailActivity extends AppCompatActivity {
                     lvAttendees = popupView.findViewById(R.id.lvAttendees);
                     adapter = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, names);
                     lvAttendees.setAdapter(adapter);
-//
-//                    names = getAttendeesNames();
-//
-//                    adapter.notifyDataSetChanged();
+
                     showPopup(v);
                     Log.i(TAG, "onClick: names size = " + names.size());
                     Log.i(TAG, "onClick: adapter size = " + adapter.getCount());
