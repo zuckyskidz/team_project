@@ -80,63 +80,6 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/btnAdAddress" />
 
-                        <HorizontalScrollView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:isScrollContainer="true"
-                            android:orientation="horizontal"
-                            android:scrollbars="horizontal">
-
-                                <androidx.emoji.widget.EmojiButton
-                                    android:id="@+id/sports"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/tag_toggle"
-                                    android:text="Button" />
-
-                                <androidx.emoji.widget.EmojiButton
-                                    android:id="@+id/food"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/tag_toggle"
-                                    android:text="Button" />
-
-                                <androidx.emoji.widget.EmojiButton
-                                    android:id="@+id/arts"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/tag_toggle"
-                                    android:text="Button" />
-
-                                <androidx.emoji.widget.EmojiButton
-                                    android:id="@+id/holiday"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/tag_toggle"
-                                    android:text="Button" />
-
-                                <androidx.emoji.widget.EmojiButton
-                                    android:id="@+id/music"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/tag_toggle"
-                                    android:text="Button" />
-
-                                <androidx.emoji.widget.EmojiButton
-                                    android:id="@+id/ageRestrictive"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/tag_toggle"
-                                    android:text="Button" />
-                        </LinearLayout>
-                        </HorizontalScrollView>
-
                         <TextView
                             android:id="@+id/tvDateDisplay"
                             android:layout_width="match_parent"
