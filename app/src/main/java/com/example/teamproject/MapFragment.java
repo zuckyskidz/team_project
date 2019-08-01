@@ -36,6 +36,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 
 import java.text.DecimalFormat;
@@ -60,8 +63,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     private int LOCATION_REQUEST_ID = 2222;
-    private int GEOFENCE_RADIUS_IN_METERS = 8000;
-    private int GEOFENCE_EXPIRATION_IN_MILLISECONDS = 1000;
+    private int RADIUS_IN_METERS = 8000; //roughly 5 miles
+    private int RADIUS_IN_KILOMETERS = 8;
+//    private int GEOFENCE_RADIUS_IN_METERS = 8000;
+//    private int GEOFENCE_EXPIRATION_IN_MILLISECONDS = 1000;
 
     ArrayList<Ad> closestEvents;
 
@@ -216,9 +221,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         getCurrentLocation();
 
-        getClosestEvents();
-        pinClosestEvents();
-
+        ArrayList<Ad> closestEvents = getClosestEvents();
+        pinEvents(closestEvents);
     }
 
     void getCurrentLocation() {
@@ -255,24 +259,56 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public void getClosestEvents(){
+    public ArrayList<Ad> getClosestEvents(){
         closestEvents = new ArrayList<Ad>();
+        ParseGeoPoint myGeopoint = new ParseGeoPoint(myLocation.getLatitude(), myLocation.getLongitude());
         ParseQuery<Ad> query = ParseQuery.getQuery("Ad");
+        query.whereWithinKilometers("geoPoints", myGeopoint, RADIUS_IN_KILOMETERS);
+        query.findInBackground(new FindCallback<Ad>() {
+            @Override
+            public void done(List<Ad> objects, ParseException e) {
+                if(e == null){
+                    closestEvents.addAll(objects);
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
 
+
+        return closestEvents;
     }
 
-    public void pinClosestEvents(){
+    public void pinEvents(ArrayList<Ad> events){
+//        ArrayList<LatLng> locations = new ArrayList<LatLng>();
+//        for(int i = 0; i < events.size(); i++){
+//            LatLng point = new LatLng(events.get(i).getGeoPoint().getLatitude(), events.get(i).getGeoPoint().getLongitude());
+//            locations.add(point);
+//        }
+//        for(LatLng point : locations){
+//            mGoogleMap.addMarker(new MarkerOptions().position(point).title("title"));
+//        }
 
+        for(Ad event : events){
+            LatLng point = new LatLng(event.getGeoPoint().getLatitude(), event.getGeoPoint().getLongitude());
+            mGoogleMap.addMarker(new MarkerOptions().position(point).title(event.getTitle()));
+        }
     }
 
-    //radius measured in
-    boolean isWithinRadius(double radius){
+    //radius measured in meteres
+    boolean isWithinRadius(ParseGeoPoint eventGeopoint, double radius){
+        LatLng myGeopoint = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+        LatLng eventLocation = new LatLng(eventGeopoint.getLatitude(), eventGeopoint.getLongitude());
 
+        double distance = distanceBetweenGeopoints(myGeopoint, eventLocation);
+        if(distance <= radius) {
+            return true;
+        }
         return false;
     }
 
     double distanceBetweenGeopoints(LatLng start, LatLng end) {
-        int Radius = 6371;// radius of earth in Km
+        int radius = 6371;// radius of earth in Km
         double lat1 = start.latitude;
         double lat2 = end.latitude;
         double lng1 = start.longitude;
@@ -284,7 +320,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
                 * Math.sin(dLon / 2);
         double c = 2 * Math.asin(Math.sqrt(a));
-        double valueResult = Radius * c;
+        double valueResult = radius * c;
         double km = valueResult / 1;
         DecimalFormat newFormat = new DecimalFormat("####");
         int kmInDec = Integer.valueOf(newFormat.format(km));
@@ -293,7 +329,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
                 + " Meter   " + meterInDec);
 
-        return Radius * c;
+        return radius * c;
     }
 
 
