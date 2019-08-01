@@ -105,42 +105,48 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:background="@drawable/tag_toggle"
-                                            android:text="Button" />
+                                            android:text="Button"
+                                            android:tag="sports"/>
 
                                         <androidx.emoji.widget.EmojiButton
                                             android:id="@+id/food"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:background="@drawable/tag_toggle"
-                                            android:text="Button" />
+                                            android:text="Button"
+                                            android:tag="food"/>
 
                                         <androidx.emoji.widget.EmojiButton
                                             android:id="@+id/arts"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:background="@drawable/tag_toggle"
-                                            android:text="Button" />
+                                            android:text="Button"
+                                            android:tag="arts"/>
 
                                         <androidx.emoji.widget.EmojiButton
                                             android:id="@+id/holiday"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:background="@drawable/tag_toggle"
-                                            android:text="Button" />
+                                            android:text="Button"
+                                            android:tag="holiday"/>
 
                                         <androidx.emoji.widget.EmojiButton
                                             android:id="@+id/music"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:background="@drawable/tag_toggle"
-                                            android:text="Button" />
+                                            android:text="Button"
+                                            android:tag="music"/>
 
                                         <androidx.emoji.widget.EmojiButton
                                             android:id="@+id/ageRestrictive"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:background="@drawable/tag_toggle"
-                                            android:text="Button" />
+                                            android:text="Button"
+                                            android:tag="age"/>
                                 </LinearLayout>
                         </HorizontalScrollView>
 

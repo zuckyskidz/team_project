@@ -42,6 +42,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
 import com.google.android.gms.common.api.Status;
 //import com.google.android.gms.location.places.Place;
+import com.google.android.gms.common.util.Strings;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -101,6 +102,7 @@ public class CreatePostActivity extends AppCompatActivity {
     EmojiButton artsBTN;
     EmojiButton holidayBTN;
     EmojiButton musicBTN;
+    ArrayList<String> tags;
 
 
 
@@ -122,6 +124,7 @@ public class CreatePostActivity extends AppCompatActivity {
         artsBTN = findViewById(R.id.arts);
         holidayBTN = findViewById(R.id.holiday);
         musicBTN = findViewById(R.id.music);
+        tags = new ArrayList<>();
 
         foodBTN.setText(new StringBuilder(new String(Character.toChars(0x1F37D))));
         foodBTN.setOnClickListener(new View.OnClickListener() {
@@ -134,35 +137,35 @@ public class CreatePostActivity extends AppCompatActivity {
         sportsBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggle(foodBTN);
+                toggle(sportsBTN);
             }
         });
         ageBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3C3	))));
         ageBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggle(foodBTN);
+                toggle(ageBTN);
             }
         });
         artsBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3AD	))));
         artsBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggle(foodBTN);
+                toggle(artsBTN);
             }
         });
         holidayBTN.setText(new StringBuilder(new String(Character.toChars(0x1F383	))));
         holidayBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggle(foodBTN);
+                toggle(holidayBTN);
             }
         });
         musicBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3B6	))));
         musicBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggle(foodBTN);
+                toggle(musicBTN);
             }
         });
 
@@ -232,10 +235,12 @@ public class CreatePostActivity extends AppCompatActivity {
         if(button.isSelected()){
             button.setSelected(false);
             button.setBackgroundColor(getResources().getColor(R.color.quantum_white_100));
+            tags.remove(button.getTag().toString());
         }
         else{
             button.setSelected(true);
             button.setBackgroundColor(getResources().getColor(R.color.local_orange));
+            tags.add(button.getTag().toString());
         }
     }
 
@@ -254,12 +259,17 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setRSVP(new ArrayList<Object>());
             newAd.setImage(photoFile);
             newAd.setAttendees(new ArrayList<Object>());
+            newAd.setTags(getTags());
         }
         else{
             Toast.makeText(CreatePostActivity.this, "Missing information.", Toast.LENGTH_SHORT).show();
             return;
         }
         postAd(newAd);
+    }
+
+    private List<String> getTags() {
+        return tags;
     }
 
     private void postAd(Ad newAd) {
@@ -322,7 +332,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 etAdDesc.setHintTextColor(getResources().getColor(R.color.local_orange));
             }            isPostable = false;
         }
-        if(localeString.equals("")){
+        if(localeString==null){
             Log.i(TAG, "location missing");
             return false;
         }

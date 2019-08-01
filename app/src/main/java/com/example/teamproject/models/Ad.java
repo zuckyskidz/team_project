@@ -78,9 +78,13 @@ public class Ad extends ParseObject {
     //right now, "tags" are an array in parse dashboard
     //Todo - create tags model? getTags should return an array of Tags.each tag has an image
 
-    public ParseObject getTags() {
-        return getParseObject(KEY_TAGS);
+    public List<String> getTags() {
+        return getList(KEY_TAGS);
     }
+    public void setTags(List<String> tags) {
+        put(KEY_TAGS, tags);
+    }
+
 
     public String getAddress() {
         return getString(KEY_LOCATION);
