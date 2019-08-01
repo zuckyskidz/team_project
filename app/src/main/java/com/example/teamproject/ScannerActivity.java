@@ -1,5 +1,6 @@
 package com.example.teamproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -109,6 +110,9 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
+                Intent data = new Intent();
+                data.putExtra("ad", ad);
+                setResult(RESULT_OK, data);
                 finish();
                 return true;
         }

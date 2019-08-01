@@ -3,6 +3,7 @@ package com.example.teamproject;
 //import android.support.v4.app.Fragment;
 //import android.support.v4.app.FragmentTransaction;
 //import android.support.v7.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
@@ -19,6 +20,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -38,12 +40,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
-public class DetailActivity extends AppCompatActivity{
+public class DetailActivity extends AppCompatActivity {
 
     private static final String TAG = "DetailActivity";
     private static final int ZXING_CAMERA_PERMISSION = 1;
+    private static final int QR_REQUEST = 77;
 
     Ad ad;
     int userCount;
@@ -72,36 +73,19 @@ public class DetailActivity extends AppCompatActivity{
     ArrayList<String> names;
 
     @Override
-   protected void onResume(){
-       super.onResume();
-       if(adapter!=null) {
-           populate();
-           adapter.notifyDataSetChanged();
-       }
-    }
-
-
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        popupView = getLayoutInflater().inflate(R.layout.attendees_list_popup, null);
+        ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
+        userCount = ad.getRSVPCount();
 
+        popupView = getLayoutInflater().inflate(R.layout.attendees_list_popup, null);
         popupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         names = new ArrayList<>();
-        // Example: If you have a TextView inside `popup_layout.xml`
-        lvAttendees = popupView.findViewById(R.id.lvAttendees);
-        adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
-        lvAttendees.setAdapter(adapter);
 
-
-        Log.i(TAG, "in ON Create");
-        ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
-        userCount = ad.getRSVPCount();
 
         imageIV = findViewById(R.id.ivImage);
         titleTV = findViewById(R.id.tvTitle);
@@ -117,14 +101,24 @@ public class DetailActivity extends AppCompatActivity{
         qrScanBTN = findViewById(R.id.btnQRScan);
         viewAttendeesBTN = findViewById(R.id.btnAttendees);
 
-        if(ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())){
+        if (ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())) {
             qrScanBTN.setVisibility(View.VISIBLE);
             viewAttendeesBTN.setVisibility(View.VISIBLE);
 
             viewAttendeesBTN.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    names.addAll(getAttendeesNames());
+                    lvAttendees = popupView.findViewById(R.id.lvAttendees);
+                    adapter = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, names);
+                    lvAttendees.setAdapter(adapter);
+//
+//                    names = getAttendeesNames();
+//
+//                    adapter.notifyDataSetChanged();
                     showPopup(v);
+                    Log.i(TAG, "onClick: names size = " + names.size());
+                    Log.i(TAG, "onClick: adapter size = " + adapter.getCount());
                 }
             });
 
@@ -133,7 +127,7 @@ public class DetailActivity extends AppCompatActivity{
                 public void onClick(View v) {
                     Intent i = new Intent(getApplicationContext(), ScannerActivity.class);
                     i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
-                    startActivity(i);
+                    startActivityForResult(i, QR_REQUEST);
                 }
             });
         }
@@ -208,26 +202,35 @@ public class DetailActivity extends AppCompatActivity{
 
     }
 
-    private void showPopup(View anchorView) {
-        populate();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK && requestCode == QR_REQUEST) {
+            Ad ad = (Ad) data.getExtras().get("ad");
+            this.ad = ad;
+        }
+    }
 
+    private void showPopup(View anchorView) {
         popupWindow.setFocusable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable());
         popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
-
-        Log.i(TAG, String.valueOf(popupView.isShown()));
-
     }
 
-    private void populate() {
-        List<Object> attendees = ad.getAttendees();
-        Log.i(TAG, String.valueOf(ad.getAttendees().size()));
-        for(int i = 0; i < attendees.size(); i++){
-            ParseUser user = (ParseUser) attendees.get(i);
-            names.add( user.getUsername());
-            adapter.notifyDataSetChanged();
-
+    private ArrayList<String> getAttendeesNames() {
+        if (names.size() > 0) {
+            names.clear();
         }
+        List<Object> attendees = ad.getAttendees();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < attendees.size(); i++) {
+            ParseUser user = (ParseUser) attendees.get(i);
+            try {
+                result.add(user.fetchIfNeeded().getUsername());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
 
 
@@ -287,11 +290,11 @@ public class DetailActivity extends AppCompatActivity{
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,  String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case ZXING_CAMERA_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(mClss != null) {
+                    if (mClss != null) {
                         Intent intent = new Intent(this, mClss);
                         startActivity(intent);
                     }
