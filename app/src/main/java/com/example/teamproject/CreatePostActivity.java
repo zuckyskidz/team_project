@@ -31,6 +31,9 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.emoji.bundled.BundledEmojiCompatConfig;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.widget.EmojiButton;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -89,14 +92,41 @@ public class CreatePostActivity extends AppCompatActivity {
     ImageView ivPreview;
     ParseFile photoFile;
     ImageButton btnSubmit;
+
+    EmojiButton foodBTN;
+    EmojiButton sportsBTN;
+    EmojiButton ageBTN;
+    EmojiButton artsBTN;
+    EmojiButton holidayBTN;
+    EmojiButton musicBTN;
+
+
+
 //    EditText mSearchText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
+        EmojiCompat.init(config);
         setContentView(R.layout.activity_create_post);
         Places.initialize(getApplicationContext(), getResources().getString(R.string.google_maps_api_key));
         placesClient = Places.createClient(this);
+
+
+        foodBTN = findViewById(R.id.food);
+        sportsBTN = findViewById(R.id.sports);
+        ageBTN = findViewById(R.id.ageRestrictive);
+        artsBTN = findViewById(R.id.arts);
+        holidayBTN = findViewById(R.id.holiday);
+        musicBTN = findViewById(R.id.music);
+
+        foodBTN.setText(new StringBuilder(new String(Character.toChars(0x1F37D))));
+        sportsBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3C3	))));
+        ageBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3C3	))));
+        artsBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3AD	))));
+        holidayBTN.setText(new StringBuilder(new String(Character.toChars(0x1F383	))));
+        musicBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3B6	))));
 
 
         etAdName = (EditText) findViewById(R.id.etAdName);
