@@ -2,19 +2,8 @@ package com.example.teamproject;
 
 import android.content.Intent;
 import android.os.Bundle;
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentActivity;
-//import android.support.v4.app.FragmentManager;
-//import android.support.v4.app.FragmentStatePagerAdapter;
-//import android.support.v4.view.PagerAdapter;
-//import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.Toast;
 
-import androidx.core.provider.FontRequest;
-import androidx.emoji.bundled.BundledEmojiCompatConfig;
-import androidx.emoji.text.EmojiCompat;
-import androidx.emoji.text.FontRequestEmojiCompatConfig;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -22,9 +11,12 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.teamproject.models.Ad;
-
-import org.parceler.Parcels;
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentActivity;
+//import android.support.v4.app.FragmentManager;
+//import android.support.v4.app.FragmentStatePagerAdapter;
+//import android.support.v4.view.PagerAdapter;
+//import android.support.v4.view.ViewPager;
 
 public class HomeFeedActivity extends FragmentActivity {
     /**
