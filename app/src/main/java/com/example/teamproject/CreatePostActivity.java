@@ -267,11 +267,16 @@ public class CreatePostActivity extends AppCompatActivity {
         }
         if(localeString.equals("")){
             Log.i(TAG, "location missing");
-            return false;
+            isPostable = false;
         }
         if(photoFile == null){
             Log.i(TAG, "photo missing");
             isPostable = false;
+        }
+        if (rbSetLevel.getRating() > ParseUser.getCurrentUser().getInt("level")) {
+            isPostable = false;
+            tvLevelDisp.setText("You must be at least Level " + ((int) rbSetLevel.getRating()) + " to create this event");
+            tvLevelDisp.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
         }
         return isPostable;
     }

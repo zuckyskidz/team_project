@@ -10,12 +10,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -87,8 +89,14 @@ public class DetailActivity extends AppCompatActivity {
                     unRegisterUser();
                     showUserUnregistered();
                 } else {
-                    registerUser();
-                    showUserRegistered();
+                    if (checkLevel()) {
+                        registerUser();
+                        showUserRegistered();
+                    } else {
+                        Snackbar.make(rsvpBT,
+                                "You need to level up before being able to register for this event!",
+                                Snackbar.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -158,6 +166,8 @@ public class DetailActivity extends AppCompatActivity {
     //Registers/RSVP the user for the event
     private void registerUser() {
         ParseUser.getCurrentUser().addUnique("attendingEvents", ad);
+        ParseUser.getCurrentUser().put("numAttended",
+                (ParseUser.getCurrentUser().getInt("numAttended") + 1));
         ParseUser.getCurrentUser().saveInBackground();
         ad.addUnique("rsvp", ParseUser.getCurrentUser());
         ad.saveInBackground(new SaveCallback() {
@@ -167,11 +177,14 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
         Log.i(TAG, "User registered");
+        updateLevel();
     }
 
     //Un-Registers/RSVP the user for the event
     private void unRegisterUser() {
         ParseUser.getCurrentUser().removeAll("attendingEvents", Collections.singleton(ad));
+        ParseUser.getCurrentUser().put("numAttended",
+                (ParseUser.getCurrentUser().getInt("numAttended") - 1));
         ParseUser.getCurrentUser().saveInBackground();
         ad.removeAll("rsvp", Collections.singleton(ParseUser.getCurrentUser()));
         ad.saveInBackground(new SaveCallback() {
@@ -180,6 +193,7 @@ public class DetailActivity extends AppCompatActivity {
                 showUserUnregistered();
             }
         });
+        updateLevel();
     }
 
     //checks to see if the user is currently registered/RSVPed
@@ -195,6 +209,38 @@ public class DetailActivity extends AppCompatActivity {
         }
         Log.i(TAG, "isUserRegistered: false");
         return false;
+    }
+
+    public boolean checkLevel() {
+        return ParseUser.getCurrentUser().getInt("level") >= ad.getLevel();
+    }
+
+    public void updateLevel() {
+        int numAttended = ParseUser.getCurrentUser().getInt("numAttended");
+        int[] totals = new int[5];
+        totals[0] = 0; //Level 1
+        totals[1] = 3; //Level 2
+        totals[2] = 5; //Level 3
+        totals[3] = 10; //Level 4
+        totals[4] = 50; //Level 5
+
+        for (int i = 0; i < totals.length; i++) {
+            if (numAttended == totals[i]) {
+                levelUp(i);
+                totals[i] = 0;
+                break;
+            }
+        }
+    }
+
+    private void levelUp(int index) {
+        int level = ParseUser.getCurrentUser().getInt("level");
+        if (level == index) {
+            ParseUser.getCurrentUser().put("level", level + 1);
+            ParseUser.getCurrentUser().put("numAttended", 0);
+            ParseUser.getCurrentUser().saveInBackground();
+        }
+        Toast.makeText(this, "You are now Level " + (level + 1) + "!", Toast.LENGTH_LONG).show();
     }
 
 }
