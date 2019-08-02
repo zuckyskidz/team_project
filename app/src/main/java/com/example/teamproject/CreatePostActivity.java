@@ -114,9 +114,9 @@ public class CreatePostActivity extends AppCompatActivity {
         EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
         EmojiCompat.init(config);
         setContentView(R.layout.activity_create_post);
+
         Places.initialize(getApplicationContext(), getResources().getString(R.string.google_maps_api_key));
         placesClient = Places.createClient(this);
-
 
         foodBTN = findViewById(R.id.food);
         sportsBTN = findViewById(R.id.sports);
@@ -140,7 +140,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 toggle(sportsBTN);
             }
         });
-        ageBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3C3	))));
+        ageBTN.setText(new StringBuilder(new String(Character.toChars(0x1F37E	))));
         ageBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,6 +179,7 @@ public class CreatePostActivity extends AppCompatActivity {
         ivPreview = (ImageView) findViewById(R.id.ivPreview);
         btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
 //        mSearchText = (EditText) findViewById(R.id.btnAdAddress);
+        ivPreview = findViewById(R.id.ivPreview);
 
         ivPreview.setVisibility(View.GONE);
 

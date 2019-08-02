@@ -6,7 +6,6 @@ package com.example.teamproject;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,15 +18,17 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.emoji.bundled.BundledEmojiCompatConfig;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.widget.EmojiTextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -43,8 +44,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -72,6 +71,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView attendingCount;
     FloatingActionButton fabDelete;
     ListView lvAttendees;
+    EmojiTextView tagsTV;
 
     View popupView;
     PopupWindow popupWindow;
@@ -92,6 +92,9 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
+        EmojiCompat.init(config);
+
         setContentView(R.layout.activity_detail);
 
         popupView = getLayoutInflater().inflate(R.layout.attendees_list_popup, null);
@@ -110,7 +113,6 @@ public class DetailActivity extends AppCompatActivity {
         ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
         userCount = ad.getRSVPCount();
 
-        imageIV = findViewById(R.id.ivImage);
         titleTV = findViewById(R.id.tvTitle);
         locationTV = findViewById(R.id.tvLocation);
         dateTV = findViewById(R.id.tvDate);
@@ -122,14 +124,14 @@ public class DetailActivity extends AppCompatActivity {
         attendingCount = findViewById(R.id.tvAttendingCount);
         profImageIV = findViewById(R.id.profile_image);
         fabDelete = findViewById(R.id.fabDelete);
+        imageIV = findViewById(R.id.ivImage);
 
         Log.d(TAG, "Ownership is being checked...");
         isOwner();
         Log.d(TAG, "Ownership checked been checked.");
         qrScanBTN = findViewById(R.id.btnQRScan);
         viewAttendeesBTN = findViewById(R.id.btnAttendees);
-<<<<<<< HEAD
-        tagsTV = findViewById(R.id.tvTags);
+        tagsTV = (EmojiTextView) findViewById(R.id.tvTags);
 
 
         Map<String, Integer> myMap = new HashMap<String, Integer>();
@@ -146,8 +148,6 @@ public class DetailActivity extends AppCompatActivity {
             int emoji = myMap.get(tag);
             tagsTV.setText(tagsTV.getText() + new String(Character.toChars(emoji))+ "  ");
         }
-=======
->>>>>>> parent of cee132c... displays the tags as words
 
         if(ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())){
             qrScanBTN.setVisibility(View.VISIBLE);
