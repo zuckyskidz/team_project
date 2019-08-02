@@ -21,9 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.emoji.bundled.BundledEmojiCompatConfig;
-import androidx.emoji.text.EmojiCompat;
-import androidx.emoji.widget.EmojiTextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -37,7 +34,6 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
@@ -76,7 +72,6 @@ public class DetailActivity extends AppCompatActivity {
     TextView attendingCount;
     FloatingActionButton fabDelete;
     ListView lvAttendees;
-    EmojiTextView tagsTV;
 
     View popupView;
     PopupWindow popupWindow;
@@ -97,8 +92,6 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
-        EmojiCompat.init(config);
         setContentView(R.layout.activity_detail);
 
         popupView = getLayoutInflater().inflate(R.layout.attendees_list_popup, null);
@@ -135,6 +128,7 @@ public class DetailActivity extends AppCompatActivity {
         Log.d(TAG, "Ownership checked been checked.");
         qrScanBTN = findViewById(R.id.btnQRScan);
         viewAttendeesBTN = findViewById(R.id.btnAttendees);
+<<<<<<< HEAD
         tagsTV = findViewById(R.id.tvTags);
 
 
@@ -152,6 +146,8 @@ public class DetailActivity extends AppCompatActivity {
             int emoji = myMap.get(tag);
             tagsTV.setText(tagsTV.getText() + new String(Character.toChars(emoji))+ "  ");
         }
+=======
+>>>>>>> parent of cee132c... displays the tags as words
 
         if(ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())){
             qrScanBTN.setVisibility(View.VISIBLE);

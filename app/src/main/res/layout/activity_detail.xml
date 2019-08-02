@@ -10,9 +10,7 @@
     <me.dm7.barcodescanner.zxing.ZXingScannerView
         android:id="@+id/qrCodeScanner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        android:layout_height="match_parent"/>
 
     <ViewFlipper
         android:id="@+id/viewFlipper"
@@ -211,6 +209,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+<<<<<<< HEAD
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/tvTags"
         android:layout_width="wrap_content"
@@ -227,4 +226,6 @@
         app:layout_constraintVertical_bias="1.0" />
 
 
+=======
+>>>>>>> parent of cee132c... displays the tags as words
 </androidx.constraintlayout.widget.ConstraintLayout>
