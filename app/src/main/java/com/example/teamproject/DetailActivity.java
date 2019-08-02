@@ -6,6 +6,7 @@ package com.example.teamproject;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,6 +28,9 @@ import androidx.emoji.widget.EmojiTextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -46,7 +50,7 @@ import java.util.Map;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class DetailActivity extends AppCompatActivity{
+public class DetailActivity extends AppCompatActivity {
 
     private static final String TAG = "DetailActivity";
     private static final int ZXING_CAMERA_PERMISSION = 1;
@@ -70,6 +74,7 @@ public class DetailActivity extends AppCompatActivity{
     Button rsvpBT;
     ImageView profImageIV;
     TextView attendingCount;
+    FloatingActionButton fabDelete;
     ListView lvAttendees;
     EmojiTextView tagsTV;
 
@@ -123,6 +128,11 @@ public class DetailActivity extends AppCompatActivity{
         rsvpBT = findViewById(R.id.btRSVP);
         attendingCount = findViewById(R.id.tvAttendingCount);
         profImageIV = findViewById(R.id.profile_image);
+        fabDelete = findViewById(R.id.fabDelete);
+
+        Log.d(TAG, "Ownership is being checked...");
+        isOwner();
+        Log.d(TAG, "Ownership checked been checked.");
         qrScanBTN = findViewById(R.id.btnQRScan);
         viewAttendeesBTN = findViewById(R.id.btnAttendees);
         tagsTV = findViewById(R.id.tvTags);
@@ -327,5 +337,23 @@ public class DetailActivity extends AppCompatActivity{
                 return;
         }
     }
+    public boolean isOwner() {
+        if (ParseUser.getCurrentUser().getUsername().equals(ad.getUser().getUsername())) {
+            Log.d(TAG, "User is Owner!");
+            fabDelete.show();
+            return true;
+        } else {
+            Log.d(TAG, "User is NOT Owner!");
+            fabDelete.hide();
+            return false;
+        }
+    }
 
+    public void onDelete(View view) {
+        if (isOwner()) {
+            Intent home = new Intent(DetailActivity.this, HomeFeedActivity.class);
+            ad.deleteInBackground();
+            startActivity(home);
+        }
+    }
 }
