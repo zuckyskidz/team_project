@@ -3,6 +3,7 @@ package com.example.teamproject;
 //import android.support.v4.app.Fragment;
 //import android.support.v4.app.FragmentTransaction;
 //import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -51,6 +55,7 @@ public class DetailActivity extends AppCompatActivity {
     ImageView profImageIV;
     TextView attendingCount;
     RatingBar rbLevel;
+    FloatingActionButton fabDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +80,11 @@ public class DetailActivity extends AppCompatActivity {
         rbLevel = findViewById(R.id.rbLevels);
 
         rbLevel.setRating(ad.getLevel());
+        fabDelete = findViewById(R.id.fabDelete);
+
+        Log.d(TAG, "Ownership is being checked...");
+        isOwner();
+        Log.d(TAG, "Ownership checked been checked.");
 
         if (isUserRegistered()) {
             showUserRegistered();
@@ -123,7 +133,6 @@ public class DetailActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        ;
 
         //set profile image and details
         ParseFile profImageFile = ad.getUser().getParseFile("profileImage");
@@ -243,4 +252,23 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, "You are now Level " + (level + 1) + "!", Toast.LENGTH_LONG).show();
     }
 
+    public boolean isOwner() {
+        if (ParseUser.getCurrentUser().getUsername().equals(ad.getUser().getUsername())) {
+            Log.d(TAG, "User is Owner!");
+            fabDelete.show();
+            return true;
+        } else {
+            Log.d(TAG, "User is NOT Owner!");
+            fabDelete.hide();
+            return false;
+        }
+    }
+
+    public void onDelete(View view) {
+        if (isOwner()) {
+            Intent home = new Intent(DetailActivity.this, HomeFeedActivity.class);
+            ad.deleteInBackground();
+            startActivity(home);
+        }
+    }
 }
