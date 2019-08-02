@@ -5,20 +5,18 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.os.Bundle;
-//import android.support.annotation.NonNull;
-//import android.support.annotation.Nullable;
-//import android.support.v4.app.Fragment;
-//import android.support.v7.widget.LinearLayoutManager;
-//import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-//import android.widget.GridView;
 import android.widget.ImageView;
+
 import android.widget.PopupWindow;
+
+import android.widget.RatingBar;
+
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -50,9 +48,10 @@ import static com.parse.Parse.getApplicationContext;
 
 public class UserProfileFragment extends Fragment {
     private static final String TAG = "UserProfileFragment";
-    RecyclerView rvHosting;
-    RecyclerView rvAttending;
-    RecyclerViewAdapter rvAdapter;
+    private RecyclerView rvHosting;
+    private RecyclerView rvAttending;
+    private RecyclerViewAdapter rvAdapter;
+
 
 
     Button logoutBT;
@@ -62,9 +61,17 @@ public class UserProfileFragment extends Fragment {
     TextView tvNoAttending;
     TextView tvNoHosting;
 
-    ParseUser currentUser;
-    ArrayList<Ad> attendingEvents;
-    ArrayList<Ad> hostingEvents;
+    private Button logoutBT;
+    private ImageView ivProfileImage;
+    private TextView tvName;
+    private TextView tvNoAttending;
+    private TextView tvNoHosting;
+    private RatingBar rbLevel;
+
+
+    private ParseUser currentUser;
+    private ArrayList<Ad> attendingEvents;
+    private ArrayList<Ad> hostingEvents;
 
     public UserProfileFragment() {
         //TODO update lists when user RSVP from details page and then goes back to this fragment
@@ -92,6 +99,7 @@ public class UserProfileFragment extends Fragment {
             }
         });
 
+
         qrBT = getView().findViewById(R.id.qrCode);
         qrBT.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -102,12 +110,20 @@ public class UserProfileFragment extends Fragment {
 
         ivProfileImage = view.findViewById(R.id.ivProfileImage);
         tvName = view.findViewById(R.id.tvName);
+
+        ivProfileImage = (ImageView) view.findViewById(R.id.ivProfileImage);
+        tvName = (TextView) view.findViewById(R.id.tvName);
+
         rvHosting = (RecyclerView) view.findViewById(R.id.rvHostingEvents);
         rvAttending = (RecyclerView) view.findViewById(R.id.rvAttendingEvents);
-        tvNoAttending= view.findViewById(R.id.tvNoAttending);
-        tvNoHosting = view.findViewById(R.id.tvNoHosting);
+        tvNoAttending = (TextView) view.findViewById(R.id.tvNoAttending);
+        tvNoHosting = (TextView) view.findViewById(R.id.tvNoHosting);
+        rbLevel = (RatingBar) view.findViewById(R.id.rbLevels);
       
         tvName.setText(currentUser.getUsername());
+        Log.d(TAG, "Does ParseUser contain level? " + currentUser.containsKey("level"));
+        Log.d(TAG, "User Level is " + currentUser.getInt("level"));
+        rbLevel.setRating(currentUser.getInt("level"));
 
         ParseFile imageFile = currentUser.getParseFile("profileImage");
         String imageURL = null;
@@ -121,7 +137,6 @@ public class UserProfileFragment extends Fragment {
                 .apply(new RequestOptions()
                         .placeholder(R.drawable.dog))
                 .into(ivProfileImage);
-
     }
 
     private void getHostingEvents() {

@@ -26,6 +26,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -89,7 +90,8 @@ public class CreatePostActivity extends AppCompatActivity {
     ImageView ivPreview;
     ParseFile photoFile;
     ImageButton btnSubmit;
-//    EditText mSearchText;
+    RatingBar rbSetLevel;
+    TextView tvLevelDisp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,9 +109,17 @@ public class CreatePostActivity extends AppCompatActivity {
         tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
         ivPreview = (ImageView) findViewById(R.id.ivPreview);
         btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
-//        mSearchText = (EditText) findViewById(R.id.btnAdAddress);
-
+        rbSetLevel = (RatingBar) findViewById(R.id.rbSetLevel);
+        tvLevelDisp = (TextView) findViewById(R.id.tvLevelDisp);
         ivPreview.setVisibility(View.GONE);
+
+        tvLevelDisp.setText("Level " + ((int) rbSetLevel.getRating()));
+        rbSetLevel.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                tvLevelDisp.setText("Level " + ((int) rating));
+            }
+        });
 
         tvDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +185,7 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setRSVP(new ArrayList<Object>());
             newAd.setImage(photoFile);
             newAd.setAttendees(new ArrayList<Object>());
+            newAd.setLevel((int) rbSetLevel.getRating());
         }
         else{
             Toast.makeText(CreatePostActivity.this, "Missing information.", Toast.LENGTH_SHORT).show();
@@ -234,6 +245,18 @@ public class CreatePostActivity extends AppCompatActivity {
             tvStartTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;;
         }
+
+        if(btnAdAddress.getText().equals("")){
+
+            Log.i(TAG, "address missing");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                btnAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+            }
+            else{
+                btnAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
+            }
+            isPostable = false;
+        }
         if(etAdDesc.getText().length() == 0){
             Log.i(TAG, "description missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -245,11 +268,16 @@ public class CreatePostActivity extends AppCompatActivity {
         }
         if(localeString.equals("")){
             Log.i(TAG, "location missing");
-            return false;
+            isPostable = false;
         }
         if(photoFile == null){
             Log.i(TAG, "photo missing");
             isPostable = false;
+        }
+        if (rbSetLevel.getRating() > ParseUser.getCurrentUser().getInt("level")) {
+            isPostable = false;
+            tvLevelDisp.setText("You must be at least Level " + ((int) rbSetLevel.getRating()) + " to create this event");
+            tvLevelDisp.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
         }
         return isPostable;
     }
