@@ -63,6 +63,34 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Level:"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                        <RatingBar
+                            android:id="@+id/rbSetLevel"
+                            style="@style/Widget.AppCompat.RatingBar.Indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:isIndicator="false"
+                            android:max="6"
+                            android:numStars="6"
+                            android:progress="1"
+                            android:stepSize="1"
+                            android:layout_gravity="center"/>
+
+                        <TextView
+                            android:id="@+id/tvLevelDisp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="TextView"
+                            android:layout_gravity="center"/>
+
                         <EditText
                             android:id="@+id/etAdDesc"
                             android:layout_width="match_parent"

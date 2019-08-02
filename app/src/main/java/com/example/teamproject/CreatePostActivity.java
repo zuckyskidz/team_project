@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -84,6 +85,8 @@ public class CreatePostActivity extends AppCompatActivity {
     private ArrayList<Bitmap> mBitmapsSelected;
     private ArrayList<ParseFile> mImages;
 
+    RatingBar rbSetLevel;
+    TextView tvLevelDisp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +103,27 @@ public class CreatePostActivity extends AppCompatActivity {
         tvDisplayDate = findViewById(R.id.tvDateDisplay);
         tvStartTime = findViewById(R.id.tvTimeDisplay);
         btnSubmit = findViewById(R.id.btnSubmit);
-
         viewFlipper = findViewById(R.id.viewFlipper);
 
+        etAdName = (EditText) findViewById(R.id.etAdName);
+        tvEndTime = (TextView) findViewById(R.id.tvTimeDisplay2);
+        btnAdAddress = (Button) findViewById(R.id.btnAdAddress);
+        etAdDesc = (EditText) findViewById(R.id.etAdDesc);
+        tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
+        tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
+        ivPreview = (ImageView) findViewById(R.id.ivPreview);
+        btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
+        rbSetLevel = (RatingBar) findViewById(R.id.rbSetLevel);
+        tvLevelDisp = (TextView) findViewById(R.id.tvLevelDisp);
+        ivPreview.setVisibility(View.GONE);
+
+        tvLevelDisp.setText("Level " + ((int) rbSetLevel.getRating()));
+        rbSetLevel.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                tvLevelDisp.setText("Level " + ((int) rating));
+            }
+        });
 
         tvDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +189,10 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setRSVP(new ArrayList<Object>());
             newAd.setImages(mImages);
             postAd(newAd);
-        } else {
+            newAd.setImage(photoFile);
+            newAd.setLevel((int) rbSetLevel.getRating());
+        }
+        else{
             Toast.makeText(CreatePostActivity.this, "Missing information.", Toast.LENGTH_SHORT).show();
             //newAd.setImage(photoFile);
         }
@@ -253,6 +277,11 @@ public class CreatePostActivity extends AppCompatActivity {
         if (mImages == null) {
             Log.i(TAG, "photo missing");
             isPostable = false;
+        }
+        if (rbSetLevel.getRating() > ParseUser.getCurrentUser().getInt("level")) {
+            isPostable = false;
+            tvLevelDisp.setText("You must be at least Level " + ((int) rbSetLevel.getRating()) + " to create this event");
+            tvLevelDisp.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
         }
         return isPostable;
     }
