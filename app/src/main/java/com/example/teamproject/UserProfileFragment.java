@@ -31,6 +31,8 @@ import java.util.List;
 
 import static com.parse.Parse.getApplicationContext;
 
+//import android.widget.GridView;
+
 
 public class UserProfileFragment extends Fragment {
     private static final String TAG = "UserProfileFragment";
