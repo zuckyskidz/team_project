@@ -140,7 +140,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 toggle(sportsBTN);
             }
         });
-        ageBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3C3	))));
+        ageBTN.setText(new StringBuilder(new String(Character.toChars(0x1F37E	))));
         ageBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

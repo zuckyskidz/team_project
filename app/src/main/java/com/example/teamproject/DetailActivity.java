@@ -20,6 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.emoji.bundled.BundledEmojiCompatConfig;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.widget.EmojiTextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -30,6 +33,7 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
@@ -65,6 +69,7 @@ public class DetailActivity extends AppCompatActivity{
     ImageView profImageIV;
     TextView attendingCount;
     ListView lvAttendees;
+    EmojiTextView tagsTV;
 
     View popupView;
     PopupWindow popupWindow;
@@ -85,6 +90,8 @@ public class DetailActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
+        EmojiCompat.init(config);
         setContentView(R.layout.activity_detail);
 
         popupView = getLayoutInflater().inflate(R.layout.attendees_list_popup, null);
@@ -116,6 +123,23 @@ public class DetailActivity extends AppCompatActivity{
         profImageIV = findViewById(R.id.profile_image);
         qrScanBTN = findViewById(R.id.btnQRScan);
         viewAttendeesBTN = findViewById(R.id.btnAttendees);
+        tagsTV = findViewById(R.id.tvTags);
+
+
+
+        for(int i =0; i <ad.getTags().size(); i++ ){
+            String tag = ad.getTags().get(i);
+            Log.i(TAG, String.valueOf(tag));
+            int resId = getResources().getIdentifier(tag, "string", getApplicationContext().getPackageName());
+            String unicode = getString(resId);
+
+            String Title = StringEscapeUtils.unescapeJava(unicode);
+//            int emoji = Integer.parseInt(getString(resId));
+            //tagsTV.setText(new String(Character.toChars(resId)));
+            //tagsTV.setText(Title);
+
+
+        }
 
         if(ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())){
             qrScanBTN.setVisibility(View.VISIBLE);

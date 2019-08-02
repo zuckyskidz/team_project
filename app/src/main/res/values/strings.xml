@@ -12,4 +12,12 @@
     <string name="ad_name">Title</string>
     <string name="end_time">End Time</string>
     <string name="start_time">Start Time</string>
+
+    <string name="food">\u1F37D</string>
+    <string name="sports">0x1F3C3</string>
+    <string name="age">\u1F37E</string>
+    <string name="arts">\u1F3AD</string>
+    <string name="holiday">0x1F383</string>
+    <string name="music">\u1F3B6</string>
+
 </resources>
