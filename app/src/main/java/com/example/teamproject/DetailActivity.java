@@ -40,7 +40,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -126,19 +128,19 @@ public class DetailActivity extends AppCompatActivity{
         tagsTV = findViewById(R.id.tvTags);
 
 
+        Map<String, Integer> myMap = new HashMap<String, Integer>();
+        myMap.put("food", 0x1F37D);
+        myMap.put("sports", 0x1F3C3);
+        myMap.put("age", 0x1F37E);
+        myMap.put("arts", 0x1F3AD);
+        myMap.put("holiday", 0x1F383);
+        myMap.put("music", 0x1F3B6);
 
         for(int i =0; i <ad.getTags().size(); i++ ){
             String tag = ad.getTags().get(i);
-            Log.i(TAG, String.valueOf(tag));
-            int resId = getResources().getIdentifier(tag, "string", getApplicationContext().getPackageName());
-            String unicode = getString(resId);
-
-            String Title = StringEscapeUtils.unescapeJava(unicode);
-//            int emoji = Integer.parseInt(getString(resId));
-            //tagsTV.setText(new String(Character.toChars(resId)));
-            //tagsTV.setText(Title);
-
-
+            tagsTV.setText(tagsTV.getText()+tag + "  ");
+            int emoji = myMap.get(tag);
+            tagsTV.setText(tagsTV.getText() + new String(Character.toChars(emoji))+ "  ");
         }
 
         if(ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())){
