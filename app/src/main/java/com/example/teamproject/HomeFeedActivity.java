@@ -14,6 +14,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.teamproject.models.Ad;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 

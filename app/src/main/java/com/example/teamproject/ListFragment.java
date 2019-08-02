@@ -82,9 +82,6 @@ public class ListFragment extends Fragment {
 
         ads = new ArrayList<>();
         adapter = new RecAdAdapter(ads, getContext());
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(adapter);
         adapter.clear();
         swipeUpRefresh();

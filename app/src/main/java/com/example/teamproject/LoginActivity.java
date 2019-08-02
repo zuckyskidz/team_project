@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
 //      User already signed in
+
         if (ParseUser.getCurrentUser() != null) {
             final Intent intent = new Intent(LoginActivity.this, HomeFeedActivity.class);
             startActivity(intent);
