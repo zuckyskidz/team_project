@@ -2,6 +2,7 @@ package com.example.teamproject;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -20,11 +21,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -83,6 +83,12 @@ public class CreatePostActivity extends AppCompatActivity {
     ImageView ivPreview;
     ParseFile photoFile;
     ImageButton btnSubmit;
+    ViewFlipper viewFlipper;
+
+
+    private ArrayList<Bitmap> mBitmapsSelected;
+    private ArrayList<ParseFile> mImages;
+
     RatingBar rbSetLevel;
     TextView tvLevelDisp;
 
@@ -93,6 +99,15 @@ public class CreatePostActivity extends AppCompatActivity {
         Places.initialize(getApplicationContext(), getResources().getString(R.string.google_maps_api_key));
         placesClient = Places.createClient(this);
 
+
+        etAdName = findViewById(R.id.etAdName);
+        tvEndTime = findViewById(R.id.tvTimeDisplay2);
+        btnAdAddress =  findViewById(R.id.btnAdAddress);
+        etAdDesc = findViewById(R.id.etAdDesc);
+        tvDisplayDate = findViewById(R.id.tvDateDisplay);
+        tvStartTime = findViewById(R.id.tvTimeDisplay);
+        btnSubmit = findViewById(R.id.btnSubmit);
+        viewFlipper = findViewById(R.id.viewFlipper);
 
         etAdName = (EditText) findViewById(R.id.etAdName);
         tvEndTime = (TextView) findViewById(R.id.tvTimeDisplay2);
@@ -166,7 +181,7 @@ public class CreatePostActivity extends AppCompatActivity {
     public void submitAd(View view) {
         Log.d(TAG, "Posting...");
         Ad newAd = new Ad();
-        if(makeSurePostable()) {
+        if (makeSurePostable()) {
             newAd = new Ad();
             newAd.setUser(ParseUser.getCurrentUser());
             newAd.setTitle(etAdName.getText().toString());
@@ -176,14 +191,15 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setGeoPoint(geoPoint);
             newAd.setDescription(etAdDesc.getText().toString());
             newAd.setRSVP(new ArrayList<Object>());
+            newAd.setImages(mImages);
+            postAd(newAd);
             newAd.setImage(photoFile);
             newAd.setLevel((int) rbSetLevel.getRating());
         }
         else{
             Toast.makeText(CreatePostActivity.this, "Missing information.", Toast.LENGTH_SHORT).show();
-            return;
+            //newAd.setImage(photoFile);
         }
-        postAd(newAd);
     }
 
     private void postAd(Ad newAd) {
@@ -210,32 +226,32 @@ public class CreatePostActivity extends AppCompatActivity {
         });
     }
 
+    //Checks each field and verifies they are all filled out, or else changes color of field.
     private boolean makeSurePostable() {
         boolean isPostable = true;
-        if(etAdName.getText().length() == 0){
+        if (etAdName.getText().length() == 0) {
             Log.i(TAG, "title missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 etAdName.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
-            }
-            else{
+            } else {
                 etAdName.setHintTextColor(getResources().getColor(R.color.local_orange));
             }
             isPostable = false;
         }
-        if (tvDisplayDate.getText().length() == 0){
+        if (tvDisplayDate.getText().length() == 0) {
             Log.i(TAG, "date missing");
             tvDisplayDate.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
         }
-        if(tvEndTime.getText().length() == 0){
+        if (tvEndTime.getText().length() == 0) {
             Log.i(TAG, "end time missing");
             tvEndTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
         }
-        if(tvStartTime.getText().length() == 0){
+        if (tvStartTime.getText().length() == 0) {
             Log.i(TAG, "end time missing");
             tvStartTime.setHintTextColor(getResources().getColor(R.color.local_orange));
-            isPostable = false;;
+            isPostable = false;
         }
 
         if(btnAdAddress.getText().equals("")){
@@ -249,20 +265,20 @@ public class CreatePostActivity extends AppCompatActivity {
             }
             isPostable = false;
         }
-        if(etAdDesc.getText().length() == 0){
+        if (etAdDesc.getText().length() == 0) {
             Log.i(TAG, "description missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 etAdDesc.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
-            }
-            else{
+            } else {
                 etAdDesc.setHintTextColor(getResources().getColor(R.color.local_orange));
-            }            isPostable = false;
+            }
+            isPostable = false;
         }
-        if(localeString.equals("")){
+        if (localeString == null) {
             Log.i(TAG, "location missing");
             isPostable = false;
         }
-        if(photoFile == null){
+        if (mImages == null) {
             Log.i(TAG, "photo missing");
             isPostable = false;
         }
@@ -274,6 +290,7 @@ public class CreatePostActivity extends AppCompatActivity {
         return isPostable;
     }
 
+    //updates Date Labal
     private void updateDateLabel() {
         String myFormatDate = "EEE, MMM d, yyyy"; //In which you need put here
         SimpleDateFormat sdfDATE = new SimpleDateFormat(myFormatDate, Locale.US);
@@ -281,23 +298,25 @@ public class CreatePostActivity extends AppCompatActivity {
         tvDisplayDate.setText(sdfDATE.format(myCalendar.getTime()));
     }
 
+    //updates Time label
     private void updateTimeLabel() {
         String myFormatTime = "h:mm a"; //In which you need put here
         SimpleDateFormat sdfTime = new SimpleDateFormat(myFormatTime, Locale.US);
-        ;
         tvStartTime.setText(String.format(sdfTime.format(myCalendar.getTime())));
     }
 
+    //launches Gallery
     public void uploadPhoto(View view) {
-        // Create intent for picking a photo from the gallery
-        Intent intent = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Create intent for picking photos from the gallery
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
         // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
         // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getPackageManager()) != null) {
             // Bring up gallery to select a photo
-            startActivityForResult(intent, PICK_PHOTO_CODE);
+            startActivityForResult(Intent.createChooser(intent, "Select Pictures"), PICK_PHOTO_CODE);
         }
     }
 
@@ -308,33 +327,39 @@ public class CreatePostActivity extends AppCompatActivity {
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
+    //on result of picking multiple photos, saves photos as bitmaps and parseFiles
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_PHOTO_CODE) {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
-                    Uri photoUri = data.getData();
-                    // Do something with the photo based on Uri
-                    Bitmap selectedImage = null;
-                    try {
-                        selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    // Compress image to lower quality scale 1 - 100
-                    selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] image = stream.toByteArray();
+                    if (data.getClipData() != null) {
+                        ClipData mClipData = data.getClipData();
+                        mBitmapsSelected = new ArrayList<Bitmap>();
+                        mImages = new ArrayList<ParseFile>();
+                        for (int i = 0; i < mClipData.getItemCount(); i++) {
+                            ClipData.Item item = mClipData.getItemAt(i);
+                            Uri uri = item.getUri();
+                            // !! You may need to resize the image if it's too large
+                            Bitmap selectedImageBitmap = null;
+                            try {
+                                selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            mBitmapsSelected.add(selectedImageBitmap);
 
-                    // Create the ParseFile
-                    photoFile  = new ParseFile("picture_1.jpeg", image);
-                    Toast.makeText(this, "Image Uploaded", Toast.LENGTH_SHORT).show();
-                    Glide.with(getApplicationContext())
-                            .load(image)
-                            .apply(new RequestOptions()
-                                    .placeholder(R.drawable.ic_launcher_background))
-                            .into(ivPreview);
-                    ivPreview.setVisibility(View.VISIBLE);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            // Compress image to lower quality scale 1 - 100
+                            selectedImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                            byte[] image = stream.toByteArray();
+
+                            photoFile = new ParseFile("picture_" + i + ".jpeg", image);
+                            mImages.add(photoFile);
+                        }
+                        initViewFlipper();
+                    }
+
                 }
             }
         }
@@ -344,7 +369,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 Log.i(TAG, "Place LAT_LNG: " + place.getLatLng() + ", " + place.getName());
                 btnAdAddress.setText(place.getName());
-                localeString = place.getAddress().toString();
+                localeString = place.getAddress();
                 geoPoint = new ParseGeoPoint();
                 makeGeoPoint(place.getLatLng().toString());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
@@ -357,70 +382,34 @@ public class CreatePostActivity extends AppCompatActivity {
         }
     }
 
+    //initializes viewFlipper to preview images
+    private void initViewFlipper() {
+        if (viewFlipper != null) {
+            viewFlipper.setInAnimation(getApplicationContext(), android.R.anim.slide_in_left);
+            viewFlipper.setOutAnimation(getApplicationContext(), android.R.anim.slide_out_right);
+        }
+
+        if (viewFlipper != null) {
+            for (Bitmap bmp : mBitmapsSelected) {
+                ImageView imageView = new ImageView(getApplicationContext());
+
+                imageView.setImageBitmap(bmp);
+                viewFlipper.addView(imageView);
+                //if more than one image, start flipping
+                if (mBitmapsSelected.size() > 1) {
+                    viewFlipper.startFlipping();
+                }
+            }
+        }
+    }
+
     public void makeGeoPoint(String s) {
         String[] lat_long = s.substring(9).split("[(,)]");
         for (int i = 0; i < lat_long.length; i++) {
-            Log.d(TAG, ""+ i + ": " + lat_long[i]);
+            Log.d(TAG, "" + i + ": " + lat_long[i]);
         }
         geoPoint.setLatitude(Double.parseDouble(lat_long[1]));
         geoPoint.setLongitude(Double.parseDouble(lat_long[2]));
     }
-
-//    private void geoLocate(){
-//        Log.d(TAG, "geoLocate: geolocating");
-//
-//        String searchString = mSearchText.getText().toString();
-//
-//        Geocoder geocoder = new Geocoder(CreatePostActivity.this);
-//        List<Address> list = new ArrayList<>();
-//        try{
-//            list = geocoder.getFromLocationName(searchString, 1);
-//        }catch (IOException e){
-//            Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
-//        }
-//
-//        if(list.size() > 0){
-//            Address address = list.get(0);
-//
-//            Log.d(TAG, "geoLocate: found a location: " + address.toString());
-//            //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
-//
-//        }
-//    }
-//
-//    private void init(){
-//        Log.d(TAG, "init: initializing");
-//
-//        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-//                if(actionId == EditorInfo.IME_ACTION_SEARCH
-//                        || actionId == EditorInfo.IME_ACTION_DONE
-//                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-//                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
-//
-//                    //execute our method for searching
-//                    geoLocate();
-//                }
-//
-//                return false;
-//            }
-//        });
-//    }
-
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-//            if (resultCode == RESULT_OK) {
-//                Place place = Autocomplete.getPlaceFromIntent(data);
-//                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-//            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-//                // TODO: Handle the error.
-//                Status status = Autocomplete.getStatusFromIntent(data);
-//                Log.i(TAG, status.getStatusMessage());
-//            } else if (resultCode == RESULT_CANCELED) {
-//                // The user canceled the operation.
-//            }
-//        }
-//    }
 
 }

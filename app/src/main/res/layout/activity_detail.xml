@@ -7,14 +7,16 @@
     android:clickable="false"
     tools:context=".DetailActivity">
 
-    <ImageView
-        android:id="@+id/ivImage"
-        android:layout_width="0dp"
-        android:layout_height="230dp"
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
+        android:layout_width="404dp"
+        android:layout_height="232dp"
+        android:autoStart="false"
+        android:flipInterval="2000"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        app:layout_constraintTop_toTopOf="parent"></ViewFlipper>
 
     <TextView
         android:id="@+id/tvTitle"
@@ -35,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ivImage" />
+        app:layout_constraintTop_toTopOf="@+id/viewFlipper" />
 
     <TextView
         android:id="@+id/tvDescription"

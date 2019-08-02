@@ -1,5 +1,7 @@
 package com.example.teamproject;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 //import android.support.v4.app.Fragment;
 //import android.support.v4.app.FragmentTransaction;
 //import android.support.v7.app.AppCompatActivity;
@@ -11,7 +13,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import android.widget.ViewFlipper;
+
 import android.widget.Toast;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -42,8 +48,7 @@ public class DetailActivity extends AppCompatActivity {
     Ad ad;
     int userCount;
 
-    //TODO - add location
-    ImageView imageIV;
+    ViewFlipper viewFlipper;
     TextView titleTV;
     TextView locationTV;
     TextView dateTV;
@@ -63,10 +68,11 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         Log.i(TAG, "in ON Create");
-        ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
+        ad = Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
         userCount = ad.getRSVPCount();
 
-        imageIV = findViewById(R.id.ivImage);
+        //imageIV = findViewById(R.id.ivImage);
+        viewFlipper = findViewById(R.id.viewFlipper);
         titleTV = findViewById(R.id.tvTitle);
         locationTV = findViewById(R.id.tvLocation);
         dateTV = findViewById(R.id.tvDate);
@@ -111,19 +117,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        //set event image
-        ParseFile imageFile = ad.getImage();
-        String imageURL = null;
-        try {
-            imageURL = imageFile.getUrl();
-        } catch (NullPointerException e) {
-
-        }
-        Glide.with(getApplicationContext())
-                .load(imageURL)
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.ic_launcher_background))
-                .into(imageIV);
+        initViewFlipper();
 
         //sets event host details
         //need to use fetchIfNeeded, or else causes error
@@ -220,6 +214,31 @@ public class DetailActivity extends AppCompatActivity {
         return false;
     }
 
+
+
+    private void initViewFlipper() {
+        if (viewFlipper != null) {
+            viewFlipper.setInAnimation(getApplicationContext(), android.R.anim.slide_in_left);
+            viewFlipper.setOutAnimation(getApplicationContext(), android.R.anim.slide_out_right);
+        }
+
+        if (viewFlipper != null) {
+            for (ParseFile file : ad.getImages()) {
+                ImageView imageView = new ImageView(getApplicationContext());
+
+                Bitmap bmp = null;
+                try {
+                    bmp = BitmapFactory.decodeByteArray(file.getData(), 0, file.getData().length);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                imageView.setImageBitmap(bmp);
+                viewFlipper.addView(imageView);
+                //starts flipping for more than one image
+                if (ad.getImages().size() > 1) {
+                    viewFlipper.startFlipping();
+                }
+
     public boolean checkLevel() {
         return ParseUser.getCurrentUser().getInt("level") >= ad.getLevel();
     }
@@ -238,9 +257,11 @@ public class DetailActivity extends AppCompatActivity {
                 levelUp(i);
                 totals[i] = 0;
                 break;
+
             }
         }
     }
+
 
     private void levelUp(int index) {
         int level = ParseUser.getCurrentUser().getInt("level");
