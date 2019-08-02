@@ -65,10 +65,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private int LOCATION_REQUEST_ID = 2222;
     private int RADIUS_IN_METERS = 8000; //roughly 5 miles
     private int RADIUS_IN_KILOMETERS = 8;
+
 //    private int GEOFENCE_RADIUS_IN_METERS = 8000;
 //    private int GEOFENCE_EXPIRATION_IN_MILLISECONDS = 1000;
 
     ArrayList<Ad> closestEvents;
+    ArrayList<Ad> allEvents;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,14 +126,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         // new Google API SDK v11 uses getFusedLocationProviderClient(this)
         if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_REQUEST_ID);
             return;
+        } else {
+            myLocation = LocationServices.FusedLocationApi.getLastLocation();
         }
         getFusedLocationProviderClient(getContext()).requestLocationUpdates(mLocationRequest, new LocationCallback() {
                     @Override
@@ -143,18 +143,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Looper.myLooper());
     }
 
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == LOCATION_REQUEST_ID) {
+            if(grantResults.length == 1
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // We can now safely use the API we requested access to
+                 myLocation =
+                        LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            } else {
+                // Permission was denied or request was cancelled
+            }
+        }
+    }
+
 
     public void onLocationChanged(Location location) {
         // New location has now been determined
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
-//        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
         // You can now create a LatLng Object for use with maps
 
-        //TODO — recreate geofence around user once location updated ????????????
-//        createGeofence(location.getLatitude(), location.getLongitude());
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        getClosestEvents();
+        pinEvents(allEvents);
+      //  pinEvents(closestEvents);
 
     }
 
@@ -198,12 +215,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(40.689247, -74.044502)).title("Statue of Liberty"));
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(40.689247, -74.044502)).title("Statue of Liberty"));
 
-        CameraPosition Liberty = CameraPosition.builder().target(new LatLng(40.689247, -74.044502)).zoom(16).bearing(0).tilt(45).build();
+//        CameraPosition Liberty = CameraPosition.builder().target(new LatLng(40.689247, -74.044502)).zoom(16).bearing(0).tilt(45).build();
+//
+//        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(Liberty));
 
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(Liberty));
+//        zoomToCurrentLocation();
 
+        if (myLocation != null) {
+            double dLatitude = myLocation.getLatitude();
+            double dLongitude = myLocation.getLongitude();
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(dLatitude, dLongitude)).title("My Location"));
+            CameraPosition myCameraPosition = CameraPosition.builder().target(new LatLng(dLatitude, dLongitude)).zoom(16).bearing(0).tilt(45).build();
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(myCameraPosition));
+
+
+        } else {
+            Toast.makeText(getContext(), "Unable to fetch the current location", Toast.LENGTH_SHORT).show();
+        }
 
         if (checkPermissions()) {
             if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -221,8 +251,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         getCurrentLocation();
 
-        ArrayList<Ad> closestEvents = getClosestEvents();
-        pinEvents(closestEvents);
+
     }
 
     void getCurrentLocation() {
@@ -259,8 +288,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public ArrayList<Ad> getClosestEvents(){
-        closestEvents = new ArrayList<Ad>();
+    public void getClosestEvents(){
+        if(closestEvents != null) closestEvents.clear();
         ParseGeoPoint myGeopoint = new ParseGeoPoint(myLocation.getLatitude(), myLocation.getLongitude());
         ParseQuery<Ad> query = ParseQuery.getQuery("Ad");
         query.whereWithinKilometers("geoPoints", myGeopoint, RADIUS_IN_KILOMETERS);
@@ -275,8 +304,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+    }
 
-        return closestEvents;
+    public void getAllEvents(){
+        allEvents = new ArrayList<Ad>();
+        ParseGeoPoint myGeopoint = new ParseGeoPoint(myLocation.getLatitude(), myLocation.getLongitude());
+        ParseQuery<Ad> query = ParseQuery.getQuery("Ad");
+        query.findInBackground(new FindCallback<Ad>() {
+            @Override
+            public void done(List<Ad> objects, ParseException e) {
+                if(e == null){
+                    allEvents.addAll(objects);
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     public void pinEvents(ArrayList<Ad> events){
@@ -333,41 +377,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-
-//    public void createGeofence(double lat, double lng){
-//
-//        if(geofenceList != null) geofenceList.clear();
-//
-//        geofenceList.add(new Geofence.Builder()
-//                // Set the request ID of the geofence. This is a string to identify this
-//                // geofence.
-//                .setRequestId("My Location")
-//
-//                .setCircularRegion(
-//                        lat,
-//                        lng,
-//                        GEOFENCE_RADIUS_IN_METERS
-//                )
-//                .setExpirationDuration(GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-//                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-//                        Geofence.GEOFENCE_TRANSITION_EXIT)
-//                .build());
-//
-//    }
-//
-//    private boolean inGeofence(){
-//
-//        return false;
-//    }
-//
-//    private GeofencingRequest getGeofencingRequest() {
-//        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-//        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-//        builder.addGeofences(geofenceList);
-//        return builder.build();
-//    }
+    public void zoomToCurrentLocation(){
+        Location myLocation = mGoogleMap.getMyLocation();
+        if (myLocation != null) {
+            double dLatitude = myLocation.getLatitude();
+            double dLongitude = myLocation.getLongitude();
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(dLatitude, dLongitude)).title("My Location"));
+            CameraPosition myCameraPosition = CameraPosition.builder().target(new LatLng(dLatitude, dLongitude)).zoom(16).bearing(0).tilt(45).build();
+            mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(myCameraPosition));
+    }
 
 
 
-
-}
+}}
