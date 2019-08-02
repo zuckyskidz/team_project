@@ -238,10 +238,10 @@ public class CreatePostActivity extends AppCompatActivity {
 
             Log.i(TAG, "address missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                etAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+                btnAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
             }
             else{
-                etAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
+                btnAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
             }
             isPostable = false;
         }
