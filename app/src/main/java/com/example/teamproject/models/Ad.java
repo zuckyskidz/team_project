@@ -7,7 +7,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +19,8 @@ public class Ad extends ParseObject {
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_TITLE = "title";
     public static final String KEY_IMAGE = "image";
+    public static final String KEY_IMAGES = "images";
+
     public static final String KEY_USER = "user";
     private static final String KEY_CREATIONTIME = "createdAt";
     private static final String KEY_LOCATION = "location";
@@ -48,9 +49,16 @@ public class Ad extends ParseObject {
     public ParseFile getImage() {
         return getParseFile(KEY_IMAGE);
     }
+    public List<ParseFile> getImages() {
+        return getList(KEY_IMAGES);
+    }
+
 
     public void setImage(ParseFile image) {
         put(KEY_IMAGE, image);
+    }
+    public void setImages(List<ParseFile> images) {
+        put(KEY_IMAGES, images);
     }
 
     public ParseUser getUser() {
