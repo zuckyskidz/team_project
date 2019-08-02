@@ -82,7 +82,7 @@ public class RecAdAdapter extends RecyclerView.Adapter<RecAdAdapter.MasonryView>
         Ad ad = mAds.get(position);
 
         ParseFile imageFile;
-        if( ad.getImages().isEmpty()){
+        if( ad.getImages() == null || ad.getImages().isEmpty()){
             imageFile = ad.getImage();
         }
         else{
