@@ -38,6 +38,7 @@ import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -46,6 +47,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+//import android.support.v7.app.AppCompatActivity;
+//import com.google.android.gms.location.places.Place;
 
 public class CreatePostActivity extends AppCompatActivity {
 

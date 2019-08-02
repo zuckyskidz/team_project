@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+
 public class HomeFeedActivity extends FragmentActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.

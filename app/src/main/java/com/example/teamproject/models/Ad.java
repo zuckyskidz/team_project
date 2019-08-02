@@ -7,7 +7,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
