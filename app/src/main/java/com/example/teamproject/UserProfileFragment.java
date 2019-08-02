@@ -52,20 +52,12 @@ public class UserProfileFragment extends Fragment {
     private RecyclerView rvAttending;
     private RecyclerViewAdapter rvAdapter;
 
-
-
     Button logoutBT;
     Button qrBT;
     ImageView ivProfileImage;
     TextView tvName;
     TextView tvNoAttending;
     TextView tvNoHosting;
-
-    private Button logoutBT;
-    private ImageView ivProfileImage;
-    private TextView tvName;
-    private TextView tvNoAttending;
-    private TextView tvNoHosting;
     private RatingBar rbLevel;
 
 

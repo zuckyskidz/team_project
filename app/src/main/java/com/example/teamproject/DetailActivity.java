@@ -344,8 +344,6 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-}
-
     public boolean checkLevel() {
         return ParseUser.getCurrentUser().getInt("level") >= ad.getLevel();
     }
@@ -398,4 +396,3 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 }
-
