@@ -2,6 +2,10 @@ package com.example.teamproject;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentTransaction;
+//import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -27,7 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -47,13 +53,15 @@ public class DetailActivity extends AppCompatActivity {
     Button rsvpBT;
     ImageView profImageIV;
     TextView attendingCount;
+    FloatingActionButton fabDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
+        Log.i(TAG, "in ON Create");
+        ad = Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
         userCount = ad.getRSVPCount();
 
         //imageIV = findViewById(R.id.ivImage);
@@ -68,6 +76,11 @@ public class DetailActivity extends AppCompatActivity {
         rsvpBT = findViewById(R.id.btRSVP);
         attendingCount = findViewById(R.id.tvAttendingCount);
         profImageIV = findViewById(R.id.profile_image);
+        fabDelete = findViewById(R.id.fabDelete);
+
+        Log.d(TAG, "Ownership is being checked...");
+        isOwner();
+        Log.d(TAG, "Ownership checked been checked.");
 
         if (isUserRegistered()) {
             showUserRegistered();
@@ -98,7 +111,6 @@ public class DetailActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        ;
 
         //set profile image and details
         ParseFile profImageFile = ad.getUser().getParseFile("profileImage");
@@ -207,4 +219,23 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    public boolean isOwner() {
+        if (ParseUser.getCurrentUser().getUsername().equals(ad.getUser().getUsername())) {
+            Log.d(TAG, "User is Owner!");
+            fabDelete.show();
+            return true;
+        } else {
+            Log.d(TAG, "User is NOT Owner!");
+            fabDelete.hide();
+            return false;
+        }
+    }
+
+    public void onDelete(View view) {
+        if (isOwner()) {
+            Intent home = new Intent(DetailActivity.this, HomeFeedActivity.class);
+            ad.deleteInBackground();
+            startActivity(home);
+        }
+    }
 }

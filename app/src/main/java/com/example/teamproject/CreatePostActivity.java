@@ -37,7 +37,6 @@ import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -46,7 +45,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
 
 public class CreatePostActivity extends AppCompatActivity {
 
@@ -58,6 +56,7 @@ public class CreatePostActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
+            // TODO Auto-generated method stub
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -76,6 +75,7 @@ public class CreatePostActivity extends AppCompatActivity {
     TextView tvEndTime;
     Button btnAdAddress;
     EditText etAdDesc;
+    ImageView ivPreview;
     ParseFile photoFile;
     ImageButton btnSubmit;
     ViewFlipper viewFlipper;
@@ -93,19 +93,16 @@ public class CreatePostActivity extends AppCompatActivity {
         placesClient = Places.createClient(this);
 
 
-        etAdName = (EditText) findViewById(R.id.etAdName);
-        tvEndTime = (TextView) findViewById(R.id.tvTimeDisplay2);
-        btnAdAddress = (Button) findViewById(R.id.btnAdAddress);
-        etAdDesc = (EditText) findViewById(R.id.etAdDesc);
-        tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
-        tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
-        //ivPreview = (ImageView) findViewById(R.id.ivPreview);
-        btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
+        etAdName = findViewById(R.id.etAdName);
+        tvEndTime = findViewById(R.id.tvTimeDisplay2);
+        btnAdAddress =  findViewById(R.id.btnAdAddress);
+        etAdDesc = findViewById(R.id.etAdDesc);
+        tvDisplayDate = findViewById(R.id.tvDateDisplay);
+        tvStartTime = findViewById(R.id.tvTimeDisplay);
+        btnSubmit = findViewById(R.id.btnSubmit);
 
         viewFlipper = findViewById(R.id.viewFlipper);
 
-
-        //ivPreview.setVisibility(View.GONE);
 
         tvDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,6 +225,18 @@ public class CreatePostActivity extends AppCompatActivity {
             tvStartTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
         }
+
+        if(btnAdAddress.getText().equals("")){
+
+            Log.i(TAG, "address missing");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                btnAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
+            }
+            else{
+                btnAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
+            }
+            isPostable = false;
+        }
         if (etAdDesc.getText().length() == 0) {
             Log.i(TAG, "description missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -260,7 +269,6 @@ public class CreatePostActivity extends AppCompatActivity {
     private void updateTimeLabel() {
         String myFormatTime = "h:mm a"; //In which you need put here
         SimpleDateFormat sdfTime = new SimpleDateFormat(myFormatTime, Locale.US);
-        ;
         tvStartTime.setText(String.format(sdfTime.format(myCalendar.getTime())));
     }
 
