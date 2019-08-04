@@ -99,11 +99,10 @@ public class DetailActivity extends AppCompatActivity {
         popupWindow = new PopupWindow(popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+
         names = new ArrayList<>();
-        // Example: If you have a TextView inside `popup_layout.xml`
         lvAttendees = popupView.findViewById(R.id.lvAttendees);
-        adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
-        lvAttendees.setAdapter(adapter);
+
 
 
         Log.i(TAG, "in ON Create");
@@ -153,7 +152,12 @@ public class DetailActivity extends AppCompatActivity {
             viewAttendeesBTN.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    populate();
+                    adapter=new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, names);
+                    lvAttendees.setAdapter(adapter);
                     showPopup(v);
+                    Log.i(TAG, String.valueOf(names.size()));
+                    Log.i(TAG, String.valueOf(adapter.getCount()));
                 }
             });
 
@@ -238,8 +242,6 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void showPopup(View anchorView) {
-        populate();
-
         popupWindow.setFocusable(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable());
         popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
@@ -249,13 +251,23 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populate() {
+        try {
+            ad.fetch();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(names.size() > 0){
+            names.clear();
+        }
         List<Object> attendees = ad.getAttendees();
         Log.i(TAG, String.valueOf(ad.getAttendees().size()));
         for(int i = 0; i < attendees.size(); i++){
             ParseUser user = (ParseUser) attendees.get(i);
-            names.add( user.getUsername());
-            adapter.notifyDataSetChanged();
-
+            try {
+                names.add( user.fetchIfNeeded().getUsername());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -331,15 +343,20 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
     public boolean isOwner() {
-        if (ParseUser.getCurrentUser().getUsername().equals(ad.getUser().getUsername())) {
-            Log.d(TAG, "User is Owner!");
-            fabDelete.show();
-            return true;
-        } else {
-            Log.d(TAG, "User is NOT Owner!");
-            fabDelete.hide();
-            return false;
+        try {
+            if (ParseUser.getCurrentUser().fetchIfNeeded().getUsername().equals(ad.getUser().fetchIfNeeded().getUsername())) {
+                Log.d(TAG, "User is Owner!");
+                fabDelete.show();
+                return true;
+            } else {
+                Log.d(TAG, "User is NOT Owner!");
+                fabDelete.hide();
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     public void onDelete(View view) {
