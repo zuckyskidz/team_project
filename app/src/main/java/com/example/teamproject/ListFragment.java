@@ -1,45 +1,32 @@
 package com.example.teamproject;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
-//import android.support.annotation.NonNull;
-//import android.support.annotation.Nullable;
-//import android.support.annotation.RequiresApi;
-//import android.support.v4.app.Fragment;
-//
-//import android.support.v4.widget.SwipeRefreshLayout;
-//import android.support.v7.widget.RecyclerView;
-//import android.support.v7.widget.StaggeredGridLayoutManager;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 
 import com.example.teamproject.models.Ad;
-import com.example.teamproject.models.RecyclerItemClickListener;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 
 public class ListFragment extends Fragment {
@@ -91,11 +78,6 @@ public class ListFragment extends Fragment {
                 //handle longClick if any
             }
 
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Intent i = new Intent(getContext(), DetailActivity.class);
-                i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ads.get(position)));
-                getContext().startActivity(i);
-            }
         }));
 
         ads = new ArrayList<>();

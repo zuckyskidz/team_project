@@ -2,7 +2,9 @@ package com.example.teamproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -11,6 +13,10 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.teamproject.models.Ad;
+import com.parse.ParseUser;
+
+import org.parceler.Parcels;
 
 public class HomeFeedActivity extends FragmentActivity {
     /**

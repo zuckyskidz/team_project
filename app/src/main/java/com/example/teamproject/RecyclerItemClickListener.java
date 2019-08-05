@@ -1,4 +1,4 @@
-package com.example.teamproject.models;
+package com.example.teamproject;
 
 import android.content.Context;
 //import android.support.v7.widget.RecyclerView;
