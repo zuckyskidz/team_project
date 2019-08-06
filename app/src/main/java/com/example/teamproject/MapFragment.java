@@ -31,16 +31,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
-import com.parse.ParseQuery;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
@@ -289,7 +288,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for (Ad event : allEvents) {
             if(event.getGeoPoint() != null) {
                 LatLng point = new LatLng(event.getGeoPoint().getLatitude(), event.getGeoPoint().getLongitude());
-                mGoogleMap.addMarker(new MarkerOptions().position(point).title(event.getTitle()));
+                mGoogleMap.addMarker(new MarkerOptions().position(point)
+                                                        .title(event.getTitle())
+                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
             }
         }
     }
