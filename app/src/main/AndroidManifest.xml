@@ -17,6 +17,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.hardware.camera" />
+    <uses-permission android:name="android.hardware.camera.autofocus" />
 
     <application
         android:name=".ParseApp"
@@ -43,6 +46,7 @@
             android:name=".DetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SignupActivity" />
+        <activity android:name=".ScannerActivity" />
         <activity android:name=".LoginActivity"
         android:theme="@style/AppTheme">
             <intent-filter>

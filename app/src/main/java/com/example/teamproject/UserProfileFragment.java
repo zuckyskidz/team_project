@@ -1,14 +1,18 @@
 package com.example.teamproject;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -43,6 +47,7 @@ public class UserProfileFragment extends Fragment {
 
 
     private Button logoutBT;
+    Button qrBT;
     private ImageView ivProfileImage;
     private TextView tvName;
     private TextView tvNoAttending;
@@ -77,6 +82,14 @@ public class UserProfileFragment extends Fragment {
                 ParseUser.logOut();
                 Intent i = new Intent(getActivity(), LoginActivity.class);
                 startActivity(i);
+            }
+        });
+
+        qrBT = getView().findViewById(R.id.qrCode);
+        qrBT.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                showPopup(v);
             }
         });
 
@@ -207,4 +220,37 @@ public class UserProfileFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_user_profile, container, false);
     }
 
+    public void showPopup(View anchorView) {
+
+        View popupView = getLayoutInflater().inflate(R.layout.qr_popup, null);
+
+        PopupWindow popupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        // Example: If you have a TextView inside `popup_layout.xml`
+        ImageView ivQR = popupView.findViewById(R.id.ivQR);
+
+        ivQR.setImageBitmap(getQR(ParseUser.getCurrentUser().getObjectId()));
+
+
+        // If the PopupWindow should be focusable
+        popupWindow.setFocusable(true);
+
+        // If you need the PopupWindow to dismiss when when touched outside
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
+
+        Log.i(TAG, String.valueOf(popupView.isShown()));
+
+    }
+
+    private Bitmap getQR(String str){
+        Bitmap bitmap = QRCodeHelper
+                .newInstance(getContext())
+                .setContent(str)
+                .setMargin(2)
+                .getQRCOde();
+        return bitmap;
+    }
 }
