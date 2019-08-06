@@ -1,6 +1,7 @@
 package com.example.teamproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.teamproject.models.Ad;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -74,6 +77,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             title = itemView.findViewById(R.id.tvTitle);
             image = itemView.findViewById(R.id.ivImage);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    Intent i = new Intent(mContext, DetailActivity.class);
+                    i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(mAds.get(position)));
+                    mContext.startActivity(i);
+                }
+            });
         }
     }
 
