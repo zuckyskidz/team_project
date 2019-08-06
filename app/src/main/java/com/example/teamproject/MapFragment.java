@@ -290,7 +290,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 LatLng point = new LatLng(event.getGeoPoint().getLatitude(), event.getGeoPoint().getLongitude());
                 mGoogleMap.addMarker(new MarkerOptions().position(point)
                                                         .title(event.getTitle())
-                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+                                                        .;
             }
         }
     }
