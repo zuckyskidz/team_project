@@ -7,6 +7,11 @@
     android:clickable="false"
     tools:context=".DetailActivity">
 
+    <me.dm7.barcodescanner.zxing.ZXingScannerView
+        android:id="@+id/qrCodeScanner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="404dp"
@@ -177,6 +182,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLocation" />
 
+
+    <Button
+        android:id="@+id/btnQRScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="QR Sign in"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <RatingBar
         android:id="@+id/rbLevels"
         style="@style/Widget.AppCompat.RatingBar.Small"
@@ -206,18 +224,6 @@
         app:srcCompat="@android:drawable/ic_delete"
         android:focusable="true" />
 
-    <Button
-        android:id="@+id/btnQRScan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="QR Sign in"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/tvTags"
         android:layout_width="wrap_content"
@@ -233,5 +239,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rbLevels"
         app:layout_constraintVertical_bias="0.0" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
