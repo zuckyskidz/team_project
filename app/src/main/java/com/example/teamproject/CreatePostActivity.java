@@ -115,7 +115,6 @@ public class CreatePostActivity extends AppCompatActivity {
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
         tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
         tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
-        ivPreview = (ImageView) findViewById(R.id.ivPreview);
         btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
         rbSetLevel = (RatingBar) findViewById(R.id.rbSetLevel);
         tvLevelDisp = (TextView) findViewById(R.id.tvLevelDisp);

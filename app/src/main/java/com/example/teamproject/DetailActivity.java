@@ -1,11 +1,8 @@
 package com.example.teamproject;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentTransaction;
-//import android.support.v7.app.AppCompatActivity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,21 +10,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
-import android.widget.ViewFlipper;
-
 import android.widget.Toast;
-
+import android.widget.ViewFlipper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.parse.FindCallback;
-import com.parse.Parse;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -40,6 +32,10 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentTransaction;
+//import android.support.v7.app.AppCompatActivity;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -238,6 +234,9 @@ public class DetailActivity extends AppCompatActivity {
                 if (ad.getImages().size() > 1) {
                     viewFlipper.startFlipping();
                 }
+            }
+        }
+    }
 
     public boolean checkLevel() {
         return ParseUser.getCurrentUser().getInt("level") >= ad.getLevel();

@@ -172,7 +172,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         if (!hasLocationPermission()) {
-           requestLocationPermission();
+            requestLocationPermission();
         }
         mGoogleMap.setMyLocationEnabled(true);
         LocationManager locationManager = (LocationManager)
