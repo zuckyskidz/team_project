@@ -27,8 +27,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -144,10 +142,9 @@ public class DetailActivity extends AppCompatActivity {
             qrScanBTN.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    launchActivity(ScannerActivity.class);
-//                    Intent i = new Intent(getApplicationContext(), ScannerActivity.class);
-//                    i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
-//                    startActivityForResult(i, QR_REQUEST);
+                    Intent i = new Intent(getApplicationContext(), ScannerActivity.class);
+                    i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+                    startActivityForResult(i, QR_REQUEST);
                 }
             });
         }
@@ -336,9 +333,8 @@ public class DetailActivity extends AppCompatActivity {
             case ZXING_CAMERA_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (mClss != null) {
-                        Intent i = new Intent(getApplicationContext(), mClss);
-                        i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
-                        startActivityForResult(i, QR_REQUEST);
+                        Intent intent = new Intent(this, mClss);
+                        startActivity(intent);
                     }
                 } else {
                     Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
@@ -396,18 +392,6 @@ public class DetailActivity extends AppCompatActivity {
             Intent home = new Intent(DetailActivity.this, HomeFeedActivity.class);
             ad.deleteInBackground();
             startActivity(home);
-        }
-    }
-
-    public void launchActivity(Class<?> clss) {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            mClss = clss;
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.CAMERA}, ZXING_CAMERA_PERMISSION);
-        } else {
-            Intent intent = new Intent(this, clss);
-            startActivity(intent);
         }
     }
 }
