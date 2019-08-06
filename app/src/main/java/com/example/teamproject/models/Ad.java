@@ -7,7 +7,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -20,13 +19,14 @@ public class Ad extends ParseObject {
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_TITLE = "title";
     public static final String KEY_IMAGE = "image";
+    public static final String KEY_IMAGES = "images";
+
     public static final String KEY_USER = "user";
     private static final String KEY_CREATIONTIME = "createdAt";
     private static final String KEY_LOCATION = "location";
     private static final String KEY_TAGS = "tags";
-    private static final String KEY_RSVP = "rsvp";
     private static final String KEY_ATTENDEES = "attendees";
-
+    private static final String KEY_RSVP = "rsvp";
     public static final String KEY_GEOPPOINT = "geoPoints";
     public static final String KEY_LEVEL = "level";
 
@@ -49,9 +49,16 @@ public class Ad extends ParseObject {
     public ParseFile getImage() {
         return getParseFile(KEY_IMAGE);
     }
+    public List<ParseFile> getImages() {
+        return getList(KEY_IMAGES);
+    }
+
 
     public void setImage(ParseFile image) {
         put(KEY_IMAGE, image);
+    }
+    public void setImages(List<ParseFile> images) {
+        put(KEY_IMAGES, images);
     }
 
     public ParseUser getUser() {
@@ -74,13 +81,6 @@ public class Ad extends ParseObject {
 
     public String getLocation() {
         return getString(KEY_LOCATION);
-    }
-
-    //right now, "tags" are an array in parse dashboard
-    //Todo - create tags model? getTags should return an array of Tags.each tag has an image
-
-    public ParseObject getTags() {
-        return getParseObject(KEY_TAGS);
     }
 
     public String getAddress() {
@@ -119,14 +119,6 @@ public class Ad extends ParseObject {
         return getList(KEY_RSVP);
     }
 
-    public List<Object> getAttendees() {
-        return getList(KEY_ATTENDEES);
-    }
-    public void setAttendees(List<Object> users) {
-        put(KEY_ATTENDEES, users);
-    }
-
-
     public void setRSVP(List<Object> list) {
         put(KEY_RSVP, list);
     }
@@ -138,6 +130,19 @@ public class Ad extends ParseObject {
     public int getLevel() { return getInt(KEY_LEVEL); }
 
     public void setLevel(int newLevel) { put(KEY_LEVEL, newLevel); }
+
+    public List<String> getTags() {
+        return getList(KEY_TAGS);
+    }
+    public void setTags(List<String> tags) {
+        put(KEY_TAGS, tags);
+    }
+    public List<Object> getAttendees() {
+        return getList(KEY_ATTENDEES);
+    }
+    public void setAttendees(List<Object> users) {
+        put(KEY_ATTENDEES, users);
+    }
 
     public static class Query extends ParseQuery<Ad> {
         public Query() {

@@ -4,6 +4,8 @@ package com.example.teamproject;
 //import android.support.v4.app.FragmentTransaction;
 //import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 
@@ -24,13 +26,18 @@ import android.widget.RatingBar;
 
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.emoji.bundled.BundledEmojiCompatConfig;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.widget.EmojiTextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -49,7 +56,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentTransaction;
+//import android.support.v7.app.AppCompatActivity;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -63,6 +76,8 @@ public class DetailActivity extends AppCompatActivity {
 
 
     //TODO - add location
+    EmojiTextView tagsTV;
+    ViewFlipper viewFlipper;
     Button qrScanBTN;
     Button viewAttendeesBTN;
     ImageView imageIV;
@@ -88,9 +103,13 @@ public class DetailActivity extends AppCompatActivity {
     FloatingActionButton fabDelete;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
+        EmojiCompat.init(config);
         setContentView(R.layout.activity_detail);
 
         ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
@@ -103,7 +122,8 @@ public class DetailActivity extends AppCompatActivity {
         names = new ArrayList<>();
 
 
-        imageIV = findViewById(R.id.ivImage);
+        //imageIV = findViewById(R.id.ivImage);
+        viewFlipper = findViewById(R.id.viewFlipper);
         titleTV = findViewById(R.id.tvTitle);
         locationTV = findViewById(R.id.tvLocation);
         dateTV = findViewById(R.id.tvDate);
@@ -158,6 +178,24 @@ public class DetailActivity extends AppCompatActivity {
         isOwner();
         Log.d(TAG, "Ownership checked been checked.");
 
+        tagsTV = (EmojiTextView) findViewById(R.id.tvTags);
+
+        Map<String, Integer> myMap = new HashMap<String, Integer>();
+        myMap.put("food", 0x1F37D);
+        myMap.put("sports", 0x1F3C3);
+        myMap.put("age", 0x1F37E);
+        myMap.put("arts", 0x1F3AD);
+        myMap.put("holiday", 0x1F383);
+        myMap.put("music", 0x1F3B6);
+
+        for(int i =0; i <ad.getTags().size(); i++ ){
+            String tag = ad.getTags().get(i);
+            tagsTV.setText(tagsTV.getText()+tag + "  ");
+            int emoji = myMap.get(tag);
+            tagsTV.setText(tagsTV.getText() + new String(Character.toChars(emoji))+ "  ");
+        }
+
+
 
         if (isUserRegistered()) {
             showUserRegistered();
@@ -184,19 +222,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        //set event image
-        ParseFile imageFile = ad.getImage();
-        String imageURL = null;
-        try {
-            imageURL = imageFile.getUrl();
-        } catch (NullPointerException e) {
-
-        }
-        Glide.with(getApplicationContext())
-                .load(imageURL)
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.ic_launcher_background))
-                .into(imageIV);
+        initViewFlipper();
 
         //sets event host details
         //need to use fetchIfNeeded, or else causes error
@@ -327,6 +353,32 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
+    private void initViewFlipper() {
+        if (viewFlipper != null) {
+            viewFlipper.setInAnimation(getApplicationContext(), android.R.anim.slide_in_left);
+            viewFlipper.setOutAnimation(getApplicationContext(), android.R.anim.slide_out_right);
+        }
+
+        if (viewFlipper != null) {
+            for (ParseFile file : ad.getImages()) {
+                ImageView imageView = new ImageView(getApplicationContext());
+
+                Bitmap bmp = null;
+                try {
+                    bmp = BitmapFactory.decodeByteArray(file.getData(), 0, file.getData().length);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                imageView.setImageBitmap(bmp);
+                viewFlipper.addView(imageView);
+                //starts flipping for more than one image
+                if (ad.getImages().size() > 1) {
+                    viewFlipper.startFlipping();
+                }
+            }
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -361,6 +413,7 @@ public class DetailActivity extends AppCompatActivity {
                 levelUp(i);
                 totals[i] = 0;
                 break;
+
             }
         }
     }

@@ -3,7 +3,6 @@ package com.example.teamproject;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -11,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import android.widget.ImageView;
 
 import android.widget.PopupWindow;
@@ -28,10 +28,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -41,8 +37,6 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.graphics.Color.BLACK;
-import static android.graphics.Color.WHITE;
 import static com.parse.Parse.getApplicationContext;
 
 
@@ -52,12 +46,12 @@ public class UserProfileFragment extends Fragment {
     private RecyclerView rvAttending;
     private RecyclerViewAdapter rvAdapter;
 
-    Button logoutBT;
-    Button qrBT;
-    ImageView ivProfileImage;
-    TextView tvName;
-    TextView tvNoAttending;
-    TextView tvNoHosting;
+    private Button logoutBT;
+    private Button qrBT;
+    private ImageView ivProfileImage;
+    private TextView tvName;
+    private TextView tvNoAttending;
+    private TextView tvNoHosting;
     private RatingBar rbLevel;
 
 
@@ -80,6 +74,7 @@ public class UserProfileFragment extends Fragment {
         currentUser = ParseUser.getCurrentUser();
 
         super.onViewCreated(view, savedInstanceState);
+
 
         logoutBT = getView().findViewById(R.id.logout);
         logoutBT.setOnClickListener(new View.OnClickListener() {
@@ -143,7 +138,7 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void done(List<Ad> objects, ParseException e) {
                 if (e == null) {
-                    if(objects.size()!=0) {
+                    if (objects.size() != 0) {
                         hostingEvents.addAll(objects);
                         for (int i = 0; i < hostingEvents.size(); i++) {
                             Log.d(TAG, "HOSTING[" + i + "] = "
@@ -151,8 +146,7 @@ public class UserProfileFragment extends Fragment {
                                     + "\nusername = " + hostingEvents.get(i).getUser().getUsername());
                             tvNoHosting.setVisibility(View.GONE);
                         }
-                    }
-                    else{
+                    } else {
                         tvNoHosting.setVisibility(View.VISIBLE);
                         rvHosting.setVisibility(View.GONE);
                         return;
@@ -168,7 +162,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     public void getAttendingEvents() {
-        if(rvAdapter != null){
+        if (rvAdapter != null) {
             rvAdapter.clear();
         }
         attendingEvents = new ArrayList<Ad>();
@@ -181,7 +175,7 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void done(List<Ad> objects, ParseException e) {
                 if (e == null) {
-                    if(objects.size()!=0) {
+                    if (objects.size() != 0) {
                         attendingEvents.addAll(objects);
                         for (int i = 0; i < attendingEvents.size(); i++) {
                             Log.d(TAG, "ATTENDING[" + i + "] = "
@@ -189,8 +183,7 @@ public class UserProfileFragment extends Fragment {
                                     + "\nusername = " + attendingEvents.get(i).getUser().getUsername());
                             tvNoAttending.setVisibility(View.GONE);
                         }
-                    }
-                    else{
+                    } else {
                         tvNoAttending.setVisibility(View.VISIBLE);
                         rvAttending.setVisibility(View.GONE);
                         return;
@@ -206,7 +199,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void initHostingRecycler() {
-       // Log.i(TAG, "initRecyclerView");
+        // Log.i(TAG, "initRecyclerView");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false);
         rvHosting.setLayoutManager(layoutManager);
         rvAdapter = new RecyclerViewAdapter(this.getContext(), hostingEvents);
@@ -214,7 +207,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void initAttendingRecycler() {
-      //  Log.i(TAG, "initRecyclerView");
+        //  Log.i(TAG, "initRecyclerView");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false);
         rvAttending.setLayoutManager(layoutManager);
         rvAdapter = new RecyclerViewAdapter(this.getContext(), attendingEvents);
