@@ -119,8 +119,6 @@ public class DetailActivity extends AppCompatActivity {
 
         qrScanBTN = findViewById(R.id.btnQRScan);
         viewAttendeesBTN = findViewById(R.id.btnAttendees);
-        lvAttendees = popupView.findViewById(R.id.lvAttendees);
-
 
         if (ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())) {
             qrScanBTN.setVisibility(View.VISIBLE);
@@ -130,8 +128,13 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     names.addAll(getAttendeesNames());
+                    lvAttendees = popupView.findViewById(R.id.lvAttendees);
                     adapter = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, names);
                     lvAttendees.setAdapter(adapter);
+//
+//                    names = getAttendeesNames();
+//
+//                    adapter.notifyDataSetChanged();
                     showPopup(v);
                     Log.i(TAG, "onClick: names size = " + names.size());
                     Log.i(TAG, "onClick: adapter size = " + adapter.getCount());
@@ -142,6 +145,9 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     launchActivity(ScannerActivity.class);
+//                    Intent i = new Intent(getApplicationContext(), ScannerActivity.class);
+//                    i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+//                    startActivityForResult(i, QR_REQUEST);
                 }
             });
         }
@@ -233,14 +239,9 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            if (resultCode == RESULT_OK && requestCode == QR_REQUEST) {
-                try {
-                    ad.fetch();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-               // ad = Parcels.unwrap(data.getParcelableExtra(Ad.class.getSimpleName()));
+        if (resultCode == RESULT_OK && requestCode == QR_REQUEST) {
+            Ad ad = (Ad) data.getExtras().get("ad");
+            this.ad = ad;
         }
     }
 
@@ -254,15 +255,15 @@ public class DetailActivity extends AppCompatActivity {
         if (names.size() > 0) {
             names.clear();
         }
+        List<Object> attendees = ad.getAttendees();
         ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < ad.getAttendees().size(); i++) {
-            ParseUser user = (ParseUser) ad.getAttendees().get(i);
+        for (int i = 0; i < attendees.size(); i++) {
+            ParseUser user = (ParseUser) attendees.get(i);
             try {
                 result.add(user.fetchIfNeeded().getUsername());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            Log.i(TAG, result.get(i));
         }
         return result;
     }
@@ -379,20 +380,15 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public boolean isOwner() {
-        try {
-            if (ParseUser.getCurrentUser().fetchIfNeeded().getUsername().equals(ad.getUser().fetchIfNeeded().getUsername())) {
-                Log.d(TAG, "User is Owner!");
-                fabDelete.show();
-                return true;
-            } else {
-                Log.d(TAG, "User is NOT Owner!");
-                fabDelete.hide();
-                return false;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (ParseUser.getCurrentUser().getUsername().equals(ad.getUser().getUsername())) {
+            Log.d(TAG, "User is Owner!");
+            fabDelete.show();
+            return true;
+        } else {
+            Log.d(TAG, "User is NOT Owner!");
+            fabDelete.hide();
+            return false;
         }
-        return false;
     }
 
     public void onDelete(View view) {
@@ -411,7 +407,6 @@ public class DetailActivity extends AppCompatActivity {
                     new String[]{android.Manifest.permission.CAMERA}, ZXING_CAMERA_PERMISSION);
         } else {
             Intent intent = new Intent(this, clss);
-            intent.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
             startActivity(intent);
         }
     }
