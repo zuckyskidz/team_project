@@ -182,7 +182,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .getBestProvider(criteria, false));
         double latitude = myLocation.getLatitude();
         double longitude = myLocation.getLongitude();
-        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location"));
+//        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location"));
         CameraPosition myCameraPosition = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(16).bearing(0).tilt(45).build();
         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(myCameraPosition));
         allEvents = new ArrayList<Ad>();
@@ -290,7 +290,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 LatLng point = new LatLng(event.getGeoPoint().getLatitude(), event.getGeoPoint().getLongitude());
                 mGoogleMap.addMarker(new MarkerOptions().position(point)
                                                         .title(event.getTitle())
-                                                        .;
+                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
             }
         }
     }
@@ -299,8 +299,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for (Ad event : closestEvents) {
             if(event.getGeoPoint() != null) {
                 LatLng point = new LatLng(event.getGeoPoint().getLatitude(), event.getGeoPoint().getLongitude());
-                mGoogleMap.addMarker(new MarkerOptions().position(point).title(event.getTitle()));
-            }
+                mGoogleMap.addMarker(new MarkerOptions().position(point)
+                        .title(event.getTitle())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));            }
         }
     }
 }
