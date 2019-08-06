@@ -376,15 +376,20 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public boolean isOwner() {
-        if (ParseUser.getCurrentUser().getUsername().equals(ad.getUser().getUsername())) {
-            Log.d(TAG, "User is Owner!");
-            fabDelete.show();
-            return true;
-        } else {
-            Log.d(TAG, "User is NOT Owner!");
-            fabDelete.hide();
-            return false;
+        try {
+            if (ParseUser.getCurrentUser().fetchIfNeeded().getUsername().equals(ad.getUser().fetchIfNeeded().getUsername())) {
+                Log.d(TAG, "User is Owner!");
+                fabDelete.show();
+                return true;
+            } else {
+                Log.d(TAG, "User is NOT Owner!");
+                fabDelete.hide();
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     public void onDelete(View view) {
