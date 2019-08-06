@@ -30,6 +30,8 @@ import android.widget.ViewFlipper;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.emoji.bundled.BundledEmojiCompatConfig;
 import androidx.emoji.text.EmojiCompat;
 import androidx.emoji.widget.EmojiTextView;
@@ -162,9 +164,7 @@ public class DetailActivity extends AppCompatActivity {
             qrScanBTN.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(getApplicationContext(), ScannerActivity.class);
-                    i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
-                    startActivityForResult(i, QR_REQUEST);
+                    launchActivity(ScannerActivity.class);
                 }
             });
         }
@@ -278,6 +278,11 @@ public class DetailActivity extends AppCompatActivity {
         if (names.size() > 0) {
             names.clear();
         }
+        try {
+            ad.fetch();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         List<Object> attendees = ad.getAttendees();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < attendees.size(); i++) {
@@ -385,8 +390,9 @@ public class DetailActivity extends AppCompatActivity {
             case ZXING_CAMERA_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (mClss != null) {
-                        Intent intent = new Intent(this, mClss);
-                        startActivity(intent);
+                        Intent i = new Intent(getApplicationContext(), mClss);
+                        i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+                        startActivityForResult(i, QR_REQUEST);
                     }
                 } else {
                     Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
@@ -450,6 +456,18 @@ public class DetailActivity extends AppCompatActivity {
             Intent home = new Intent(DetailActivity.this, HomeFeedActivity.class);
             ad.deleteInBackground();
             startActivity(home);
+        }
+    }
+    public void launchActivity(Class<?> clss) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            mClss = clss;
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.CAMERA}, ZXING_CAMERA_PERMISSION);
+        } else {
+            Intent i = new Intent(getApplicationContext(), ScannerActivity.class);
+            i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+            startActivity(i);
         }
     }
 }
