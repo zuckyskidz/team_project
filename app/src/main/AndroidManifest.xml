@@ -46,7 +46,6 @@
             android:name=".DetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SignupActivity" />
-        <activity android:name=".ScannerActivity" />
         <activity android:name=".LoginActivity"
         android:theme="@style/AppTheme">
             <intent-filter>

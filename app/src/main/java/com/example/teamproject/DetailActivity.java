@@ -1,29 +1,19 @@
 package com.example.teamproject;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.emoji.bundled.BundledEmojiCompatConfig;
 import androidx.emoji.text.EmojiCompat;
 import androidx.emoji.widget.EmojiTextView;
@@ -42,7 +32,6 @@ import com.parse.SaveCallback;
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,16 +45,10 @@ import java.util.Map;
 public class DetailActivity extends AppCompatActivity {
 
     private static final String TAG = "DetailActivity";
-    private static final int ZXING_CAMERA_PERMISSION = 1;
-    private static final int QR_REQUEST = 77;
 
     Ad ad;
     int userCount;
-    private Class<?> mClss;
 
-    Button qrScanBTN;
-    Button viewAttendeesBTN;
-    ListView lvAttendees;
     EmojiTextView tagsTV;
     ViewFlipper viewFlipper;
     TextView titleTV;
@@ -81,20 +64,7 @@ public class DetailActivity extends AppCompatActivity {
     RatingBar rbLevel;
     FloatingActionButton fabDelete;
 
-    View popupView;
-    PopupWindow popupWindow;
-    ArrayAdapter<String> adapter;
-    ArrayList<String> names;
 
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        if(adapter!=null) {
-            populate();
-            adapter.notifyDataSetChanged();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,22 +73,9 @@ public class DetailActivity extends AppCompatActivity {
         EmojiCompat.init(config);
         setContentView(R.layout.activity_detail);
 
-
-        popupView = getLayoutInflater().inflate(R.layout.attendees_list_popup, null);
-
-        popupWindow = new PopupWindow(popupView,
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-
-        names = new ArrayList<>();
-        lvAttendees = popupView.findViewById(R.id.lvAttendees);
-
         Log.i(TAG, "in ON Create");
         ad = Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
         userCount = ad.getRSVPCount();
-
-
-
 
         //imageIV = findViewById(R.id.ivImage);
         viewFlipper = findViewById(R.id.viewFlipper);
@@ -140,8 +97,7 @@ public class DetailActivity extends AppCompatActivity {
         Log.d(TAG, "Ownership is being checked...");
         isOwner();
         Log.d(TAG, "Ownership checked been checked.");
-        qrScanBTN = findViewById(R.id.btnQRScan);
-        viewAttendeesBTN = findViewById(R.id.btnAttendees);
+
         tagsTV = (EmojiTextView) findViewById(R.id.tvTags);
 
         Map<String, Integer> myMap = new HashMap<String, Integer>();
@@ -159,29 +115,6 @@ public class DetailActivity extends AppCompatActivity {
             tagsTV.setText(tagsTV.getText() + new String(Character.toChars(emoji))+ "  ");
         }
 
-        if(ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())){
-            qrScanBTN.setVisibility(View.VISIBLE);
-            viewAttendeesBTN.setVisibility(View.VISIBLE);
-
-            viewAttendeesBTN.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    populate();
-                    adapter=new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, names);
-                    lvAttendees.setAdapter(adapter);
-                    showPopup(v);
-                    Log.i(TAG, String.valueOf(names.size()));
-                    Log.i(TAG, String.valueOf(adapter.getCount()));
-                }
-            });
-
-            qrScanBTN.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    launchActivity(ScannerActivity.class);
-                }
-            });
-        }
 
         if (isUserRegistered()) {
             showUserRegistered();
@@ -368,15 +301,20 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public boolean isOwner() {
-        if (ParseUser.getCurrentUser().getUsername().equals(ad.getUser().getUsername())) {
-            Log.d(TAG, "User is Owner!");
-            fabDelete.show();
-            return true;
-        } else {
-            Log.d(TAG, "User is NOT Owner!");
-            fabDelete.hide();
-            return false;
+        try {
+            if (ParseUser.getCurrentUser().fetchIfNeeded().getUsername().equals(ad.getUser().fetchIfNeeded().getUsername())) {
+                Log.d(TAG, "User is Owner!");
+                fabDelete.show();
+                return true;
+            } else {
+                Log.d(TAG, "User is NOT Owner!");
+                fabDelete.hide();
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     public void onDelete(View view) {
@@ -384,71 +322,6 @@ public class DetailActivity extends AppCompatActivity {
             Intent home = new Intent(DetailActivity.this, HomeFeedActivity.class);
             ad.deleteInBackground();
             startActivity(home);
-        }
-    }
-
-    private void showPopup(View anchorView) {
-        popupWindow.setFocusable(true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable());
-        popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
-
-        Log.i(TAG, String.valueOf(popupView.isShown()));
-
-    }
-
-    private void populate() {
-        try {
-            ad.fetch();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        if(names.size() > 0){
-            names.clear();
-        }
-        List<Object> attendees = ad.getAttendees();
-        Log.i(TAG, String.valueOf(ad.getAttendees().size()));
-        for(int i = 0; i < attendees.size(); i++){
-            ParseUser user = (ParseUser) attendees.get(i);
-            try {
-                names.add( user.fetchIfNeeded().getUsername());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == RESULT_OK && requestCode == QR_REQUEST) {
-            Ad ad = (Ad) data.getExtras().get("ad");
-            this.ad = ad;
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case ZXING_CAMERA_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (mClss != null) {
-                        Intent i = new Intent(getApplicationContext(), mClss);
-                        i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
-                        startActivityForResult(i, QR_REQUEST);
-                    }
-                } else {
-                    Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
-                }
-                return;
-        }
-    }
-    public void launchActivity(Class<?> clss) {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            mClss = clss;
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.CAMERA}, ZXING_CAMERA_PERMISSION);
-        } else {
-            Intent i = new Intent(getApplicationContext(), mClss);
-            i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
-            startActivityForResult(i, QR_REQUEST);
         }
     }
 }

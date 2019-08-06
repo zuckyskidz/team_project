@@ -7,13 +7,6 @@
     android:clickable="false"
     tools:context=".DetailActivity">
 
-    <me.dm7.barcodescanner.zxing.ZXingScannerView
-        android:id="@+id/qrCodeScanner"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="-72dp"
-        tools:layout_editor_absoluteY="0dp" />
-
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="404dp"
@@ -154,7 +147,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rbLevels" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTags" />
 
     <TextView
         android:id="@+id/tvTime"
@@ -238,7 +231,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@+id/rbLevels"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
