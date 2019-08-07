@@ -1,6 +1,7 @@
 package com.example.teamproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -39,6 +40,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -314,11 +317,13 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @Override
     public boolean onMarkerClick(final Marker marker) {
 
-        Ad event = (Ad) marker.getTag();
+        Ad ad = (Ad) marker.getTag();
 
         // Check if a click count was set, then display the click count.
-        if (event != null) {
-            
+        if (ad != null) {
+            Intent details = new Intent(getContext(), DetailActivity.class);
+            details.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+            getContext().startActivity(details);
             Toast.makeText(getContext(),
                     marker.getTitle() +
                             "'s pin has been clicked",
