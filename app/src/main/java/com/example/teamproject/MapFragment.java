@@ -34,6 +34,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -44,7 +45,7 @@ import java.util.List;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
 
     GoogleMap mGoogleMap;
     MapView mMapView;
@@ -189,6 +190,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         closestEvents = new ArrayList<Ad>();
         //getAllEvents();
         getClosestEvents();
+        mGoogleMap.setOnMarkerClickListener(this);
     }
 
     void getCurrentLocation() {
@@ -299,9 +301,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for (Ad event : closestEvents) {
             if(event.getGeoPoint() != null) {
                 LatLng point = new LatLng(event.getGeoPoint().getLatitude(), event.getGeoPoint().getLongitude());
-                mGoogleMap.addMarker(new MarkerOptions().position(point)
+                Marker temp;
+                temp = mGoogleMap.addMarker(new MarkerOptions().position(point)
                         .title(event.getTitle())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));            }
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                temp.setTag(event);
+            }
         }
+    }
+
+    /** Called when the user clicks a marker. */
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+        Ad event = (Ad) marker.getTag();
+
+        // Check if a click count was set, then display the click count.
+        if (event != null) {
+            
+            Toast.makeText(getContext(),
+                    marker.getTitle() +
+                            "'s pin has been clicked",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
     }
 }
