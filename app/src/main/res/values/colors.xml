@@ -5,5 +5,6 @@
     <color name="colorAccent">#52F2D4</color>
     <color name="local_yellow">#F2AE30</color>
     <color name="local_orange">#F29057</color>
+    <color name="buttonGreen">#62d126</color>
 
 </resources>

@@ -53,6 +53,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     GoogleMap mGoogleMap;
     MapView mMapView;
     View mView;
+    LocationManager locationManager;
 
     private LocationRequest mLocationRequest;
 
@@ -176,9 +177,9 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         if (!hasLocationPermission()) {
             requestLocationPermission();
+            mGoogleMap.setMyLocationEnabled(true);
         }
-        mGoogleMap.setMyLocationEnabled(true);
-        LocationManager locationManager = (LocationManager)
+        locationManager = (LocationManager)
                 this.getContext().getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
 

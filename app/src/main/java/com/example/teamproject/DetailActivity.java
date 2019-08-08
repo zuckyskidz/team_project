@@ -151,13 +151,15 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void showUserUnregistered() {
-        rsvpBT.setText("RSVP");
+        rsvpBT.setText("Going?");
+        rsvpBT.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         userCount = ad.getRSVPCount();
         attendingCount.setText(userCount + " people attending!");
     }
 
     private void showUserRegistered() {
-        rsvpBT.setText("Un-RSVP");
+        rsvpBT.setText("Going");
+        rsvpBT.setBackgroundColor(getResources().getColor(R.color.buttonGreen));
         userCount = ad.getRSVPCount();
         attendingCount.setText("See you there!");
     }
