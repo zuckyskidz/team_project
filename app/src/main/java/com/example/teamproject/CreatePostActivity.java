@@ -35,6 +35,8 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -58,7 +60,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
     private static final String TAG = "CreatePostActivity";
     private final static int PICK_PHOTO_CODE = 1046;
-    int AUTOCOMPLETE_REQUEST_CODE = 1;
+
     private final Calendar myCalendar = Calendar.getInstance();
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -72,16 +74,15 @@ public class CreatePostActivity extends AppCompatActivity {
         }
 
     };
-    List<Place.Field> fields;
     PlacesClient placesClient;
     String localeString;
     ParseGeoPoint geoPoint;
+    AutocompleteSupportFragment autocompleteFragment;
 
     EditText etAdName;
     TextView tvDisplayDate;
     TextView tvStartTime;
     TextView tvEndTime;
-    Button btnAdAddress;
     EditText etAdDesc;
     ParseFile photoFile;
     ImageButton btnSubmit;
@@ -105,11 +106,15 @@ public class CreatePostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
         EmojiCompat.init(config);
+
         setContentView(R.layout.activity_create_post);
+
         Places.initialize(getApplicationContext(), getResources().getString(R.string.google_maps_api_key));
         placesClient = Places.createClient(this);
+        initPlacesSearch();
 
         foodBTN = findViewById(R.id.food);
         sportsBTN = findViewById(R.id.sports);
@@ -165,7 +170,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
         etAdName = findViewById(R.id.etAdName);
         tvEndTime = findViewById(R.id.tvTimeDisplay2);
-        btnAdAddress = findViewById(R.id.btnAdAddress);
+        //btnAdAddress = findViewById(R.id.btnAdAddress);
         etAdDesc = findViewById(R.id.etAdDesc);
         tvDisplayDate = findViewById(R.id.tvDateDisplay);
         tvStartTime = findViewById(R.id.tvTimeDisplay);
@@ -174,7 +179,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
         etAdName = (EditText) findViewById(R.id.etAdName);
         tvEndTime = (TextView) findViewById(R.id.tvTimeDisplay2);
-        btnAdAddress = (Button) findViewById(R.id.btnAdAddress);
+        //btnAdAddress = (Button) findViewById(R.id.btnAdAddress);
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
         tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
         tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
@@ -182,13 +187,6 @@ public class CreatePostActivity extends AppCompatActivity {
         rbSetLevel = (RatingBar) findViewById(R.id.rbSetLevel);
         tvLevelDisp = (TextView) findViewById(R.id.tvLevelDisp);
 
-        tvLevelDisp.setText("Level " + ((int) rbSetLevel.getRating()));
-        rbSetLevel.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                tvLevelDisp.setText("Level " + ((int) rating));
-            }
-        });
 
         tvDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,9 +232,35 @@ public class CreatePostActivity extends AppCompatActivity {
             }
         });
 
-        fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
 
         //init();
+    }
+
+    private void initPlacesSearch() {
+        // Initialize the AutocompleteSupportFragment.
+        autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS));
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place LAT_LNG: " + place.getLatLng() + ", " + place.getName());
+                //btnAdAddress.setText(place.getName());
+                localeString = place.getAddress();
+                geoPoint = new ParseGeoPoint();
+                makeGeoPoint(place.getLatLng().toString());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
     }
 
     public void submitAd(View view) {
@@ -320,17 +344,6 @@ public class CreatePostActivity extends AppCompatActivity {
             tvStartTime.setHintTextColor(getResources().getColor(R.color.local_orange));
             isPostable = false;
         }
-
-        if (btnAdAddress.getText().equals("")) {
-
-            Log.i(TAG, "address missing");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                btnAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
-            } else {
-                btnAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
-            }
-            isPostable = false;
-        }
         if (etAdDesc.getText().length() == 0) {
             Log.i(TAG, "description missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -350,6 +363,8 @@ public class CreatePostActivity extends AppCompatActivity {
         }
         if (rbSetLevel.getRating() > ParseUser.getCurrentUser().getInt("level")) {
             isPostable = false;
+            rbSetLevel.setRating(1);
+            tvLevelDisp.setVisibility(View.VISIBLE);
             tvLevelDisp.setText("You must be at least Level " + ((int) rbSetLevel.getRating()) + " to create this event");
             tvLevelDisp.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
         }
@@ -384,13 +399,6 @@ public class CreatePostActivity extends AppCompatActivity {
             // Bring up gallery to select a photo
             startActivityForResult(Intent.createChooser(intent, "Select Pictures"), PICK_PHOTO_CODE);
         }
-    }
-
-    public void onClickLocation(View view) {
-        Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.FULLSCREEN, fields)
-                .build(this);
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
     //on result of picking multiple photos, saves photos as bitmaps and parseFiles
@@ -429,27 +437,13 @@ public class CreatePostActivity extends AppCompatActivity {
                 }
             }
         }
-
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i(TAG, "Place LAT_LNG: " + place.getLatLng() + ", " + place.getName());
-                btnAdAddress.setText(place.getName());
-                localeString = place.getAddress();
-                geoPoint = new ParseGeoPoint();
-                makeGeoPoint(place.getLatLng().toString());
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                Toast.makeText(this, "Sorry! Can't find locations right now!", Toast.LENGTH_LONG).show();
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i(TAG, status.getStatusMessage());
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
-        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     //initializes viewFlipper to preview images
     private void initViewFlipper() {
+        viewFlipper.setVisibility(View.VISIBLE);
+
         if (viewFlipper != null) {
             viewFlipper.setInAnimation(getApplicationContext(), android.R.anim.slide_in_left);
             viewFlipper.setOutAnimation(getApplicationContext(), android.R.anim.slide_out_right);
