@@ -177,8 +177,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         if (!hasLocationPermission()) {
             requestLocationPermission();
-            mGoogleMap.setMyLocationEnabled(true);
         }
+        mGoogleMap.setMyLocationEnabled(true);
         locationManager = (LocationManager)
                 this.getContext().getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
