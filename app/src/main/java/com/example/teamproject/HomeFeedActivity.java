@@ -1,9 +1,13 @@
 package com.example.teamproject;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -29,6 +33,7 @@ public class HomeFeedActivity extends FragmentActivity {
      */
     private PagerAdapter pagerAdapter;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +44,10 @@ public class HomeFeedActivity extends FragmentActivity {
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(pagerAdapter);
         mPager.setCurrentItem(1);
+
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.local_toolbar);
+        //setSupportActionBar(myToolbar);
     }
 
     @Override

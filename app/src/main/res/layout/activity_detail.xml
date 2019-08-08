@@ -200,11 +200,12 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
+        android:focusable="true"
         android:onClick="onDelete"
+        app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_delete"
-        android:focusable="true" />
+        app:srcCompat="@android:drawable/ic_delete" />
 
     <Button
         android:id="@+id/btnQRScan"
