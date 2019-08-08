@@ -1,6 +1,7 @@
 package com.example.teamproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -31,25 +32,28 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
-import com.parse.ParseQuery;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
 
     GoogleMap mGoogleMap;
     MapView mMapView;
     View mView;
+    LocationManager locationManager;
 
     private LocationRequest mLocationRequest;
 
@@ -175,7 +179,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             requestLocationPermission();
         }
         mGoogleMap.setMyLocationEnabled(true);
-        LocationManager locationManager = (LocationManager)
+        locationManager = (LocationManager)
                 this.getContext().getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
 
@@ -183,13 +187,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .getBestProvider(criteria, false));
         double latitude = myLocation.getLatitude();
         double longitude = myLocation.getLongitude();
-        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location"));
+//        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location"));
         CameraPosition myCameraPosition = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(16).bearing(0).tilt(45).build();
         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(myCameraPosition));
         allEvents = new ArrayList<Ad>();
         closestEvents = new ArrayList<Ad>();
         //getAllEvents();
         getClosestEvents();
+        mGoogleMap.setOnMarkerClickListener(this);
     }
 
     void getCurrentLocation() {
@@ -289,7 +294,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for (Ad event : allEvents) {
             if(event.getGeoPoint() != null) {
                 LatLng point = new LatLng(event.getGeoPoint().getLatitude(), event.getGeoPoint().getLongitude());
-                mGoogleMap.addMarker(new MarkerOptions().position(point).title(event.getTitle()));
+                mGoogleMap.addMarker(new MarkerOptions().position(point)
+                                                        .title(event.getTitle())
+                                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
             }
         }
     }
@@ -298,8 +305,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for (Ad event : closestEvents) {
             if(event.getGeoPoint() != null) {
                 LatLng point = new LatLng(event.getGeoPoint().getLatitude(), event.getGeoPoint().getLongitude());
-                mGoogleMap.addMarker(new MarkerOptions().position(point).title(event.getTitle()));
+                Marker temp;
+                temp = mGoogleMap.addMarker(new MarkerOptions().position(point)
+                        .title(event.getTitle())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                temp.setTag(event);
             }
         }
+    }
+
+    /** Called when the user clicks a marker. */
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+        Ad ad = (Ad) marker.getTag();
+
+        // Check if a click count was set, then display the click count.
+        if (ad != null) {
+            Intent details = new Intent(getContext(), DetailActivity.class);
+            details.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+            getContext().startActivity(details);
+            Toast.makeText(getContext(),
+                    marker.getTitle() +
+                            "'s pin has been clicked",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
     }
 }
