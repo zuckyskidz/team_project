@@ -203,7 +203,10 @@ public class DetailActivity extends AppCompatActivity {
             showUserUnregistered();
         }
 
-        rsvpBT.setOnClickListener(new View.OnClickListener() {
+        if(isOwner()){
+            rsvpBT.setVisibility(View.GONE);
+        } else {
+            rsvpBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isUserRegistered()) {
@@ -220,7 +223,7 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
             }
-        });
+        });}
 
         initViewFlipper();
 
@@ -298,13 +301,15 @@ public class DetailActivity extends AppCompatActivity {
 
 
     private void showUserUnregistered() {
-        rsvpBT.setText("RSVP");
+        rsvpBT.setText("Going?");
+        rsvpBT.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         userCount = ad.getRSVPCount();
         attendingCount.setText(userCount + " people attending!");
     }
 
     private void showUserRegistered() {
-        rsvpBT.setText("Un-RSVP");
+        rsvpBT.setText("Going");
+        rsvpBT.setBackgroundColor(getResources().getColor(R.color.buttonGreen));
         userCount = ad.getRSVPCount();
         attendingCount.setText("See you there!");
     }
