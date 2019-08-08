@@ -25,6 +25,7 @@ public class Ad extends ParseObject {
     private static final String KEY_CREATIONTIME = "createdAt";
     private static final String KEY_LOCATION = "location";
     private static final String KEY_TAGS = "tags";
+    private static final String KEY_ATTENDEES = "attendees";
     private static final String KEY_RSVP = "rsvp";
     public static final String KEY_GEOPPOINT = "geoPoints";
     public static final String KEY_LEVEL = "level";
@@ -82,13 +83,6 @@ public class Ad extends ParseObject {
         return getString(KEY_LOCATION);
     }
 
-    //right now, "tags" are an array in parse dashboard
-    //Todo - create tags model? getTags should return an array of Tags.each tag has an image
-
-    public ParseObject getTags() {
-        return getParseObject(KEY_TAGS);
-    }
-
     public String getAddress() {
         return getString(KEY_LOCATION);
     }
@@ -136,6 +130,19 @@ public class Ad extends ParseObject {
     public int getLevel() { return getInt(KEY_LEVEL); }
 
     public void setLevel(int newLevel) { put(KEY_LEVEL, newLevel); }
+
+    public List<String> getTags() {
+        return getList(KEY_TAGS);
+    }
+    public void setTags(List<String> tags) {
+        put(KEY_TAGS, tags);
+    }
+    public List<Object> getAttendees() {
+        return getList(KEY_ATTENDEES);
+    }
+    public void setAttendees(List<Object> users) {
+        put(KEY_ATTENDEES, users);
+    }
 
     public static class Query extends ParseQuery<Ad> {
         public Query() {

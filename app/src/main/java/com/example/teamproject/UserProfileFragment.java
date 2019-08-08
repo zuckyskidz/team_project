@@ -1,15 +1,22 @@
 package com.example.teamproject;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import android.widget.ImageView;
+
+import android.widget.PopupWindow;
+
 import android.widget.RatingBar;
+
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,8 +39,6 @@ import java.util.List;
 
 import static com.parse.Parse.getApplicationContext;
 
-//import android.widget.GridView;
-
 
 public class UserProfileFragment extends Fragment {
     private static final String TAG = "UserProfileFragment";
@@ -41,13 +46,14 @@ public class UserProfileFragment extends Fragment {
     private RecyclerView rvAttending;
     private RecyclerViewAdapter rvAdapter;
 
-
     private Button logoutBT;
+    private Button qrBT;
     private ImageView ivProfileImage;
     private TextView tvName;
     private TextView tvNoAttending;
     private TextView tvNoHosting;
     private RatingBar rbLevel;
+
 
     private ParseUser currentUser;
     private ArrayList<Ad> attendingEvents;
@@ -80,18 +86,27 @@ public class UserProfileFragment extends Fragment {
             }
         });
 
+
+        qrBT = getView().findViewById(R.id.qrCode);
+        qrBT.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                showPopup(v);
+            }
+        });
+
+        ivProfileImage = view.findViewById(R.id.ivProfileImage);
+        tvName = view.findViewById(R.id.tvName);
+
         ivProfileImage = (ImageView) view.findViewById(R.id.ivProfileImage);
         tvName = (TextView) view.findViewById(R.id.tvName);
+
         rvHosting = (RecyclerView) view.findViewById(R.id.rvHostingEvents);
         rvAttending = (RecyclerView) view.findViewById(R.id.rvAttendingEvents);
-        tvNoAttending = view.findViewById(R.id.tvNoAttending);
-        tvNoHosting = view.findViewById(R.id.tvNoHosting);
-
         tvNoAttending = (TextView) view.findViewById(R.id.tvNoAttending);
         tvNoHosting = (TextView) view.findViewById(R.id.tvNoHosting);
         rbLevel = (RatingBar) view.findViewById(R.id.rbLevels);
       
-
         tvName.setText(currentUser.getUsername());
         Log.d(TAG, "Does ParseUser contain level? " + currentUser.containsKey("level"));
         Log.d(TAG, "User Level is " + currentUser.getInt("level"));
@@ -112,7 +127,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void getHostingEvents() {
-        if (rvAdapter != null) {
+        if(rvAdapter != null){
             rvAdapter.clear();
         }
         hostingEvents = new ArrayList<Ad>();
@@ -205,6 +220,40 @@ public class UserProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_user_profile, container, false);
+    }
+
+    public void showPopup(View anchorView) {
+
+        View popupView = getLayoutInflater().inflate(R.layout.qr_popup, null);
+
+        PopupWindow popupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        // Example: If you have a TextView inside `popup_layout.xml`
+        ImageView ivQR = popupView.findViewById(R.id.ivQR);
+
+        ivQR.setImageBitmap(getQR(ParseUser.getCurrentUser().getObjectId()));
+
+
+        // If the PopupWindow should be focusable
+        popupWindow.setFocusable(true);
+
+        // If you need the PopupWindow to dismiss when when touched outside
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
+
+        Log.i(TAG, String.valueOf(popupView.isShown()));
+
+    }
+
+    private Bitmap getQR(String str){
+            Bitmap bitmap = QRCodeHelper
+                    .newInstance(getContext())
+                    .setContent(str)
+                    .setMargin(2)
+                    .getQRCOde();
+            return bitmap;
     }
 
 }

@@ -24,6 +24,9 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.emoji.bundled.BundledEmojiCompatConfig;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.widget.EmojiButton;
 
 import com.example.teamproject.models.Ad;
 import com.google.android.gms.common.api.Status;
@@ -80,10 +83,17 @@ public class CreatePostActivity extends AppCompatActivity {
     TextView tvEndTime;
     Button btnAdAddress;
     EditText etAdDesc;
-    ImageView ivPreview;
     ParseFile photoFile;
     ImageButton btnSubmit;
     ViewFlipper viewFlipper;
+
+    EmojiButton foodBTN;
+    EmojiButton sportsBTN;
+    EmojiButton ageBTN;
+    EmojiButton artsBTN;
+    EmojiButton holidayBTN;
+    EmojiButton musicBTN;
+    ArrayList<String> tags;
 
 
     private ArrayList<Bitmap> mBitmapsSelected;
@@ -95,14 +105,67 @@ public class CreatePostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
+        EmojiCompat.init(config);
         setContentView(R.layout.activity_create_post);
         Places.initialize(getApplicationContext(), getResources().getString(R.string.google_maps_api_key));
         placesClient = Places.createClient(this);
 
+        foodBTN = findViewById(R.id.food);
+        sportsBTN = findViewById(R.id.sports);
+        ageBTN = findViewById(R.id.ageRestrictive);
+        artsBTN = findViewById(R.id.arts);
+        holidayBTN = findViewById(R.id.holiday);
+        musicBTN = findViewById(R.id.music);
+        tags = new ArrayList<>();
+
+        foodBTN.setText(new StringBuilder(new String(Character.toChars(0x1F37D))));
+        foodBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(foodBTN);
+            }
+        });
+        sportsBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3C3))));
+        sportsBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(sportsBTN);
+            }
+        });
+        ageBTN.setText(new StringBuilder(new String(Character.toChars(0x1F37E))));
+        ageBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(ageBTN);
+            }
+        });
+        artsBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3AD))));
+        artsBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(artsBTN);
+            }
+        });
+        holidayBTN.setText(new StringBuilder(new String(Character.toChars(0x1F383))));
+        holidayBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(holidayBTN);
+            }
+        });
+        musicBTN.setText(new StringBuilder(new String(Character.toChars(0x1F3B6))));
+        musicBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle(musicBTN);
+            }
+        });
+
 
         etAdName = findViewById(R.id.etAdName);
         tvEndTime = findViewById(R.id.tvTimeDisplay2);
-        btnAdAddress =  findViewById(R.id.btnAdAddress);
+        btnAdAddress = findViewById(R.id.btnAdAddress);
         etAdDesc = findViewById(R.id.etAdDesc);
         tvDisplayDate = findViewById(R.id.tvDateDisplay);
         tvStartTime = findViewById(R.id.tvTimeDisplay);
@@ -118,7 +181,6 @@ public class CreatePostActivity extends AppCompatActivity {
         btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
         rbSetLevel = (RatingBar) findViewById(R.id.rbSetLevel);
         tvLevelDisp = (TextView) findViewById(R.id.tvLevelDisp);
-        ivPreview.setVisibility(View.GONE);
 
         tvLevelDisp.setText("Level " + ((int) rbSetLevel.getRating()));
         rbSetLevel.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -191,14 +253,20 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setDescription(etAdDesc.getText().toString());
             newAd.setRSVP(new ArrayList<Object>());
             newAd.setImages(mImages);
-            postAd(newAd);
-            newAd.setImage(photoFile);
             newAd.setLevel((int) rbSetLevel.getRating());
-        }
-        else{
+            newAd.setAttendees(new ArrayList<Object>());
+            newAd.setTags(getTags());
+        } else {
             Toast.makeText(CreatePostActivity.this, "Missing information.", Toast.LENGTH_SHORT).show();
+            return;
             //newAd.setImage(photoFile);
         }
+        postAd(newAd);
+
+    }
+
+    private List<String> getTags() {
+        return tags;
     }
 
     private void postAd(Ad newAd) {
@@ -253,13 +321,12 @@ public class CreatePostActivity extends AppCompatActivity {
             isPostable = false;
         }
 
-        if(btnAdAddress.getText().equals("")){
+        if (btnAdAddress.getText().equals("")) {
 
             Log.i(TAG, "address missing");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 btnAdAddress.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.local_orange)));
-            }
-            else{
+            } else {
                 btnAdAddress.setHintTextColor(getResources().getColor(R.color.local_orange));
             }
             isPostable = false;
@@ -411,4 +478,16 @@ public class CreatePostActivity extends AppCompatActivity {
         geoPoint.setLongitude(Double.parseDouble(lat_long[2]));
     }
 
+    private void toggle(EmojiButton button) {
+        if (button.isSelected()) {
+            button.setSelected(false);
+            button.setBackgroundColor(getResources().getColor(R.color.quantum_white_100));
+            tags.remove(button.getTag().toString());
+        } else {
+            button.setSelected(true);
+            button.setBackgroundColor(getResources().getColor(R.color.local_orange));
+            tags.add(button.getTag().toString());
+        }
+
+    }
 }

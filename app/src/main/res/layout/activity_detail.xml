@@ -7,6 +7,11 @@
     android:clickable="false"
     tools:context=".DetailActivity">
 
+    <me.dm7.barcodescanner.zxing.ZXingScannerView
+        android:id="@+id/qrCodeScanner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="410dp"
@@ -18,6 +23,19 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></ViewFlipper>
+
+    <Button
+        android:id="@+id/btnAttendees"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/transparent"
+        android:text="View Attendees!"
+        android:textColor="@color/colorAccent"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/btRSVP"
+        app:layout_constraintTop_toBottomOf="@+id/tvAttendingCount" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -133,6 +151,9 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/rbLevels" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTags" />
 
     <TextView
         android:id="@+id/tvTime"
@@ -167,6 +188,19 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toBottomOf="@+id/tvLocation" />
+
+
+    <Button
+        android:id="@+id/btnQRScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="QR Sign in"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RatingBar
         android:id="@+id/rbLevels"
@@ -230,5 +264,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
         app:srcCompat="@android:drawable/ic_menu_my_calendar" />
+
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/tvTags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rbLevels"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

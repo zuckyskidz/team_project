@@ -1,25 +1,51 @@
 package com.example.teamproject;
 
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentTransaction;
+//import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import android.widget.ListView;
+import android.widget.PopupWindow;
+
 import android.widget.RatingBar;
+
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.emoji.bundled.BundledEmojiCompatConfig;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.widget.EmojiTextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.teamproject.models.Ad;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.Parse;
+
 import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -29,9 +55,12 @@ import com.parse.SaveCallback;
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //import android.support.v4.app.Fragment;
 //import android.support.v4.app.FragmentTransaction;
@@ -40,11 +69,20 @@ import java.util.List;
 public class DetailActivity extends AppCompatActivity {
 
     private static final String TAG = "DetailActivity";
+    private static final int ZXING_CAMERA_PERMISSION = 1;
+    private static final int QR_REQUEST = 77;
 
     Ad ad;
     int userCount;
+    private Class<?> mClss;
 
+
+    //TODO - add location
+    EmojiTextView tagsTV;
     ViewFlipper viewFlipper;
+    Button qrScanBTN;
+    Button viewAttendeesBTN;
+    ImageView imageIV;
     TextView titleTV;
     TextView locationTV;
     TextView dateTV;
@@ -55,17 +93,36 @@ public class DetailActivity extends AppCompatActivity {
     Button rsvpBT;
     ImageView profImageIV;
     TextView attendingCount;
+
+    ListView lvAttendees;
+
+    View popupView;
+    PopupWindow popupWindow;
+    ArrayAdapter<String> adapter;
+    ArrayList<String> names;
+
     RatingBar rbLevel;
     FloatingActionButton fabDelete;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
+        EmojiCompat.init(config);
         setContentView(R.layout.activity_detail);
 
-        Log.i(TAG, "in ON Create");
-        ad = Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
+        ad = (Ad) Parcels.unwrap(getIntent().getParcelableExtra(Ad.class.getSimpleName()));
         userCount = ad.getRSVPCount();
+
+        popupView = getLayoutInflater().inflate(R.layout.attendees_list_popup, null);
+        popupWindow = new PopupWindow(popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        names = new ArrayList<>();
+
 
         //imageIV = findViewById(R.id.ivImage);
         viewFlipper = findViewById(R.id.viewFlipper);
@@ -79,6 +136,39 @@ public class DetailActivity extends AppCompatActivity {
         rsvpBT = findViewById(R.id.btRSVP);
         attendingCount = findViewById(R.id.tvAttendingCount);
         profImageIV = findViewById(R.id.profile_image);
+
+        qrScanBTN = findViewById(R.id.btnQRScan);
+        viewAttendeesBTN = findViewById(R.id.btnAttendees);
+
+        if (ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())) {
+            qrScanBTN.setVisibility(View.VISIBLE);
+            viewAttendeesBTN.setVisibility(View.VISIBLE);
+
+            viewAttendeesBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    names.addAll(getAttendeesNames());
+                    lvAttendees = popupView.findViewById(R.id.lvAttendees);
+                    adapter = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, names);
+                    lvAttendees.setAdapter(adapter);
+//
+//                    names = getAttendeesNames();
+//
+//                    adapter.notifyDataSetChanged();
+                    showPopup(v);
+                    Log.i(TAG, "onClick: names size = " + names.size());
+                    Log.i(TAG, "onClick: adapter size = " + adapter.getCount());
+                }
+            });
+
+            qrScanBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchActivity(ScannerActivity.class);
+                }
+            });
+        }
+
         rbLevel = findViewById(R.id.rbLevels);
 
         rbLevel.setRating(ad.getLevel());
@@ -87,6 +177,25 @@ public class DetailActivity extends AppCompatActivity {
         Log.d(TAG, "Ownership is being checked...");
         isOwner();
         Log.d(TAG, "Ownership checked been checked.");
+
+        tagsTV = (EmojiTextView) findViewById(R.id.tvTags);
+
+        Map<String, Integer> myMap = new HashMap<String, Integer>();
+        myMap.put("food", 0x1F37D);
+        myMap.put("sports", 0x1F3C3);
+        myMap.put("age", 0x1F37E);
+        myMap.put("arts", 0x1F3AD);
+        myMap.put("holiday", 0x1F383);
+        myMap.put("music", 0x1F3B6);
+
+        for(int i =0; i <ad.getTags().size(); i++ ){
+            String tag = ad.getTags().get(i);
+            tagsTV.setText(tagsTV.getText()+tag + "  ");
+            int emoji = myMap.get(tag);
+            tagsTV.setText(tagsTV.getText() + new String(Character.toChars(emoji))+ "  ");
+        }
+
+
 
         if (isUserRegistered()) {
             showUserRegistered();
@@ -151,7 +260,45 @@ public class DetailActivity extends AppCompatActivity {
         timeTV.setText(stf.format(date) + " - " + ad.getEndTime());
 
         descriptionTV.setText(ad.getDescription());
+
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK && requestCode == QR_REQUEST) {
+            Ad ad = (Ad) data.getExtras().get("ad");
+            this.ad = ad;
+        }
+    }
+
+    private void showPopup(View anchorView) {
+        popupWindow.setFocusable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER, 0, 0);
+    }
+
+    private ArrayList<String> getAttendeesNames() {
+        if (names.size() > 0) {
+            names.clear();
+        }
+        try {
+            ad.fetch();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        List<Object> attendees = ad.getAttendees();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < attendees.size(); i++) {
+            ParseUser user = (ParseUser) attendees.get(i);
+            try {
+                result.add(user.fetchIfNeeded().getUsername());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
 
     private void showUserUnregistered() {
         rsvpBT.setText("Going?");
@@ -216,7 +363,6 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
-
     private void initViewFlipper() {
         if (viewFlipper != null) {
             viewFlipper.setInAnimation(getApplicationContext(), android.R.anim.slide_in_left);
@@ -243,6 +389,23 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case ZXING_CAMERA_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (mClss != null) {
+                        Intent i = new Intent(getApplicationContext(), mClss);
+                        i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+                        startActivityForResult(i, QR_REQUEST);
+                    }
+                } else {
+                    Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
+                }
+                return;
+        }
+    }
+
     public boolean checkLevel() {
         return ParseUser.getCurrentUser().getInt("level") >= ad.getLevel();
     }
@@ -266,7 +429,6 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-
     private void levelUp(int index) {
         int level = ParseUser.getCurrentUser().getInt("level");
         if (level == index) {
@@ -278,15 +440,20 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public boolean isOwner() {
-        if (ParseUser.getCurrentUser().getUsername().equals(ad.getUser().getUsername())) {
-            Log.d(TAG, "User is Owner!");
-            fabDelete.show();
-            return true;
-        } else {
-            Log.d(TAG, "User is NOT Owner!");
-            fabDelete.hide();
-            return false;
+        try {
+            if (ParseUser.getCurrentUser().fetchIfNeeded().getUsername().equals(ad.getUser().fetchIfNeeded().getUsername())) {
+                Log.d(TAG, "User is Owner!");
+                fabDelete.show();
+                return true;
+            } else {
+                Log.d(TAG, "User is NOT Owner!");
+                fabDelete.hide();
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     public void onDelete(View view) {
@@ -294,6 +461,18 @@ public class DetailActivity extends AppCompatActivity {
             Intent home = new Intent(DetailActivity.this, HomeFeedActivity.class);
             ad.deleteInBackground();
             startActivity(home);
+        }
+    }
+    public void launchActivity(Class<?> clss) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            mClss = clss;
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.CAMERA}, ZXING_CAMERA_PERMISSION);
+        } else {
+            Intent i = new Intent(getApplicationContext(), ScannerActivity.class);
+            i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
+            startActivity(i);
         }
     }
 }

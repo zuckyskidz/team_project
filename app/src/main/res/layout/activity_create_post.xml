@@ -109,6 +109,76 @@
                             app:layout_constraintTop_toBottomOf="@+id/btnAdAddress" />
 
                         <TextView
+                            android:id="@+id/tvTagsOverview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:text="Pick a few tags to describe your event!" />
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:isScrollContainer="true"
+                                    android:orientation="horizontal"
+                                    android:scrollbars="horizontal">
+
+                                        <androidx.emoji.widget.EmojiButton
+                                            android:id="@+id/sports"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@drawable/tag_toggle"
+                                            android:text="Button"
+                                            android:tag="sports"/>
+
+                                        <androidx.emoji.widget.EmojiButton
+                                            android:id="@+id/food"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@drawable/tag_toggle"
+                                            android:text="Button"
+                                            android:tag="food"/>
+
+                                        <androidx.emoji.widget.EmojiButton
+                                            android:id="@+id/arts"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@drawable/tag_toggle"
+                                            android:text="Button"
+                                            android:tag="arts"/>
+
+                                        <androidx.emoji.widget.EmojiButton
+                                            android:id="@+id/holiday"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@drawable/tag_toggle"
+                                            android:text="Button"
+                                            android:tag="holiday"/>
+
+                                        <androidx.emoji.widget.EmojiButton
+                                            android:id="@+id/music"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@drawable/tag_toggle"
+                                            android:text="Button"
+                                            android:tag="music"/>
+
+                                        <androidx.emoji.widget.EmojiButton
+                                            android:id="@+id/ageRestrictive"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@drawable/tag_toggle"
+                                            android:text="Button"
+                                            android:tag="age"/>
+                                </LinearLayout>
+                        </HorizontalScrollView>
+
+                        <TextView
                             android:id="@+id/tvDateDisplay"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -194,4 +264,5 @@
 
                 </LinearLayout>
         </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
