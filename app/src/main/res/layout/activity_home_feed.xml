@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".HomeFeedActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <android.widget.Toolbar
         android:id="@+id/local_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -21,13 +21,11 @@
 
     <androidx.viewpager.widget.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/vpHome"
-        android:layout_width="0dp"
-        android:layout_height="673dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/local_toolbar"
         app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -38,7 +36,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
-        android:src="@drawable/baseline_add_black_18dp"
+        app:srcCompat="@drawable/ic_light_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:backgroundTint="@color/colorPrimary"

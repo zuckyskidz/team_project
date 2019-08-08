@@ -1,13 +1,20 @@
 package com.example.teamproject;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.Toolbar;
+import android.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -32,6 +39,7 @@ public class HomeFeedActivity extends FragmentActivity {
      * The pager adapter, which provides the pages to the view pager widget.
      */
     private PagerAdapter pagerAdapter;
+    private Toolbar myToolbar;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -46,8 +54,9 @@ public class HomeFeedActivity extends FragmentActivity {
         mPager.setCurrentItem(1);
 
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.local_toolbar);
-        //setSupportActionBar(myToolbar);
+        myToolbar = (Toolbar) findViewById(R.id.local_toolbar);
+        myToolbar.setTitleTextColor(getResources().getColor(R.color.quantum_white_text));
+        setActionBar(myToolbar);
     }
 
     @Override
@@ -79,10 +88,13 @@ public class HomeFeedActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
+                getActionBar().show();
                 return new UserProfileFragment();
             } else if (position == 1) {
+                getActionBar().show();
                 return new ListFragment();
             }
+            getActionBar().hide();
             return new MapFragment();
         }
 
@@ -91,5 +103,38 @@ public class HomeFeedActivity extends FragmentActivity {
             return NUM_PAGES;
         }
     }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_home, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.userProfile) {
+//            Toast.makeText(HomeFeedActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
+//            return true;
+//        }
+//
+//        if (id == R.id.map) {
+//            Toast.makeText(HomeFeedActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
+//            return true;
+//        }
+//
+//        if (id == R.id.listFeed) {
+//            Toast.makeText(HomeFeedActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
 }

@@ -1,5 +1,7 @@
 package com.example.teamproject;
 
+import android.app.ActionBar;
+import android.widget.Toolbar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -72,6 +75,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
     }
 
     @Nullable
@@ -97,9 +101,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         if (!hasLocationPermission()) {
             requestLocationPermission();
         }
-
-
-
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
     }
 
     // Trigger new location updates at interval
@@ -174,6 +176,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         MapsInitializer.initialize(getContext());
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+//        AppCompatActivity.getSupportActionBar().hide();
 
         if (!hasLocationPermission()) {
             requestLocationPermission();
