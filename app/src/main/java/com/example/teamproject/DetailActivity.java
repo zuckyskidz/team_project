@@ -86,8 +86,6 @@ public class DetailActivity extends AppCompatActivity {
     private Toolbar myToolbar;
     EmojiTextView tagsTV;
     ViewFlipper viewFlipper;
-    Button qrScanBTN;
-    Button viewAttendeesBTN;
     TextView titleTV;
     TextView locationTV;
     TextView dateTV;
@@ -139,34 +137,6 @@ public class DetailActivity extends AppCompatActivity {
         attendingCount = findViewById(R.id.tvAttendingCount);
         profImageIV = findViewById(R.id.profile_image);
 
-        qrScanBTN = findViewById(R.id.btnQRScan);
-        viewAttendeesBTN = findViewById(R.id.btnAttendees);
-
-        if (ParseUser.getCurrentUser().getObjectId().equals(ad.getUser().getObjectId())) {
-            qrScanBTN.setVisibility(View.VISIBLE);
-            viewAttendeesBTN.setVisibility(View.VISIBLE);
-
-            viewAttendeesBTN.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    names.addAll(getAttendeesNames());
-                    lvAttendees = popupView.findViewById(R.id.lvAttendees);
-                    adapter = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, names);
-                    lvAttendees.setAdapter(adapter);
-
-                    showPopup(v);
-                    Log.i(TAG, "onClick: names size = " + names.size());
-                    Log.i(TAG, "onClick: adapter size = " + adapter.getCount());
-                }
-            });
-
-            qrScanBTN.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    launchActivity(ScannerActivity.class);
-                }
-            });
-        }
 
         rbLevel = findViewById(R.id.rbLevels);
 
@@ -486,6 +456,17 @@ public class DetailActivity extends AppCompatActivity {
             case R.id.item_delete:
                 onDelete();
                 return true;
+            case R.id.item_QR:
+                launchActivity(ScannerActivity.class);
+            case R.id.item_view_attendees:
+                names.addAll(getAttendeesNames());
+                lvAttendees = popupView.findViewById(R.id.lvAttendees);
+                adapter = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, names);
+                lvAttendees.setAdapter(adapter);
+
+                showPopup(findViewById(android.R.id.content));
+                Log.i(TAG, "onClick: names size = " + names.size());
+                Log.i(TAG, "onClick: adapter size = " + adapter.getCount());
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -495,6 +476,12 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_details_activity, menu);
+
+        if (!isOwner())
+        {
+            for (int i = 0; i < menu.size(); i++)
+                menu.getItem(i).setVisible(false);
+        }
         return true;
     }
 }

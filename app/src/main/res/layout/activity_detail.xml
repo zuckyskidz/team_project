@@ -37,18 +37,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/local_toolbar"></ViewFlipper>
 
-    <Button
-        android:id="@+id/btnAttendees"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@android:color/transparent"
-        android:text="View Attendees!"
-        android:textColor="@color/colorAccent"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/btRSVP"
-        app:layout_constraintTop_toBottomOf="@+id/tvAttendingCount" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -59,8 +47,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:gravity="left"
-        android:padding="15dp"
+        android:gravity="left|center_vertical"
+        android:padding="5dp"
         android:text="Title"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -125,14 +113,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="116dp"
         android:layout_marginLeft="116dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="center_vertical"
         android:text="Users already attending!"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/btRSVP"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.928"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
 
@@ -140,9 +128,9 @@
         android:id="@+id/btRSVP"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="36dp"
-        android:layout_marginRight="36dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
         android:text="Going?"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -203,18 +191,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tvLocation" />
 
 
-    <Button
-        android:id="@+id/btnQRScan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="QR Sign in"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <RatingBar
         android:id="@+id/rbLevels"
         style="@style/Widget.AppCompat.RatingBar.Small"
@@ -231,20 +207,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
-    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
-        <!--android:id="@+id/fabDelete"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginEnd="16dp"-->
-        <!--android:layout_marginRight="16dp"-->
-        <!--android:layout_marginBottom="16dp"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"-->
-        <!--android:onClick="onDelete"-->
-        <!--app:backgroundTint="@color/colorPrimary"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:srcCompat="@android:drawable/ic_delete" />-->
 
     <ImageView
         android:id="@+id/imageView2"
