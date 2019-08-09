@@ -497,7 +497,6 @@ public class CreatePostActivity extends AppCompatActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.submit:
-                Toast.makeText(this, "Clicked", Toast.LENGTH_LONG).show();
                 item.setEnabled(false);
                 submitAd();
                 item.setEnabled(true);
