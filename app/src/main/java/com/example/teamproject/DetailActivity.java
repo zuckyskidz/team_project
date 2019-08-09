@@ -10,9 +10,12 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -29,7 +32,9 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.emoji.bundled.BundledEmojiCompatConfig;
@@ -78,11 +83,11 @@ public class DetailActivity extends AppCompatActivity {
 
 
     //TODO - add location
+    private Toolbar myToolbar;
     EmojiTextView tagsTV;
     ViewFlipper viewFlipper;
     Button qrScanBTN;
     Button viewAttendeesBTN;
-    ImageView imageIV;
     TextView titleTV;
     TextView locationTV;
     TextView dateTV;
@@ -102,11 +107,9 @@ public class DetailActivity extends AppCompatActivity {
     ArrayList<String> names;
 
     RatingBar rbLevel;
-    FloatingActionButton fabDelete;
 
 
-
-
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +127,6 @@ public class DetailActivity extends AppCompatActivity {
         names = new ArrayList<>();
 
 
-        //imageIV = findViewById(R.id.ivImage);
         viewFlipper = findViewById(R.id.viewFlipper);
         titleTV = findViewById(R.id.tvTitle);
         locationTV = findViewById(R.id.tvLocation);
@@ -151,10 +153,7 @@ public class DetailActivity extends AppCompatActivity {
                     lvAttendees = popupView.findViewById(R.id.lvAttendees);
                     adapter = new ArrayAdapter<String>(DetailActivity.this, android.R.layout.simple_list_item_1, names);
                     lvAttendees.setAdapter(adapter);
-//
-//                    names = getAttendeesNames();
-//
-//                    adapter.notifyDataSetChanged();
+
                     showPopup(v);
                     Log.i(TAG, "onClick: names size = " + names.size());
                     Log.i(TAG, "onClick: adapter size = " + adapter.getCount());
@@ -172,7 +171,6 @@ public class DetailActivity extends AppCompatActivity {
         rbLevel = findViewById(R.id.rbLevels);
 
         rbLevel.setRating(ad.getLevel());
-        fabDelete = findViewById(R.id.fabDelete);
 
         Log.d(TAG, "Ownership is being checked...");
         isOwner();
@@ -261,6 +259,12 @@ public class DetailActivity extends AppCompatActivity {
 
         descriptionTV.setText(ad.getDescription());
 
+
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        myToolbar = (Toolbar) findViewById(R.id.local_toolbar);
+        myToolbar.setTitle("local.ly");
+        myToolbar.setTitleTextColor(getResources().getColor(R.color.quantum_white_text));
+        setSupportActionBar(myToolbar);
     }
 
     @Override
@@ -443,11 +447,9 @@ public class DetailActivity extends AppCompatActivity {
         try {
             if (ParseUser.getCurrentUser().fetchIfNeeded().getUsername().equals(ad.getUser().fetchIfNeeded().getUsername())) {
                 Log.d(TAG, "User is Owner!");
-                fabDelete.show();
                 return true;
             } else {
                 Log.d(TAG, "User is NOT Owner!");
-                fabDelete.hide();
                 return false;
             }
         } catch (ParseException e) {
@@ -456,7 +458,7 @@ public class DetailActivity extends AppCompatActivity {
         return false;
     }
 
-    public void onDelete(View view) {
+    public void onDelete() {
         if (isOwner()) {
             Intent home = new Intent(DetailActivity.this, HomeFeedActivity.class);
             ad.deleteInBackground();
@@ -474,5 +476,25 @@ public class DetailActivity extends AppCompatActivity {
             i.putExtra(Ad.class.getSimpleName(), Parcels.wrap(ad));
             startActivity(i);
         }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.item_delete:
+                onDelete();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_details_activity, menu);
+        return true;
     }
 }

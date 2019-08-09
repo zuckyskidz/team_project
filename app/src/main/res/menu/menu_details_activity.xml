@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_QR"
+        android:icon="@drawable/ic_light_check"
+        android:title="Sign in with QR"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/item_view_attendees"
+        android:icon="@drawable/ic_light_check"
+        android:title="View Attendees"
+        android:visible="true" />
+    <item
+        android:id="@+id/item_delete"
+        android:icon="@drawable/ic_light_check"
+        android:title="Delete Event"
+        android:visible="true" />
+    <item
+        android:id="@+id/item_edit"
+        android:icon="@drawable/ic_light_check"
+        android:title="Edit Event"
+        android:visible="true" />
+
+</menu>

@@ -7,6 +7,18 @@
     android:clickable="false"
     tools:context=".DetailActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/local_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="2.5dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
     <me.dm7.barcodescanner.zxing.ZXingScannerView
         android:id="@+id/qrCodeScanner"
         android:layout_width="match_parent"
@@ -15,14 +27,15 @@
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="410dp"
-        android:layout_height="324dp"
+        android:layout_height="275dp"
+        android:layout_marginTop="8dp"
         android:autoStart="false"
         android:flipInterval="2000"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></ViewFlipper>
+        app:layout_constraintTop_toBottomOf="@+id/local_toolbar"></ViewFlipper>
 
     <Button
         android:id="@+id/btnAttendees"
@@ -218,20 +231,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:onClick="onDelete"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_delete" />
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
+        <!--android:id="@+id/fabDelete"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:layout_marginBottom="16dp"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:onClick="onDelete"-->
+        <!--app:backgroundTint="@color/colorPrimary"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:srcCompat="@android:drawable/ic_delete" />-->
 
     <ImageView
         android:id="@+id/imageView2"
