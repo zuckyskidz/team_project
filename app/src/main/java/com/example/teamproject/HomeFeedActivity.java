@@ -23,6 +23,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 
+
 public class HomeFeedActivity extends FragmentActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.
@@ -88,13 +89,13 @@ public class HomeFeedActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                getActionBar().show();
+                //getActionBar().show();
                 return new UserProfileFragment();
             } else if (position == 1) {
-                getActionBar().show();
+                //getActionBar().show();
                 return new ListFragment();
             }
-            getActionBar().hide();
+            //getActionBar().hide();
             return new MapFragment();
         }
 

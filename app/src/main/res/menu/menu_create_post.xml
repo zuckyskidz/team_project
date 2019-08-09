@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".CreatePostActivity">
 
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:visible="false"
+        android:title="Settings"/>
 
     <item
         android:id="@+id/submit"

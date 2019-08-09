@@ -23,7 +23,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.widget.ViewFlipper;
 
 import androidx.annotation.RequiresApi;
@@ -243,10 +243,10 @@ public class CreatePostActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         myToolbar = (Toolbar) findViewById(R.id.local_toolbar);
         myToolbar.setTitle("Create Post");
-        myToolbar.inflateMenu(R.menu.menu_create_post);
-        miActionProgressItem = myToolbar.getMenu().getItem(1);
+//        myToolbar.inflateMenu(R.menu.menu_create_post);
+//        miActionProgressItem = myToolbar.getMenu().getItem(1);
         myToolbar.setTitleTextColor(getResources().getColor(R.color.quantum_white_text));
-        setActionBar(myToolbar);
+        setSupportActionBar(myToolbar);
     }
 
     private void initPlacesSearch() {
@@ -507,6 +507,7 @@ public class CreatePostActivity extends AppCompatActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.submit:
+                Toast.makeText(this, "Clicked", Toast.LENGTH_LONG).show();
                 submitAd();
                 return true;
             default:

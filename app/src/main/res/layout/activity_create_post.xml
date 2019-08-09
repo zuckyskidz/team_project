@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".CreatePostActivity">
 
-    <android.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/local_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
