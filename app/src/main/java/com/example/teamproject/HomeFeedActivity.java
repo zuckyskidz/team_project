@@ -88,6 +88,8 @@ public class HomeFeedActivity extends FragmentActivity {
         bottomNavigationView.setSelectedItemId(R.id.action_list);
     }
 
+
+
     @Override
     public void onBackPressed() {
         if (mPager.getCurrentItem() == 0) {
@@ -118,12 +120,15 @@ public class HomeFeedActivity extends FragmentActivity {
         public Fragment getItem(int position) {
             if (position == 0) {
                 //getActionBar().show();
+                bottomNavigationView.setSelectedItemId(R.id.action_profile);
                 return new UserProfileFragment();
             } else if (position == 1) {
                 //getActionBar().show();
+                bottomNavigationView.setSelectedItemId(R.id.action_list);
                 return new ListFragment();
             }
             //getActionBar().hide();
+            bottomNavigationView.setSelectedItemId(R.id.action_map);
             return new MapFragment();
         }
 
