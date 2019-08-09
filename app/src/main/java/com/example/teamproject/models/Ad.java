@@ -150,7 +150,7 @@ public class Ad extends ParseObject {
         }
 
         public Query getTop() {
-            setLimit(20);
+            setLimit(50);
             return this;
         }
 

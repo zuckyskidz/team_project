@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -21,8 +23,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.Toolbar;
 import android.widget.ViewFlipper;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.emoji.bundled.BundledEmojiCompatConfig;
 import androidx.emoji.text.EmojiCompat;
@@ -87,6 +91,7 @@ public class CreatePostActivity extends AppCompatActivity {
     ParseFile photoFile;
     ImageButton btnSubmit;
     ViewFlipper viewFlipper;
+    private MenuItem miActionProgressItem;
 
     EmojiButton foodBTN;
     EmojiButton sportsBTN;
@@ -102,7 +107,9 @@ public class CreatePostActivity extends AppCompatActivity {
 
     RatingBar rbSetLevel;
     TextView tvLevelDisp;
+    private Toolbar myToolbar;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,7 +181,7 @@ public class CreatePostActivity extends AppCompatActivity {
         etAdDesc = findViewById(R.id.etAdDesc);
         tvDisplayDate = findViewById(R.id.tvDateDisplay);
         tvStartTime = findViewById(R.id.tvTimeDisplay);
-        btnSubmit = findViewById(R.id.btnSubmit);
+        //btnSubmit = findViewById(R.id.btnSubmit);
         viewFlipper = findViewById(R.id.viewFlipper);
 
         etAdName = (EditText) findViewById(R.id.etAdName);
@@ -183,7 +190,7 @@ public class CreatePostActivity extends AppCompatActivity {
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
         tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
         tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
-        btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
+        //btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
         rbSetLevel = (RatingBar) findViewById(R.id.rbSetLevel);
         tvLevelDisp = (TextView) findViewById(R.id.tvLevelDisp);
 
@@ -233,7 +240,13 @@ public class CreatePostActivity extends AppCompatActivity {
         });
 
 
-        //init();
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        myToolbar = (Toolbar) findViewById(R.id.local_toolbar);
+        myToolbar.setTitle("Create Post");
+        myToolbar.inflateMenu(R.menu.menu_create_post);
+        miActionProgressItem = myToolbar.getMenu().getItem(1);
+        myToolbar.setTitleTextColor(getResources().getColor(R.color.quantum_white_text));
+        setActionBar(myToolbar);
     }
 
     private void initPlacesSearch() {
@@ -263,7 +276,8 @@ public class CreatePostActivity extends AppCompatActivity {
         });
     }
 
-    public void submitAd(View view) {
+    public void submitAd() {
+        showProgressBar();
         Log.d(TAG, "Posting...");
         Ad newAd = new Ad();
         if (makeSurePostable()) {
@@ -282,11 +296,12 @@ public class CreatePostActivity extends AppCompatActivity {
             newAd.setTags(getTags());
         } else {
             Toast.makeText(CreatePostActivity.this, "Missing information.", Toast.LENGTH_SHORT).show();
+            hideProgressBar();
             return;
             //newAd.setImage(photoFile);
         }
         postAd(newAd);
-
+        hideProgressBar();
     }
 
     private List<String> getTags() {
@@ -305,12 +320,14 @@ public class CreatePostActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                     btnSubmit.setEnabled(true);
+                    btnSubmit.setVisibility(View.GONE);
                     return;
                 } else {
                     Log.i(TAG, "FAILED");
                     Toast.makeText(getApplicationContext(), "Posting Failed!", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                     btnSubmit.setEnabled(true);
+                    btnSubmit.setVisibility(View.VISIBLE);
                     return;
                 }
             }
@@ -483,5 +500,45 @@ public class CreatePostActivity extends AppCompatActivity {
             tags.add(button.getTag().toString());
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.submit:
+                submitAd();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        //getMenuInflater().inflate(R.menu.menu_create_post, menu);
+
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_create_post, menu);
+        return true;
+    }
+
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisible(false);
     }
 }
