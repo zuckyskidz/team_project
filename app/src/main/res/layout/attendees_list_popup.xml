@@ -6,7 +6,16 @@
     android:layout_height="match_parent"
     android:background="@color/quantum_white_100">
 
-
+<androidx.cardview.widget.CardView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    style="@style/CardViewStyle"
+    android:outlineAmbientShadowColor="@color/colorPrimary"
+    android:outlineSpotShadowColor="@color/colorPrimary">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <TextView
         android:id="@+id/tv"
         android:layout_width="match_parent"
@@ -23,4 +32,8 @@
         android:layout_gravity="center"
         android:clickable="false"
         android:scrollbars="vertical" />
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>
 </LinearLayout>
