@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/logout"
-        android:title="Logout" />
+        android:id="@+id/action_profile"
+        android:enabled="true"
+        android:icon="@drawable/ic_light_user"
+        android:title=""
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_list"
+        android:enabled="true"
+        android:icon="@drawable/locally_white"
+        android:title=""
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_map"
+        android:enabled="true"
+        android:icon="@drawable/ic_light_map"
+        android:title=""
+        app:showAsAction="ifRoom" />
 </menu>

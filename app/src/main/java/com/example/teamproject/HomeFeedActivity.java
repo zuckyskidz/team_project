@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.annotation.RequiresApi;
@@ -22,6 +23,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 public class HomeFeedActivity extends FragmentActivity {
@@ -41,6 +43,7 @@ public class HomeFeedActivity extends FragmentActivity {
      */
     private PagerAdapter pagerAdapter;
     private Toolbar myToolbar;
+    BottomNavigationView bottomNavigationView;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -56,8 +59,33 @@ public class HomeFeedActivity extends FragmentActivity {
 
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         myToolbar = (Toolbar) findViewById(R.id.local_toolbar);
+        myToolbar.setTitle("");
         myToolbar.setTitleTextColor(getResources().getColor(R.color.quantum_white_text));
         setActionBar(myToolbar);
+
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
+        // handle navigation selection
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_profile:
+                                mPager.setCurrentItem(0);
+                                break;
+                            case R.id.action_list:
+                                mPager.setCurrentItem(1);
+                                break;
+                            case R.id.action_map:
+                            default:
+                                mPager.setCurrentItem(2);
+                                break;
+                        }
+                        return true;
+                    }
+                });
+        // Set default selection
+        bottomNavigationView.setSelectedItemId(R.id.action_list);
     }
 
     @Override
