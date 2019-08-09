@@ -5,24 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".ListFragment">
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:background="?android:attr/listDivider" />
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPinterestFeed"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:layout_marginTop="?attr/actionBarSize"/>
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
