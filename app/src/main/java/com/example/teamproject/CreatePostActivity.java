@@ -89,7 +89,6 @@ public class CreatePostActivity extends AppCompatActivity {
     TextView tvEndTime;
     EditText etAdDesc;
     ParseFile photoFile;
-    ImageButton btnSubmit;
     ViewFlipper viewFlipper;
     private MenuItem miActionProgressItem;
 
@@ -177,20 +176,16 @@ public class CreatePostActivity extends AppCompatActivity {
 
         etAdName = findViewById(R.id.etAdName);
         tvEndTime = findViewById(R.id.tvTimeDisplay2);
-        //btnAdAddress = findViewById(R.id.btnAdAddress);
         etAdDesc = findViewById(R.id.etAdDesc);
         tvDisplayDate = findViewById(R.id.tvDateDisplay);
         tvStartTime = findViewById(R.id.tvTimeDisplay);
-        //btnSubmit = findViewById(R.id.btnSubmit);
         viewFlipper = findViewById(R.id.viewFlipper);
 
         etAdName = (EditText) findViewById(R.id.etAdName);
         tvEndTime = (TextView) findViewById(R.id.tvTimeDisplay2);
-        //btnAdAddress = (Button) findViewById(R.id.btnAdAddress);
         etAdDesc = (EditText) findViewById(R.id.etAdDesc);
         tvDisplayDate = (TextView) findViewById(R.id.tvDateDisplay);
         tvStartTime = (TextView) findViewById(R.id.tvTimeDisplay);
-        //btnSubmit = (ImageButton) findViewById(R.id.btnSubmit);
         rbSetLevel = (RatingBar) findViewById(R.id.rbSetLevel);
         tvLevelDisp = (TextView) findViewById(R.id.tvLevelDisp);
 
@@ -309,7 +304,6 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private void postAd(Ad newAd) {
-        btnSubmit.setEnabled(false);
         newAd.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -319,15 +313,11 @@ public class CreatePostActivity extends AppCompatActivity {
                     Intent intent = new Intent(CreatePostActivity.this, HomeFeedActivity.class);
                     startActivity(intent);
                     finish();
-                    btnSubmit.setEnabled(true);
-                    btnSubmit.setVisibility(View.GONE);
                     return;
                 } else {
                     Log.i(TAG, "FAILED");
                     Toast.makeText(getApplicationContext(), "Posting Failed!", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
-                    btnSubmit.setEnabled(true);
-                    btnSubmit.setVisibility(View.VISIBLE);
                     return;
                 }
             }
@@ -508,7 +498,9 @@ public class CreatePostActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.submit:
                 Toast.makeText(this, "Clicked", Toast.LENGTH_LONG).show();
+                item.setEnabled(false);
                 submitAd();
+                item.setEnabled(true);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
