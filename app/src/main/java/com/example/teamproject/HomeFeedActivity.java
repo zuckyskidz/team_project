@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +45,7 @@ public class HomeFeedActivity extends FragmentActivity {
     private PagerAdapter pagerAdapter;
     private Toolbar myToolbar;
     BottomNavigationView bottomNavigationView;
+    String TAG = "HomeFeedActivity";
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -69,23 +71,27 @@ public class HomeFeedActivity extends FragmentActivity {
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        Log.i(TAG, "here");
                         switch (item.getItemId()) {
                             case R.id.action_profile:
+                                //Log.d(TAG,"Going to 0");
                                 mPager.setCurrentItem(0);
                                 break;
                             case R.id.action_list:
+                                //Log.d(TAG,"Going to 1");
                                 mPager.setCurrentItem(1);
                                 break;
                             case R.id.action_map:
-                            default:
+                                //Log.d(TAG,"Going to 2");
                                 mPager.setCurrentItem(2);
+                            default:
                                 break;
                         }
                         return true;
                     }
                 });
         // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.action_list);
+        bottomNavigationView.getMenu().getItem(1).setChecked(true);
     }
 
 
@@ -119,16 +125,16 @@ public class HomeFeedActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                //getActionBar().show();
-                bottomNavigationView.setSelectedItemId(R.id.action_profile);
+                Log.d(TAG,"Going to 0");
+                bottomNavigationView.getMenu().getItem(0).setChecked(true);
                 return new UserProfileFragment();
             } else if (position == 1) {
-                //getActionBar().show();
-                bottomNavigationView.setSelectedItemId(R.id.action_list);
+                Log.d(TAG,"Going to 1");
+                bottomNavigationView.getMenu().getItem(1).setChecked(true);
                 return new ListFragment();
             }
-            //getActionBar().hide();
-            bottomNavigationView.setSelectedItemId(R.id.action_map);
+            Log.d(TAG,"Going to 2");
+            bottomNavigationView.getMenu().getItem(2).setChecked(true);
             return new MapFragment();
         }
 
@@ -137,38 +143,5 @@ public class HomeFeedActivity extends FragmentActivity {
             return NUM_PAGES;
         }
     }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_home, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.userProfile) {
-//            Toast.makeText(HomeFeedActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//
-//        if (id == R.id.map) {
-//            Toast.makeText(HomeFeedActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//
-//        if (id == R.id.listFeed) {
-//            Toast.makeText(HomeFeedActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
 }
